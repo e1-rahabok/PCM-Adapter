@@ -19,17 +19,19 @@ Eight sub-metrics look at the powered-on VMs in the cluster in two ways:
 
 The ninth is the worst host's bad network packets. Every sub-metric is lower-is-better, and 0 is best.
 
-| Group | Sub-metric | How it is calculated |
-| :--- | :--- | :--- |
-| Worst VM | Worst VM CPU Ready | Highest `cpu\|20_sec_peak_readyPct` of any VM |
-| Worst VM | Worst VM CPU Co-Stop | Highest `cpu\|20_sec_peak_costopPct` of any VM |
-| Worst VM | Worst VM Memory Latency | Highest `mem\|20_sec_peak_host_contentionPct` of any VM |
-| Worst VM | Worst VM Disk Latency | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
-| 90th percentile | 90th Percentile VM CPU Ready | 90th percentile of `cpu\|20_sec_peak_readyPct` across the VMs |
-| 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
-| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile of `mem\|20_sec_peak_host_contentionPct` across the VMs |
-| 90th percentile | 90th Percentile VM Disk Latency | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
-| ESXi | Highest ESXi Bad Network Packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
+VCF Operations shows the eight VM rows under a label in the words of the Agent E2 catalog: every row reads a 20-second peak, so every label says peak. The key stays the sub-metric name: a new key would be a new metric, without its history. Memory says latency, not wait, until the pack scores NVMe wait.
+
+| Group | Sub-metric (key) | Label in VCF Operations | How it is calculated |
+| :--- | :--- | :--- | :--- |
+| Worst VM | Worst VM CPU Ready | Worst peak vCPU Ready among all VMs | Highest `cpu\|20_sec_peak_readyPct` of any VM |
+| Worst VM | Worst VM CPU Co-Stop | Worst peak vCPU Co-stop among all VMs | Highest `cpu\|20_sec_peak_costopPct` of any VM |
+| Worst VM | Worst VM Memory Latency | Worst peak memory latency among all VMs | Highest `mem\|20_sec_peak_host_contentionPct` of any VM |
+| Worst VM | Worst VM Disk Latency | Worst peak read/write disk latency, all VM vDisks | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
+| 90th percentile | 90th Percentile VM CPU Ready | 90th percentile peak vCPU Ready among VMs | 90th percentile of `cpu\|20_sec_peak_readyPct` across the VMs |
+| 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
+| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile peak memory latency among VMs | 90th percentile of `mem\|20_sec_peak_host_contentionPct` across the VMs |
+| 90th percentile | 90th Percentile VM Disk Latency | 90th percentile peak read/write latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
+| ESXi | Highest ESXi Bad Network Packets | Highest ESXi Bad Network Packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
 
 Notes:
 

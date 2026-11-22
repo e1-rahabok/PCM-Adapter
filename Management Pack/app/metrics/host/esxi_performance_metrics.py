@@ -42,6 +42,20 @@ BAD_PACKETS = bad_network_packets_metric("ESXi Bad Network Packets")
 METRICS = VM_CONTENTION_METRICS + [BAD_PACKETS]
 PUBLISHED_METRICS = METRICS
 
+# The labels VCF Operations shows, in the words of the Agent E2 catalog (knowledge/catalog/thresholds-performance.yaml).
+# The keys stay the row names: renaming a key would start a new metric and leave its history behind. Every VM row
+# reads a 20-second peak, so every label says peak. Memory says latency, not wait, until NVMe wait is scored.
+LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
+    "Worst peak vCPU Ready among VMs on the host",
+    "Worst peak vCPU Co-stop among VMs on the host",
+    "Worst peak memory latency among VMs on the host",
+    "Worst peak read/write disk latency, all vDisks of VMs on the host",
+    "90th percentile peak vCPU Ready among VMs on the host",
+    "90th percentile peak vCPU Co-stop among VMs on the host",
+    "90th percentile peak memory latency among VMs on the host",
+    "90th percentile peak read/write latency among virtual disks of VMs on the host",
+], strict=True))
+
 
 # =================================================================================================================
 # Part 2. Reading the stats, once for all hosts

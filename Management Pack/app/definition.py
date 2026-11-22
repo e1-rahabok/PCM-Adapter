@@ -43,8 +43,11 @@ KPI_UNITS = {
 def define_kpi(vCommunity, kpi) -> None:
     # kpi is a KPI module, such as cluster_performance_metrics. Its metric list lives in one place: that module.
     group = vCommunity.define_group(kpi.GROUP, kpi.GROUP)
+    # The key is the row's name and never changes: a new key is a new metric in VCF Operations, without history.
+    # A module may give a row a label of its own (LABELS), shown in VCF Operations in place of the name.
+    labels = getattr(kpi, "LABELS", {})
     for metric in kpi.PUBLISHED_METRICS:
-        group.define_metric(metric.name, metric.name, unit=KPI_UNITS[metric.unit])
+        group.define_metric(metric.name, labels.get(metric.name, metric.name), unit=KPI_UNITS[metric.unit])
     group.define_metric(kpi.KPI_KEY, kpi.KPI_NAME, unit=Units.RATIO.PERCENT)
 
 

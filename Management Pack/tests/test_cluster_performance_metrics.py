@@ -134,3 +134,34 @@ def test_metrics_without_data_are_not_published():
     assert "90th Percentile VM Memory Latency" not in published
     assert published["Highest ESXi Bad Network Packets"] == 0.0
     assert published[cp.KPI_KEY] == 100.0
+
+
+# --- Labels: the catalog's words, the keys kept ------------------------------
+
+def _group_attributes(group_key):
+    from definition import get_adapter_definition
+    found = {}
+
+    def walk(node):
+        if isinstance(node, dict):
+            if node.get("key") == group_key and "attributes" in node:
+                found.update({a["key"]: a["label"] for a in node["attributes"]})
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+    walk(get_adapter_definition().to_json())
+    return found
+
+
+def test_vm_rows_keep_their_keys_and_show_the_catalog_label():
+    from metrics.host import esxi_performance_metrics as ep
+    for group, labels, where in (("Cluster Performance", cp.LABELS, "among all VMs"), ("ESXi Performance", ep.LABELS, "on the host")):
+        attributes = _group_attributes(group)
+        for metric in vc.VM_CONTENTION_METRICS:
+            assert metric.name in attributes, metric.name  # the key never changes: it would lose the history
+            assert attributes[metric.name] == labels[metric.name]
+            assert "peak" in labels[metric.name]  # every VM row reads a 20-second peak
+        assert attributes["Worst VM CPU Ready"].startswith("Worst peak vCPU Ready") and where in attributes["Worst VM CPU Ready"]
+    assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi Bad Network Packets"

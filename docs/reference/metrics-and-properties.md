@@ -54,14 +54,14 @@ How each metric and KPI is calculated is in [Metrics](metrics/README.md).
 | Property | `vCommunity\|Cluster Configuration\|EVC\|Mode` | The EVC mode key of the cluster, such as `intel-cascadelake`. |
 | Property | `vCommunity\|Cluster Configuration\|DPM\|Host Power Action Rate` | The Distributed Power Management rate (1 to 5): how quickly DPM powers hosts on and off. Published whenever the cluster has a DPM configuration, whether DPM is on or off. |
 | Metric | `vCommunity\|Cluster Performance\|Cluster Performance Score` | KPI, 0 to 100 %, from the 9 sub-metrics below. 100 is best. See [Cluster Performance](metrics/cluster-performance.md). |
-| Metric | `vCommunity\|Cluster Performance\|Worst VM CPU Ready` | The highest 20-second peak CPU Ready (%) of the powered-on VMs in the cluster. |
-| Metric | `vCommunity\|Cluster Performance\|Worst VM CPU Co-Stop` | The highest 20-second peak CPU Co-Stop (%) of the powered-on VMs in the cluster. |
-| Metric | `vCommunity\|Cluster Performance\|Worst VM Memory Latency` | The highest 20-second peak memory contention (%) of the powered-on VMs in the cluster. |
-| Metric | `vCommunity\|Cluster Performance\|Worst VM Disk Latency` | The highest 20-second peak virtual disk latency (ms) of the powered-on VMs in the cluster. |
-| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM CPU Ready` | The 20-second peak CPU Ready (%) that 90 % of the powered-on VMs are at or below. |
-| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM CPU Co-Stop` | The 20-second peak CPU Co-Stop (%) that 90 % of the powered-on VMs are at or below. |
-| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM Memory Latency` | The 20-second peak memory contention (%) that 90 % of the powered-on VMs are at or below. |
-| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM Disk Latency` | The 20-second peak virtual disk latency (ms) that 90 % of the powered-on VMs are at or below. |
+| Metric | `vCommunity\|Cluster Performance\|Worst VM CPU Ready` | The highest 20-second peak CPU Ready (%) of the powered-on VMs in the cluster. Shown as Worst peak vCPU Ready among all VMs. |
+| Metric | `vCommunity\|Cluster Performance\|Worst VM CPU Co-Stop` | The highest 20-second peak CPU Co-Stop (%) of the powered-on VMs in the cluster. Shown as Worst peak vCPU Co-stop among all VMs. |
+| Metric | `vCommunity\|Cluster Performance\|Worst VM Memory Latency` | The highest 20-second peak memory contention (%) of the powered-on VMs in the cluster. Shown as Worst peak memory latency among all VMs. |
+| Metric | `vCommunity\|Cluster Performance\|Worst VM Disk Latency` | The highest 20-second peak virtual disk latency (ms) of the powered-on VMs in the cluster. Shown as Worst peak read/write disk latency, all VM vDisks. |
+| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM CPU Ready` | The 20-second peak CPU Ready (%) that 90 % of the powered-on VMs are at or below. Shown as 90th percentile peak vCPU Ready among VMs. |
+| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM CPU Co-Stop` | The 20-second peak CPU Co-Stop (%) that 90 % of the powered-on VMs are at or below. Shown as 90th percentile peak vCPU Co-stop among VMs. |
+| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM Memory Latency` | The 20-second peak memory contention (%) that 90 % of the powered-on VMs are at or below. Shown as 90th percentile peak memory latency among VMs. |
+| Metric | `vCommunity\|Cluster Performance\|90th Percentile VM Disk Latency` | The 20-second peak virtual disk latency (ms) that 90 % of the powered-on VMs are at or below. Shown as 90th percentile peak read/write latency among VM virtual disks. |
 | Metric | `vCommunity\|Cluster Performance\|Highest ESXi Bad Network Packets` | Errored and dropped packets as a % of all packets in the last 5 minutes, on the worst host. Needs Total Packets Received and Transmitted activated in the [policy](../configuration-guide/policy.md). |
 | Metric | `vCommunity\|Cluster Risk\|Cluster Risk Score` | KPI, 0 to 100 %, from the 12 sub-metrics below. Higher is worse: red is 75 to 100. See [Cluster Risk](metrics/cluster-risk.md) and its [bands](metrics/cluster-risk.md#bands-red-is-high). |
 | Metric | `vCommunity\|Cluster Risk\|Highest ESXi CPU Thread Utilization` | CPU thread utilization (%, `cpu.utilization`) of the busiest host. |
@@ -99,14 +99,14 @@ How each metric and KPI is calculated is in [Metrics](metrics/README.md).
 | Metric | `vCommunity\|Network\|Network Speed Degradation` | Actual NIC speed as a % of the configured speed, over the physical NICs that can be compared. 100 % means no degradation. See [Network Speed Degradation](metrics/network-speed-degradation.md#known-limitations). |
 | Metric | `vCommunity\|Availability\|ESXi Host Operational Availability` | 25 % each for powered on, connected, not in maintenance and not in quarantine. Published only for hosts that vCenter reports as connected. See [Operational Availability](metrics/operational-availability.md#known-limitations). |
 | Metric | `vCommunity\|ESXi Performance\|ESXi Performance Score` | KPI, 0 to 100 %, from the 9 sub-metrics below. 100 is best. See [ESXi Performance](metrics/esxi-performance.md). |
-| Metric | `vCommunity\|ESXi Performance\|Worst VM CPU Ready` | The highest 20-second peak CPU Ready (%) of the powered-on VMs on the host. |
-| Metric | `vCommunity\|ESXi Performance\|Worst VM CPU Co-Stop` | The highest 20-second peak CPU Co-Stop (%) of the powered-on VMs on the host. |
-| Metric | `vCommunity\|ESXi Performance\|Worst VM Memory Latency` | The highest 20-second peak memory contention (%) of the powered-on VMs on the host. |
-| Metric | `vCommunity\|ESXi Performance\|Worst VM Disk Latency` | The highest 20-second peak virtual disk latency (ms) of the powered-on VMs on the host. |
-| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM CPU Ready` | The 20-second peak CPU Ready (%) that 90 % of the powered-on VMs on the host are at or below. |
-| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM CPU Co-Stop` | The 20-second peak CPU Co-Stop (%) that 90 % of the powered-on VMs on the host are at or below. |
-| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM Memory Latency` | The 20-second peak memory contention (%) that 90 % of the powered-on VMs on the host are at or below. |
-| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM Disk Latency` | The 20-second peak virtual disk latency (ms) that 90 % of the powered-on VMs on the host are at or below. |
+| Metric | `vCommunity\|ESXi Performance\|Worst VM CPU Ready` | The highest 20-second peak CPU Ready (%) of the powered-on VMs on the host. Shown as Worst peak vCPU Ready among VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|Worst VM CPU Co-Stop` | The highest 20-second peak CPU Co-Stop (%) of the powered-on VMs on the host. Shown as Worst peak vCPU Co-stop among VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|Worst VM Memory Latency` | The highest 20-second peak memory contention (%) of the powered-on VMs on the host. Shown as Worst peak memory latency among VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|Worst VM Disk Latency` | The highest 20-second peak virtual disk latency (ms) of the powered-on VMs on the host. Shown as Worst peak read/write disk latency, all vDisks of VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM CPU Ready` | The 20-second peak CPU Ready (%) that 90 % of the powered-on VMs on the host are at or below. Shown as 90th percentile peak vCPU Ready among VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM CPU Co-Stop` | The 20-second peak CPU Co-Stop (%) that 90 % of the powered-on VMs on the host are at or below. Shown as 90th percentile peak vCPU Co-stop among VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM Memory Latency` | The 20-second peak memory contention (%) that 90 % of the powered-on VMs on the host are at or below. Shown as 90th percentile peak memory latency among VMs on the host. |
+| Metric | `vCommunity\|ESXi Performance\|90th Percentile VM Disk Latency` | The 20-second peak virtual disk latency (ms) that 90 % of the powered-on VMs on the host are at or below. Shown as 90th percentile peak read/write latency among virtual disks of VMs on the host. |
 | Metric | `vCommunity\|ESXi Performance\|ESXi Bad Network Packets` | Errored and dropped packets as a % of all packets of the host in the last 5 minutes. Needs Total Packets Received and Transmitted activated in the [policy](../configuration-guide/policy.md). |
 | Property | `vCommunity\|Configuration\|Advanced System Settings\|<setting>` | The value of an ESXi advanced system setting, such as `Disk.DiskRetryPeriod`. One property per setting listed in the ESXi advanced settings configuration file. |
 | Property | `vCommunity\|Storage Adapter:<hba>\|Device` | Device name of the host bus adapter (HBA), such as `vmhba0`. One instance per HBA. |

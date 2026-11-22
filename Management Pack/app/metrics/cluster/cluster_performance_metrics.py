@@ -51,6 +51,20 @@ def highest_host_bad_packet_pct(suite_api_client: SuiteApiClient, host_ids: List
 METRICS = VM_CONTENTION_METRICS + [BAD_PACKETS]
 PUBLISHED_METRICS = METRICS
 
+# The labels VCF Operations shows, in the words of the Agent E2 catalog (knowledge/catalog/thresholds-performance.yaml).
+# The keys stay the row names: renaming a key would start a new metric and leave its history behind. Every VM row
+# reads a 20-second peak, so every label says peak. Memory says latency, not wait, until NVMe wait is scored.
+LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
+    "Worst peak vCPU Ready among all VMs",
+    "Worst peak vCPU Co-stop among all VMs",
+    "Worst peak memory latency among all VMs",
+    "Worst peak read/write disk latency, all VM vDisks",
+    "90th percentile peak vCPU Ready among VMs",
+    "90th percentile peak vCPU Co-stop among VMs",
+    "90th percentile peak memory latency among VMs",
+    "90th percentile peak read/write latency among VM virtual disks",
+], strict=True))
+
 
 # =================================================================================================================
 # Part 2. The KPI
