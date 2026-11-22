@@ -78,7 +78,8 @@ How each metric and KPI is calculated is in [Metrics](metrics/README.md).
 | Metric | `vCommunity\|Cluster Risk\|Highest Memory Monster VM to Host Ratio` | Memory of the largest powered-on VM against the monster size of its host: by default, 40 % of its DRAM or 256 GB, whichever is smaller. Above 1, the VM is a monster. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster Consumption Score` | KPI, 0 to 100 %, of how much of the cluster's usable capacity (Total − HA − Buffer) is consumed, from the 5 sub-metrics below. Higher is worse: red is 75 to 100. See [Cluster Consumption](metrics/cluster-consumption.md). |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi CPU Thread Utilization` | CPU threads in use on all running hosts, as a % of their usable threads. |
-| Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Consumed` | Consumed memory of all running hosts, as a % of their usable DRAM. |
+| Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Consumed` | Consumed memory of all running hosts, as a % of their usable memory: DRAM, plus the NVMe tier on a tiered host, as vSphere counts it. |
+| Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi DRAM Consumed` | DRAM in use (Memory Consumed − NVMe tier in use) on all running tiered hosts, as a % of their usable DRAM. A separate metric from Memory Consumed. Published only when the cluster has memory tiering. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster Memory Tiering Consumption` | NVMe memory tier in use on all running tiered hosts, as a % of their usable DRAM. Published only when the cluster has memory tiering. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Ballooned` | Ballooned memory of all running hosts, as a % of their usable DRAM. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Zip Swap` | Compressed plus swapped memory of all running hosts, as a % of their usable DRAM. |

@@ -52,11 +52,12 @@ HA_AND_BUFFER = cluster(0.8)        # HA and the capacity buffer take 20 % of th
 
 def test_limits_match_the_source_table():
     # docs/reference/metrics/formula/cluster-consumption.png
-    # except Memory Tiering Consumption: 15, 30, 45, 60 of usable DRAM, see the page, section Why the tiering limits.
+    # except Memory Tiering Consumption (15, 30, 45, 60 of usable DRAM) and the newer DRAM Consumed row: see the page.
     limits = {m.name: (m.best, m.green, m.yellow, m.orange, m.zero_at, m.skip_when_green) for m in cc.METRICS}
     assert limits == {
         "Cluster-wide ESXi CPU Thread Utilization": (0, 55, 70, 85, 100, False),
         "Cluster-wide ESXi Memory Consumed": (0, 70, 80, 90, 100, False),
+        "Cluster-wide ESXi DRAM Consumed": (0, 80, 85, 90, 100, False),
         "Cluster Memory Tiering Consumption": (0, 15, 30, 45, 60, False),
         "Cluster-wide ESXi Memory Ballooned": (0, 1, 2, 4, 8, False),
         "Cluster-wide ESXi Memory Zip Swap": (0, 0.25, 0.5, 1, 2, False),
@@ -75,6 +76,7 @@ def test_cluster_wide_means_the_hosts_added_up_not_averaged():
     assert values[cc.ZIP_SWAP] == 0.0
     # No NVMe memory tiering: no data.
     assert values[cc.TIERING] is None
+    assert values[cc.DRAM] is None
 
 
 def test_consumption_is_against_usable_capacity():
@@ -108,9 +110,29 @@ def test_memory_tiering_is_against_the_usable_dram_of_tiered_hosts_only():
     # A bigger tier, same usage: the same value.
     bigger = {"host-1": {cc.NVME_TIER_SIZE: 1024.0 * GB_IN_KB, cc.NVME_TIER_USAGE: 61.44 * 1024.0}}
     assert round(cc.consumption_values(HOSTS, STATS, bigger, HA_AND_BUFFER)[cc.TIERING], 2) == 15.0
-    # The DRAM rows do not change with a tier.
-    assert cc.consumption_values(HOSTS, STATS, tiers, HA_AND_BUFFER)[cc.MEMORY] == \
-        cc.consumption_values(HOSTS, STATS, {}, HA_AND_BUFFER)[cc.MEMORY]
+    # The DRAM-only rows do not change with a tier.
+    for row in (cc.BALLOONED, cc.ZIP_SWAP):
+        assert cc.consumption_values(HOSTS, STATS, tiers, HA_AND_BUFFER)[row] == \
+            cc.consumption_values(HOSTS, STATS, {}, HA_AND_BUFFER)[row]
+
+
+def test_memory_consumed_is_against_dram_plus_the_nvme_tier_as_vsphere_counts_it():
+    # host-1 has a 256 GB NVMe tier. Memory Consumed is the raw metric, so its capacity is the host memory vSphere
+    # counts: (256 + 230.4) GB of (512 + 256 + 256) GB x 0.8 usable = 819.2 GB: 59.375 %.
+    tiers = {"host-1": {cc.NVME_TIER_SIZE: 256.0 * GB_IN_KB, cc.NVME_TIER_USAGE: 61.44 * 1024.0}}
+    assert round(cc.consumption_values(HOSTS, STATS, tiers, HA_AND_BUFFER)[cc.MEMORY], 3) == 59.375
+    # Without the tier: 486.4 of 614.4 GB = 79.17 %.
+    assert round(cc.consumption_values(HOSTS, STATS, {}, HA_AND_BUFFER)[cc.MEMORY], 2) == 79.17
+
+
+def test_dram_consumed_is_a_separate_metric_on_tiered_hosts_only():
+    # host-1 consumes 256 GB, 61.44 GB of it on NVMe: 194.56 GB in DRAM, of its 512 GB x 0.8 usable = 409.6 GB:
+    # 47.5 %. host-2 has no tier, so neither its memory nor its DRAM counts.
+    tiers = {"host-1": {cc.NVME_TIER_SIZE: 256.0 * GB_IN_KB, cc.NVME_TIER_USAGE: 61.44 * 1024.0}}
+    assert round(cc.consumption_values(HOSTS, STATS, tiers, HA_AND_BUFFER)[cc.DRAM], 2) == 47.5
+    # NVMe usage above Memory Consumed (stats of different moments) never gives a negative DRAM.
+    odd = {"host-1": {cc.NVME_TIER_SIZE: 256.0 * GB_IN_KB, cc.NVME_TIER_USAGE: 300.0 * 1024.0}}
+    assert cc.consumption_values(HOSTS, STATS, odd, HA_AND_BUFFER)[cc.DRAM] == 0.0
 
 
 def test_rows_have_no_value_without_usable_capacity():
@@ -163,6 +185,7 @@ def test_the_kpi():
     # Consumption is higher-is-worse: 100 - 65.47 = 34.53.
     assert published[cc.CPU] == 62.5
     assert cc.TIERING not in published
+    assert cc.DRAM not in published
     assert published[cc.KPI_KEY] == 34.53
     assert cc.HIGHER_IS_WORSE
 
