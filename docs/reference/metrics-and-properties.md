@@ -63,10 +63,9 @@ How each metric and KPI is calculated is in [Metrics](metrics/README.md).
 | Metric | `vCommunity\|Cluster Performance\|90th Percentile VM Memory Latency` | The 20-second peak memory contention (%) that 90 % of the powered-on VMs are at or below. |
 | Metric | `vCommunity\|Cluster Performance\|90th Percentile VM Disk Latency` | The 20-second peak virtual disk latency (ms) that 90 % of the powered-on VMs are at or below. |
 | Metric | `vCommunity\|Cluster Performance\|Highest ESXi Bad Network Packets` | Errored and dropped packets as a % of all packets in the last 5 minutes, on the worst host. Needs Total Packets Received and Transmitted activated in the [policy](../configuration-guide/policy.md). |
-| Metric | `vCommunity\|Cluster Risk\|Cluster Risk Score` | KPI, 0 to 100 %, from the 13 sub-metrics below. Higher is worse: red is 75 to 100. See [Cluster Risk](metrics/cluster-risk.md) and its [bands](metrics/cluster-risk.md#bands-red-is-high). |
+| Metric | `vCommunity\|Cluster Risk\|Cluster Risk Score` | KPI, 0 to 100 %, from the 12 sub-metrics below. Higher is worse: red is 75 to 100. See [Cluster Risk](metrics/cluster-risk.md) and its [bands](metrics/cluster-risk.md#bands-red-is-high). |
 | Metric | `vCommunity\|Cluster Risk\|Highest ESXi CPU Thread Utilization` | CPU thread utilization (%, `cpu.utilization`) of the busiest host. |
 | Metric | `vCommunity\|Cluster Risk\|Worst ESXi CPU Imbalance` | Running CPU threads divided by running CPU cores, on the worst host. 1 is one thread per busy core. 2 is both hyper-threads busy on every busy core. |
-| Metric | `vCommunity\|Cluster Risk\|Highest ESXi Memory Consumed` | Consumed memory as a % of host DRAM, on the fullest host. |
 | Metric | `vCommunity\|Cluster Risk\|Worst ESXi Memory Ballooned` | Ballooned memory as a % of host DRAM, on the worst host. |
 | Metric | `vCommunity\|Cluster Risk\|Worst ESXi Memory Zip Swap` | Compressed plus swapped memory as a % of host DRAM, on the worst host. |
 | Metric | `vCommunity\|Cluster Risk\|Worst ESXi Active Memory` | Active memory as a % of DRAM, on the worst host with memory tiering. Published only when a host in the cluster has memory tiering. |

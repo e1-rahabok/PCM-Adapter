@@ -104,7 +104,7 @@ Three rows read memory on a tiered host. Each GB is counted once in each view:
 | Memory Tiering Consumption | NVMe in use (the spill) | DRAM |
 
 - **Memory Consumed keeps its vCenter meaning.** It is a raw metric. vSphere counts DRAM and NVMe as host memory, so the pack does too. On a tiered cluster it can read green while DRAM is full: at a 1:1 tier, DRAM at 85 % and 20 % of DRAM on NVMe read (85 + 20) ÷ 200 = 52.5 %. It also reads lower with a bigger tier for the same VMs.
-- **DRAM Consumed is a separate metric, with its own name.** Tiering starts at about 80 % of DRAM, so green runs to 80. It is not Cluster Risk's Highest ESXi Memory Consumed, which divides Memory Consumed (both tiers) by DRAM.
+- **DRAM Consumed is a separate metric, with its own name.** Tiering starts at about 80 % of DRAM, so green runs to 80. Cluster Risk has no memory consumed row: Memory Consumed (both tiers) passes 100 % of DRAM on a tiered host by design.
 
 ### Why the tiering limits
 

@@ -8,11 +8,11 @@ Every sub-metric takes the highest or worst ESXi host in the cluster, because on
 
 Host memory means DRAM only. Every memory percentage and ratio is measured against the host's DRAM, called `MEM_DRAM_CAPACITY`. A memory tier such as NVMe is never added. See [Host memory capacity](#host-memory-capacity-mem_dram_capacity).
 
-The KPI and its 13 sub-metrics are published on the cluster object under `vCommunity|Cluster Risk`. The KPI is `vCommunity|Cluster Risk|Cluster Risk Score`.
+The KPI and its 12 sub-metrics are published on the cluster object under `vCommunity|Cluster Risk`. The KPI is `vCommunity|Cluster Risk|Cluster Risk Score`.
 
 Code: [`Management Pack/app/metrics/cluster/cluster_risk_metrics.py`](../../../Management%20Pack/app/metrics/cluster/cluster_risk_metrics.py)
 
-Source of the limits: [`formula/cluster-risk.png`](formula/cluster-risk.png), except two rows changed or added later: Worst ESXi Memory Tiering Latency (100, 200, 400, 800) and Worst ESXi Active Memory (new).
+Source of the limits: [`formula/cluster-risk.png`](formula/cluster-risk.png), except changes made later: Worst ESXi Memory Tiering Latency (100, 200, 400, 800), Worst ESXi Active Memory (new) and Highest ESXi Memory Consumed (removed: it passes 100 % of DRAM on a tiered host by design, and the memory rows overlap).
 
 ## Thresholds
 
@@ -22,7 +22,6 @@ Every sub-metric is lower-is-better.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Utilization | Highest ESXi CPU Thread Utilization | % | Excluded (below 60) | 80 | 90 | 95 |
 | Utilization | Worst ESXi CPU Imbalance | ratio | 1 (exactly) | 1.3 | 1.6 | 2 |
-| Utilization | Highest ESXi Memory Consumed | % | Excluded (below 80) | 90 | 95 | 100 |
 | Saturation | Worst ESXi Memory Ballooned | % | 1 | 2 | 4 | 8 |
 | Saturation | Worst ESXi Memory Zip Swap (swapped + compressed) | % | 0.25 | 0.5 | 1 | 2 |
 | Saturation | Worst ESXi Active Memory (tiered hosts) | % | Excluded (below 50) | 62.5 | 75 | 100 |
@@ -36,7 +35,7 @@ Every sub-metric is lower-is-better.
 
 Every row scores 100 at 0, except CPU Imbalance, which scores 100 at 1: one running thread per running core. Any imbalance above 1 is yellow.
 
-**Excluded.** The source table marks six green ranges as "Excluded", and the Active Memory row is excluded in the same way, so seven rows are. A host that is not busy, has little reserved or is not overcommitted tells you nothing about risk. While these sub-metrics are green, they are left out of the KPI instead of scoring 100. They count once they leave green.
+**Excluded.** The source table marks five green ranges as "Excluded", and the Active Memory row is excluded in the same way, so six rows are. A host that is not busy, has little reserved or is not overcommitted tells you nothing about risk. While these sub-metrics are green, they are left out of the KPI instead of scoring 100. They count once they leave green.
 
 ## How each sub-metric is calculated
 
@@ -46,7 +45,6 @@ Each sub-metric is calculated per host, and the highest (worst) host is kept.
 | :--- | :--- | :--- |
 | CPU Thread Utilization | `cpu.utilization`: the % of the host's CPU threads in use, hyper-threading aware | VCF Operations: `cpu\|utilization_average` |
 | CPU Imbalance | Running CPU threads ÷ running CPU cores. Running threads = `cpu.utilization` % × threads. Running cores = `cpu.coreUtilization` % × cores. | VCF Operations: `cpu\|utilization_average`, `cpu\|coreUtilization_average`, `hardware\|cpuInfo\|numCpuCores`. Threads: see below. |
-| Memory Consumed | Consumed memory, as a % of host DRAM | VCF Operations: `mem\|consumed_average` / `MEM_DRAM_CAPACITY` |
 | Memory Ballooned | Ballooned memory, as a % of host DRAM | VCF Operations: `mem\|vmmemctl_average` / `MEM_DRAM_CAPACITY` |
 | Memory Zip Swap | Compressed plus swapped memory, as a % of host DRAM | VCF Operations: (`mem\|compressed_average` + `mem\|swapout_average`) / `MEM_DRAM_CAPACITY` |
 | Memory Active (tiered hosts) | Active memory, as a % of host DRAM. Only hosts with memory tiering have it (the NVMe tier size is above 0); other hosts are left out of this row. Active pages that do not fit in DRAM are read back from the NVMe tier, so a value near or above 100 means the working set needs the tier. | VCF Operations: `mem\|active_average` (KB) / `MEM_DRAM_CAPACITY`. Tier: `mem:NVMe\|memory_tier_size`. Not checked on a live host yet. |
@@ -75,7 +73,7 @@ Placement is by name, because `summary|parentCluster` and `summary|parentHost` h
 
 ### Host memory capacity (MEM_DRAM_CAPACITY)
 
-`MEM_DRAM_CAPACITY` is the host's DRAM, in KB. It is the denominator of Memory Consumed, Ballooned, Zip Swap, Memory Reservation and Memory Overcommit, and the base of the Memory Monster VM size.
+`MEM_DRAM_CAPACITY` is the host's DRAM, in KB. It is the denominator of Ballooned, Zip Swap, Memory Reservation and Memory Overcommit, and the base of the Memory Monster VM size.
 
 | Order | VCF Operations stat | Used when |
 | :--- | :--- | :--- |
@@ -138,7 +136,7 @@ Because Cluster Risk is published as `100 − weighted average`, its bands mirro
 Two hosts, each with 32 cores (64 threads) and 512 GB of DRAM. Each runs four VMs of 4 vCPUs and 16 GB. The monster size on these hosts is 16 vCPUs (half of 32 cores) and 204.8 GB (40 % of 512 GB, less than 256 GB).
 
 - **Low risk.** Both hosts at 40 % thread and 80 % core utilization (one running thread per running core), 50 % memory consumed, and nothing ballooned, swapped or reserved.
-  - Left out: the six rows in their excluded green, and Memory Tiering Latency, because these hosts have no memory tiering.
+  - Left out: the five rows in their excluded green, and Active Memory and Memory Tiering Latency, because these hosts have no memory tiering.
   - Counted: CPU Imbalance 1 (100), Ballooned 0 (100), Zip Swap 0 (100), CPU Monster VM `4 / 16` = 0.25 (93.75), Memory Monster VM `16 / 204.8` = 0.08 (98).
   - 93.75 has weight 1.19 and 98 has weight 1.06. Weighted average = `(300 + 93.75 × 1.19 + 98 × 1.06) / (3 + 1.19 + 1.06)` = 98.18. Cluster Risk = `100 − 98.18` = **1.82**.
 - **One busy host.** Host 1 at 90 % thread and 100 % core utilization. Host 2 at 30 % and 60 %.

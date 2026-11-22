@@ -66,7 +66,6 @@ def test_limits_match_the_source_table():
     limits = {m.name: (m.best, m.green, m.yellow, m.orange, m.zero_at, m.skip_when_green) for m in cr.METRICS}
     assert limits["Highest ESXi CPU Thread Utilization"] == (0, 60, 80, 90, 95, True)
     assert limits["Worst ESXi CPU Imbalance"] == (1, 1, 1.3, 1.6, 2, False)            # green is exactly 1
-    assert limits["Highest ESXi Memory Consumed"] == (0, 80, 90, 95, 100, True)
     assert limits["Worst ESXi Memory Ballooned"] == (0, 1, 2, 4, 8, False)
     assert limits["Worst ESXi Memory Zip Swap"] == (0, 0.25, 0.5, 1, 2, False)
     assert limits["Worst ESXi Memory Tiering Latency"] == (0, 100, 200, 400, 800, False)
@@ -270,3 +269,10 @@ def test_active_memory_is_excluded_while_green_and_the_worst_host_is_kept():
     both_calm = collect({"host-1": calm, "host-2": calm})
     assert both_calm["Worst ESXi Active Memory"] == 25.0
     assert both_calm[cr.KPI_KEY] == collect(HEALTHY)[cr.KPI_KEY]
+
+
+def test_there_is_no_memory_consumed_row_but_the_stat_is_still_read():
+    # Cluster Consumption needs it, and gets the host stats from this module.
+    assert "Highest ESXi Memory Consumed" not in [m.name for m in cr.METRICS]
+    assert len(cr.METRICS) == 12
+    assert cr.MEM_CONSUMED in cr.HOST_STATS

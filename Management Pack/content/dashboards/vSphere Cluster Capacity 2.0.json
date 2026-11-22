@@ -985,23 +985,6 @@
                      },
                      {
                         "yellowBound": 0,
-                        "metricName": "vCommunity|Cluster Risk|Highest ESXi Memory Consumed",
-                        "metricKey": "vCommunity|Cluster Risk|Highest ESXi Memory Consumed",
-                        "handleOldColoring": false,
-                        "link": "",
-                        "resourceKindName": "Cluster Compute Resource",
-                        "isStringMetric": false,
-                        "resourceKindId": "resourceKind:id:1_::_",
-                        "label": "",
-                        "orangeBound": 0,
-                        "labelOrig": "",
-                        "labelLocalized": "",
-                        "redBound": 0,
-                        "id": "extModel8650-8",
-                        "colorMethod": 0
-                     },
-                     {
-                        "yellowBound": 0,
                         "metricName": "vCommunity|Cluster Risk|Worst ESXi Memory Ballooned",
                         "metricKey": "vCommunity|Cluster Risk|Worst ESXi Memory Ballooned",
                         "handleOldColoring": false,
