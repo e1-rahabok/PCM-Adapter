@@ -10,6 +10,7 @@ KPIs:
 - [ESXi Performance](esxi-performance.md)
 - [VM Performance](vm-performance.md), with the VM Guest OS KPI
 - [Guest OS Performance](guest-os-performance.md)
+- [Memory Wait](memory-wait.md), the memory row of the three performance KPIs above
 
 Other metrics:
 

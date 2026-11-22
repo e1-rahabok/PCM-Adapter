@@ -44,6 +44,7 @@ The pack is built with the [VCF Operations Integration SDK](https://github.com/v
   [Cluster Risk](reference/metrics/cluster-risk.md),
   [ESXi Performance](reference/metrics/esxi-performance.md),
   [Guest OS Performance](reference/metrics/guest-os-performance.md),
+  [Memory Wait](reference/metrics/memory-wait.md),
   [Network Speed Degradation](reference/metrics/network-speed-degradation.md),
   [Operational Availability](reference/metrics/operational-availability.md),
   [Periodic Cluster Check](reference/metrics/periodic-cluster-check.md),

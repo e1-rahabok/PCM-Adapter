@@ -17,6 +17,7 @@ from properties.cluster.evc_properties import collect_evc_properties
 from properties.cluster.dpm_properties import collect_dpm_properties
 from properties.cluster.cluster_configuration_properties import collect_cluster_configuration_properties
 from metrics.cluster.cluster_performance_metrics import collect_cluster_performance_metrics
+from metrics.vm.memory_wait import VmMemoryContext
 from metrics.cluster.cluster_risk_metrics import (
     collect_cluster_risk_metrics, HostInventory, MonsterVmSize, DEFAULT_MONSTER_VM,
 )
@@ -146,10 +147,14 @@ def collect_cluster_data(
             # KPIs. Hosts are matched to the cluster by name, as VCF Operations shows it (summary|parentCluster).
             cluster_hosts = hosts_in_cluster.get(cluster_obj.get_key().name, [])
             cluster_vms = [vm for host in cluster_hosts for vm in vms_on_host.get(host.name, [])]
+            vm_context = {
+                vm.id: VmMemoryContext(vm.vcpus, host.id)
+                for host in cluster_hosts for vm in vms_on_host.get(host.name, [])
+            }
             collect_cluster_performance_metrics(
                 cluster_obj, cluster_name,
                 [vm.id for vm in cluster_vms], [host.id for host in cluster_hosts],
-                suite_api_client,
+                suite_api_client, vm_context,
             )
 
             hosts_inventory = [

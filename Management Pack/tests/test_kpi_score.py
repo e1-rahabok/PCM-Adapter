@@ -200,8 +200,8 @@ def test_every_kpi_gives_a_value_for_exactly_the_sub_metrics_in_its_table():
 
 
 def vm_contention_names():
-    from metrics.vm.contention_by_vms import worst_and_percentile
-    return worst_and_percentile({}, [])
+    from metrics.vm.contention_by_vms import CLUSTER_ROWS, worst_and_percentile
+    return worst_and_percentile(CLUSTER_ROWS, {}, [])
 
 
 # --- Reading stats ----------------------------------------------------------

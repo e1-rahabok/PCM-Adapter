@@ -25,10 +25,10 @@ def test_all_zeros_is_100():
 
 
 def test_one_red_metric_is_not_hidden_by_seven_good_ones():
-    # 90th Percentile VM CPU Ready = 5 is a quarter into red (4 to 8): it scores 18.75 with weight 8.
+    # 90th percentile peak vCPU Ready among VMs = 5 is a quarter into red (4 to 8): it scores 18.75 with weight 8.
     # Bad network packets are 0, so they are skipped (no free 100). The other seven score 100 with weight 1.
     # KPI = (7 x 100 + 18.75 x 9.51) / (7 + 9.51) = 53.19. A plain average would give 89.8.
-    assert kpi_score(cp.METRICS, {**ALL_ZERO, "90th Percentile VM CPU Ready": 5.0}) == 53.19
+    assert kpi_score(cp.METRICS, {**ALL_ZERO, "90th percentile peak vCPU Ready among VMs": 5.0}) == 53.19
 
 
 def test_any_bad_packet_is_yellow_and_counts():
@@ -44,14 +44,14 @@ def test_everything_at_its_worst_is_0():
 def test_limits_match_the_source_table():
     # docs/reference/metrics/formula/cluster-performance.png
     limits = {m.name: (m.green, m.yellow, m.orange, m.zero_at) for m in cp.METRICS}
-    assert limits["Worst VM CPU Ready"] == (4, 8, 16, 32)
-    assert limits["Worst VM CPU Co-Stop"] == (2, 4, 8, 16)
-    assert limits["Worst VM Memory Latency"] == (1, 2, 4, 8)
-    assert limits["Worst VM Disk Latency"] == (40, 80, 160, 320)
-    assert limits["90th Percentile VM CPU Ready"] == (1, 2, 4, 8)
-    assert limits["90th Percentile VM CPU Co-Stop"] == (0.5, 1, 2, 4)
-    assert limits["90th Percentile VM Memory Latency"] == (0.5, 1, 2, 4)
-    assert limits["90th Percentile VM Disk Latency"] == (20, 40, 60, 80)
+    assert limits["Worst peak vCPU Ready among all VMs"] == (4, 8, 16, 32)
+    assert limits["Worst peak vCPU Co-stop among all VMs"] == (2, 4, 8, 16)
+    assert limits["Worst memory wait among all VMs"] == (1, 2, 4, 8)
+    assert limits["Worst peak disk latency among all VM virtual disks"] == (40, 80, 160, 320)
+    assert limits["90th percentile peak vCPU Ready among VMs"] == (1, 2, 4, 8)
+    assert limits["90th percentile peak vCPU Co-stop among VMs"] == (0.5, 1, 2, 4)
+    assert limits["90th percentile memory wait among VMs"] == (0.5, 1, 2, 4)
+    assert limits["90th percentile peak disk latency among VM virtual disks"] == (20, 40, 60, 80)
     assert limits["Highest ESXi Bad Network Packets"] == (0, 0.2, 0.4, 0.8)   # green is exactly 0
 
 
@@ -106,15 +106,15 @@ def test_vm_stats_give_the_worst_vm_and_the_90th_percentile():
     for n, vm_id in enumerate(VM_IDS, start=1):
         samples[vm_id] = {**HEALTHY[vm_id], "cpu|20_sec_peak_readyPct": [float(n)]}
     published = collect(samples)
-    assert published["Worst VM CPU Ready"] == 10.0
-    assert published["90th Percentile VM CPU Ready"] == 9.0
+    assert published["Worst peak vCPU Ready among all VMs"] == 10.0
+    assert published["90th percentile peak vCPU Ready among VMs"] == 9.0
 
 
 def test_one_bad_vm_shows_as_deep_but_not_broad():
     samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], "virtualDisk|20_sec_peak_totalLatency_average": [200.0]}}
     published = collect(samples)
-    assert published["Worst VM Disk Latency"] == 200.0
-    assert published["90th Percentile VM Disk Latency"] == 0.0
+    assert published["Worst peak disk latency among all VM virtual disks"] == 200.0
+    assert published["90th percentile peak disk latency among VM virtual disks"] == 0.0
 
 
 def test_bad_packets_use_the_last_cycle_and_the_worst_host():
@@ -130,7 +130,31 @@ def test_failed_stats_calls_publish_nothing():
 def test_metrics_without_data_are_not_published():
     samples = {**HEALTHY, **{vm_id: {} for vm_id in VM_IDS}}
     published = collect(samples)
-    assert "Worst VM CPU Ready" not in published
-    assert "90th Percentile VM Memory Latency" not in published
+    assert "Worst peak vCPU Ready among all VMs" not in published
+    assert "90th percentile memory wait among VMs" not in published
     assert published["Highest ESXi Bad Network Packets"] == 0.0
     assert published[cp.KPI_KEY] == 100.0
+
+
+# --- Memory Wait: Memory Contention plus NVMe wait --------------------------
+
+from metrics.vm import memory_wait as mw
+from metrics.vm.memory_wait import VmMemoryContext
+
+
+def test_memory_wait_rows_add_the_nvme_wait_of_each_vm():
+    # vm-1 has 8 vCPUs on host-1, reads 6 MB/s from NVMe, and host-1 reads at 290 us: NVMe wait 5.57 %.
+    # Its Memory Contention is 0, so only Memory Wait shows the wait. The others wait for nothing.
+    samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], mw.NVME_READ_BANDWIDTH: [6.0]}, "host-1": {
+        **HEALTHY["host-1"], mw.NVME_READ_LATENCY: [290.0]}}
+    context = {vm_id: VmMemoryContext(8, "host-1") for vm_id in VM_IDS}
+    cluster_obj = FakeObject(CLUSTER_ID)
+    cp.collect_cluster_performance_metrics(cluster_obj, "Cluster 1", VM_IDS, HOST_IDS, FakeSuiteApi(samples), context)
+    published = {key.split("|")[-1]: value for key, value in cluster_obj.metrics.items()}
+    assert published["Worst memory wait among all VMs"] == 5.57
+    assert published["90th percentile memory wait among VMs"] == 0.0     # one VM of ten: deep, not broad
+
+
+def test_without_vm_context_memory_wait_is_memory_contention():
+    samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], mw.NVME_READ_BANDWIDTH: [6.0], mw.MEMORY_CONTENTION: [0.4]}}
+    assert collect(samples)["Worst memory wait among all VMs"] == 0.4

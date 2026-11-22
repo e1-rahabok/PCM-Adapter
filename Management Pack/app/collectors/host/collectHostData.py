@@ -18,6 +18,7 @@ from properties.host.host_configurations import collect_host_configurations
 from utils.vi_property_collector import retrieve_properties
 from utils.ops_inventory import read_hosts, read_vms, powered_on_vms_by_host
 from metrics.host.esxi_performance_metrics import read_esxi_performance_stats, collect_esxi_performance_metrics
+from metrics.vm.memory_wait import VmMemoryContext
 from metrics.vcenter.vcenter_availability import OperationalAvailability, NO_DATA
 from metrics.vcenter import vcenter_network_speed
 from metrics.vcenter.vcenter_network_speed import NetworkSpeed
@@ -128,8 +129,11 @@ def collect_host_data(
             collect_host_configurations(host_obj, host_name, prop_dict)
             ops_host = ops_hosts_by_moid.get(host_ref._moId)
             if ops_host:
-                vm_ids = [vm.id for vm in vms_on_host.get(ops_host.name, [])]
-                collect_esxi_performance_metrics(host_obj, host_name, ops_host.id, vm_ids, esxi_performance_stats)
+                vms = vms_on_host.get(ops_host.name, [])
+                vm_ids = [vm.id for vm in vms]
+                vm_context = {vm.id: VmMemoryContext(vm.vcpus, ops_host.id) for vm in vms}
+                collect_esxi_performance_metrics(
+                    host_obj, host_name, ops_host.id, vm_ids, esxi_performance_stats, vm_context)
                 # Operational Availability, read once per cycle for the whole vCenter by the adapter.
                 host_availability.publish(host_obj, availability.by_host.get(ops_host.id))
                 host_network_speed.publish(host_obj, network_speed.by_host.get(ops_host.id))

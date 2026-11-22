@@ -19,14 +19,14 @@ Every sub-metric is lower-is-better, and 0 is best. The VM stats are 20-second p
 
 | Group | Sub-metric | Unit | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Worst VM | Worst VM CPU Ready | % | 4 | 8 | 16 | 32 |
-| Worst VM | Worst VM CPU Co-Stop | % | 2 | 4 | 8 | 16 |
-| Worst VM | Worst VM Memory Latency | % | 1 | 2 | 4 | 8 |
-| Worst VM | Worst VM Disk Latency (read and write, any virtual disk) | ms | 40 | 80 | 160 | 320 |
-| 90th percentile | 90th Percentile VM CPU Ready | % | 1 | 2 | 4 | 8 |
-| 90th percentile | 90th Percentile VM CPU Co-Stop | % | 0.5 | 1 | 2 | 4 |
-| 90th percentile | 90th Percentile VM Memory Latency | % | 0.5 | 1 | 2 | 4 |
-| 90th percentile | 90th Percentile VM Disk Latency (read and write) | ms | 20 | 40 | 60 | 80 |
+| Worst VM | Worst peak vCPU Ready among VMs on the host | % | 4 | 8 | 16 | 32 |
+| Worst VM | Worst peak vCPU Co-stop among VMs on the host | % | 2 | 4 | 8 | 16 |
+| Worst VM | Worst memory wait among VMs on the host | % | 1 | 2 | 4 | 8 |
+| Worst VM | Worst peak disk latency among virtual disks of VMs on the host (read and write, any virtual disk) | ms | 40 | 80 | 160 | 320 |
+| 90th percentile | 90th percentile peak vCPU Ready among VMs on the host | % | 1 | 2 | 4 | 8 |
+| 90th percentile | 90th percentile peak vCPU Co-stop among VMs on the host | % | 0.5 | 1 | 2 | 4 |
+| 90th percentile | 90th percentile memory wait among VMs on the host | % | 0.5 | 1 | 2 | 4 |
+| 90th percentile | 90th percentile peak disk latency among virtual disks of VMs on the host (read and write) | ms | 20 | 40 | 60 | 80 |
 | ESXi | ESXi Bad Network Packets (errored + dropped) | % | Excluded (exactly 0) | 0.2 | 0.4 | 0.8 |
 
 Bad network packets are green only at exactly 0, and the source table marks that range "Excluded". Any bad packet is yellow. While the value is 0 the sub-metric is left out of the KPI, because bad packets are rare and a constant 100 would dilute the other sub-metrics.
@@ -39,7 +39,8 @@ Like every KPI, see [How the pack scores a KPI](../../concepts/kpi-scoring-model
 
 These are the sub-metrics of [Cluster Performance](cluster-performance.md#step-1-collect-the-9-sub-metrics), measured over the VMs of one host instead of a whole cluster. The formulas are defined once, in [`metrics/vm/contention_by_vms.py`](../../../Management%20Pack/app/metrics/vm/contention_by_vms.py).
 
-- The 8 VM sub-metrics are the worst value and the 90th percentile of `cpu|20_sec_peak_readyPct`, `cpu|20_sec_peak_costopPct`, `mem|20_sec_peak_host_contentionPct` and `virtualDisk|20_sec_peak_totalLatency_average`, over the powered-on VMs on the host. A VM runs on the host named in its `summary|parentHost` property, and it is powered on when `summary|runtime|powerState` is "Powered On". Both properties are read from VCF Operations.
+- The 8 VM sub-metrics are the worst value and the 90th percentile of `cpu|20_sec_peak_readyPct`, `cpu|20_sec_peak_costopPct`, [Memory Wait](memory-wait.md) and `virtualDisk|20_sec_peak_totalLatency_average`, over the powered-on VMs on the host. A VM runs on the host named in its `summary|parentHost` property, and it is powered on when `summary|runtime|powerState` is "Powered On". Both properties are read from VCF Operations.
+- Memory Wait is Memory Contention plus NVMe wait, not the Memory Contention counter, which does not count the time a VM waits for pages on NVMe. The NVMe wait of each VM uses the NVMe read latency of this host. See [Memory Wait](memory-wait.md).
 - Bad network packets are `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` for the host, in the last collection cycle (5 minutes), as the "ESXi Bad Network Packets" super metric did. The value is never averaged over a longer time, because that would hide a spike. Two of the counters, Total Packets Received and Transmitted, are deactivated by default in VCF Operations. Activate them first: see [Policy](../../configuration-guide/policy.md).
 
 The stats of all VMs and all hosts of the vCenter are read in bulk, once per collection cycle.
@@ -47,7 +48,7 @@ The stats of all VMs and all hosts of the vCenter are read in bulk, once per col
 ## Worked examples
 
 - **Nothing wrong.** Bad packets are 0 and left out. The other 8 score 100. KPI = **100**.
-- **One VM of ten with 200 ms disk latency.** Worst VM Disk Latency is a quarter of the way through red (160 to 320): 18.75 with weight 9.51. The 90th percentile is the 9th lowest of the 10 VMs, so it stays 0. KPI = `(7 × 100 + 18.75 × 9.51) / (7 + 9.51)` ≈ **53.19**. With fewer than 10 VMs, the 90th percentile is the worst VM, so 90th Percentile VM Disk Latency would also be 200 and the KPI about 24.7.
+- **One VM of ten with 200 ms disk latency.** Worst peak disk latency among virtual disks of VMs on the host is a quarter of the way through red (160 to 320): 18.75 with weight 9.51. The 90th percentile is the 9th lowest of the 10 VMs, so it stays 0. KPI = `(7 × 100 + 18.75 × 9.51) / (7 + 9.51)` ≈ **53.19**. With fewer than 10 VMs, the 90th percentile is the worst VM, so 90th percentile peak disk latency among virtual disks of VMs on the host would also be 200 and the KPI about 24.7.
 - **A host with no powered-on VMs.** No VM sub-metric has data, and bad packets are 0 and left out. Nothing is wrong, so the KPI is **100**.
 
 The tests in [`Management Pack/tests/test_esxi_performance_metrics.py`](../../../Management%20Pack/tests/test_esxi_performance_metrics.py) check the same examples.

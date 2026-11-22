@@ -188,8 +188,8 @@
                   "resourceKindMetrics": [
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|Worst VM CPU Ready",
-                        "metricKey": "vCommunity|Cluster Performance|Worst VM CPU Ready",
+                        "metricName": "vCommunity|Cluster Performance|Worst peak vCPU Ready among all VMs",
+                        "metricKey": "vCommunity|Cluster Performance|Worst peak vCPU Ready among all VMs",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",
@@ -202,8 +202,8 @@
                      },
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|Worst VM CPU Co-Stop",
-                        "metricKey": "vCommunity|Cluster Performance|Worst VM CPU Co-Stop",
+                        "metricName": "vCommunity|Cluster Performance|Worst peak vCPU Co-stop among all VMs",
+                        "metricKey": "vCommunity|Cluster Performance|Worst peak vCPU Co-stop among all VMs",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",
@@ -216,8 +216,8 @@
                      },
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|90th Percentile VM CPU Ready",
-                        "metricKey": "vCommunity|Cluster Performance|90th Percentile VM CPU Ready",
+                        "metricName": "vCommunity|Cluster Performance|90th percentile peak vCPU Ready among VMs",
+                        "metricKey": "vCommunity|Cluster Performance|90th percentile peak vCPU Ready among VMs",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",
@@ -230,8 +230,8 @@
                      },
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|90th Percentile VM CPU Co-Stop",
-                        "metricKey": "vCommunity|Cluster Performance|90th Percentile VM CPU Co-Stop",
+                        "metricName": "vCommunity|Cluster Performance|90th percentile peak vCPU Co-stop among VMs",
+                        "metricKey": "vCommunity|Cluster Performance|90th percentile peak vCPU Co-stop among VMs",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",
@@ -387,8 +387,8 @@
                   "resourceKindMetrics": [
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|90th Percentile VM Memory Latency",
-                        "metricKey": "vCommunity|Cluster Performance|90th Percentile VM Memory Latency",
+                        "metricName": "vCommunity|Cluster Performance|90th percentile memory wait among VMs",
+                        "metricKey": "vCommunity|Cluster Performance|90th percentile memory wait among VMs",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",
@@ -401,8 +401,8 @@
                      },
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|Worst VM Memory Latency",
-                        "metricKey": "vCommunity|Cluster Performance|Worst VM Memory Latency",
+                        "metricName": "vCommunity|Cluster Performance|Worst memory wait among all VMs",
+                        "metricKey": "vCommunity|Cluster Performance|Worst memory wait among all VMs",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",
@@ -626,8 +626,8 @@
                      {
                         "yellowBound": 20,
                         "metricUnitId": null,
-                        "metricName": "vCommunity|Cluster Performance|Worst VM Disk Latency",
-                        "metricKey": "vCommunity|Cluster Performance|Worst VM Disk Latency",
+                        "metricName": "vCommunity|Cluster Performance|Worst peak disk latency among all VM virtual disks",
+                        "metricKey": "vCommunity|Cluster Performance|Worst peak disk latency among all VM virtual disks",
                         "handleOldColoring": false,
                         "maxValue": "",
                         "link": "",
@@ -646,8 +646,8 @@
                      },
                      {
                         "yellowBound": null,
-                        "metricName": "vCommunity|Cluster Performance|90th Percentile VM Disk Latency",
-                        "metricKey": "vCommunity|Cluster Performance|90th Percentile VM Disk Latency",
+                        "metricName": "vCommunity|Cluster Performance|90th percentile peak disk latency among VM virtual disks",
+                        "metricKey": "vCommunity|Cluster Performance|90th percentile peak disk latency among VM virtual disks",
                         "handleOldColoring": false,
                         "link": "",
                         "resourceKindName": "Cluster Compute Resource",

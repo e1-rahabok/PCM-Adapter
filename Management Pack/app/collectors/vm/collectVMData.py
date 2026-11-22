@@ -22,7 +22,8 @@ from metrics.vm.vm_guest_os_kpi import collect_vm_guest_os_kpi
 from properties.vm.vm_shares import read_vm_shares, collect_vm_shares
 from utils.guest_ops import GuestBudget
 from utils.vi_property_collector import retrieve_properties
-from utils.ops_inventory import read_vms
+from metrics.vm.contention_by_vms import read_host_nvme_latency
+from utils.ops_inventory import read_hosts, read_vms
 from collectors.library.collectTemplateData import PROPERTY_PATHS as TEMPLATE_PROPERTY_PATHS
 from collectors.library.collectTemplateData import publish_vm_template
 from pyVmomi import vim
@@ -119,6 +120,11 @@ def collect_vm_data(
     vm_performance_stats = read_vm_performance_stats(
         suite_api_client, [vm.id for vm in ops_vms_by_moid.values() if vm.powered_on]
     )
+    # The NVMe read latency of each host, for the NVMe wait of Memory Wait. Only hosts with memory tiering have it.
+    # A VM runs on the host named in its summary|parentHost property.
+    ops_hosts = read_hosts(suite_api_client, adapter_instance_id)
+    host_id_by_name = {host.name: host.id for host in ops_hosts}
+    host_nvme_latency = read_host_nvme_latency(suite_api_client, [host.id for host in ops_hosts])
     # Shares of every VM, powered on or off, in bulk. See properties/vm/vm_shares.py.
     vm_shares = read_vm_shares(suite_api_client, [vm.id for vm in ops_vms_by_moid.values()])
 
@@ -155,7 +161,9 @@ def collect_vm_data(
                 collect_vm_shares(vm_obj, vm_name, ops_vm, vm_shares.get(ops_vm.id, {}))
             if ops_vm and ops_vm.powered_on:
                 vm_stats = vm_performance_stats.get(ops_vm.id, {})
-                vm_performance = collect_vm_performance_metrics(vm_obj, vm_name, vm_stats)
+                vm_performance = collect_vm_performance_metrics(
+                    vm_obj, vm_name, vm_stats, ops_vm.vcpus,
+                    host_nvme_latency.get(host_id_by_name.get(ops_vm.host_name)))
                 guest_os_performance = collect_guest_os_performance_metrics(vm_obj, vm_name, vm_stats)
                 collect_vm_guest_os_kpi(vm_obj, vm_name, vm_performance, guest_os_performance)
 

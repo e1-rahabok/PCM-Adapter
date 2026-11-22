@@ -89,6 +89,8 @@ class NoVCenterObjects:
 def test_a_vm_that_fails_before_its_name_is_read_is_skipped_and_named_unknown(monkeypatch, caplog):
     monkeypatch.setattr(collectVMData, "retrieve_properties", lambda *args: [BadVm()])
     monkeypatch.setattr(collectVMData, "read_vms", lambda *args: [])
+    monkeypatch.setattr(collectVMData, "read_hosts", lambda *args: [])
+    monkeypatch.setattr(collectVMData, "read_host_nvme_latency", lambda *args: {})
     monkeypatch.setattr(collectVMData, "read_vm_performance_stats", lambda *args: {})
     monkeypatch.setattr(collectVMData, "read_vm_shares", lambda *args: {})
     guest = collectVMData.GuestSettings("Disabled", "Disabled", "u", "p", "")
@@ -189,6 +191,8 @@ def run_one_windows_vm(monkeypatch, guest, budget_has_time=True):
     vm_data = SimpleNamespace(obj=vm_ref, propSet=[SimpleNamespace(name="name", val="win-01")])
     monkeypatch.setattr(collectVMData, "retrieve_properties", lambda *args: [vm_data])
     monkeypatch.setattr(collectVMData, "read_vms", lambda *args: [])
+    monkeypatch.setattr(collectVMData, "read_hosts", lambda *args: [])
+    monkeypatch.setattr(collectVMData, "read_host_nvme_latency", lambda *args: {})
     monkeypatch.setattr(collectVMData, "read_vm_performance_stats", lambda *args: {})
     monkeypatch.setattr(collectVMData, "read_vm_shares", lambda *args: {})
     for name in ("collect_vm_disk", "collect_vm_configurations"):

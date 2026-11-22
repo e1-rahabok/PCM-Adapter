@@ -4,8 +4,8 @@
 It answers whether the VM, as a virtual motherboard, gets the CPU, memory, disk and network it asks for from ESXi.
 What happens inside the guest OS is scored by the Guest OS Performance KPI.
 
-Published on the VM as vCommunity|VM Performance|VM Performance Score (the KPI) and the one calculated row,
-Memory Zip Swap. The other rows are stats the VM already has, so they are not published again.
+Published on the VM as vCommunity|VM Performance|VM Performance Score (the KPI) and the two calculated rows,
+Memory Wait and Memory Zip Swap. The other rows are stats the VM already has, so they are not published again.
 A row with no data is left out of the KPI. A powered-off VM gets no KPI, because its stats are old.
 
 Called from: collectors/vm/collectVMData.py, once per powered-on VM.
@@ -16,7 +16,7 @@ from typing import Callable, Dict, List, NamedTuple, Optional
 from aria.ops.object import Object
 from aria.ops.suite_api_client import SuiteApiClient
 from metrics.kpi_score import Metric, percent, has_all, publish_kpi
-from metrics.vm import guest_os_performance_metrics
+from metrics.vm import guest_os_performance_metrics, memory_wait
 from utils.ops_stats import read_latest_stats
 
 logger = logging.getLogger(__name__)
@@ -67,10 +67,23 @@ READY = Row(Metric("CPU Ready",               "%",    0.0,    2.0,    4.0,    8.
 OVERLAP = Row(Metric("CPU Overlap",           "%",    0.0,    0.5,    1.0,    2.0,    4.0,     True),
               stat="cpu|20_sec_peak_overlap")
 
-# --- Row 4. Memory Contention (VM contention) --------------------------------------------------------------------
-# Time the VM waited for memory that the host had swapped out or compressed.
-MEMORY_CONTENTION = Row(Metric("Memory Contention", "%", 0.0,  0.5,    1.0,    2.0,    4.0),
-                        stat="mem|20_sec_peak_host_contentionPct")
+# --- Row 4. Memory Wait (VM contention) --------------------------------------------------------------------------
+# Time the VM waited for memory: Memory Contention (memory the host had swapped out or compressed) plus NVMe wait (pages
+# fetched from the NVMe memory tier). Memory Contention does not count the NVMe fetches, so on a host with memory tiering
+# it can read near 0 while the VM waits. See metrics/vm/memory_wait.py.
+# The formula reads two synthetic stats that collect_vm_performance_metrics() adds: the vCPUs of the VM and the NVMe read
+# latency of its host.
+VM_VCPUS = "config|vcpus"
+HOST_NVME_LATENCY = "host|nvme_read_latency"
+
+
+def memory_wait_pct(vm_stats: VmStats) -> Optional[float]:
+    """Memory Contention plus NVMe wait. Memory Contention alone when the NVMe inputs are missing."""
+    return memory_wait.memory_wait_pct(vm_stats, vm_stats.get(VM_VCPUS), vm_stats.get(HOST_NVME_LATENCY))
+
+
+MEMORY_WAIT = Row(Metric("Memory Wait", "%", 0.0,  0.5,    1.0,    2.0,    4.0),
+                  formula=memory_wait_pct)
 
 # --- Row 5. Disk Latency (VM contention) -------------------------------------------------------------------------
 # Read and write latency of the VM's virtual disks.
@@ -119,9 +132,9 @@ ZIP_SWAP = Row(Metric("Memory Zip Swap",      "%",    0.0,    0.25,   0.5,    1.
 
 
 # The rows, in the order of the source table.
-ROWS = [CO_STOP, READY, OVERLAP, MEMORY_CONTENTION, DISK_LATENCY, DROPPED_TX, CPU_RUN, BALLOONED, ZIP_SWAP]
+ROWS = [CO_STOP, READY, OVERLAP, MEMORY_WAIT, DISK_LATENCY, DROPPED_TX, CPU_RUN, BALLOONED, ZIP_SWAP]
 METRICS = [row.metric for row in ROWS]
-# Only the rows the VM does not already have as a stat: the calculated one.
+# Only the rows the VM does not already have as a stat: the calculated ones, Memory Wait and Memory Zip Swap.
 PUBLISHED_METRICS = [row.metric for row in ROWS if row.formula]
 # Row -> the VM stat it is read from, as it is.
 SOURCE_STATS = {row.metric.name: row.stat for row in ROWS if row.stat}
@@ -132,7 +145,7 @@ SOURCE_STATS = {row.metric.name: row.stat for row in ROWS if row.stat}
 # =================================================================================================================
 
 # Every stat that is asked from VCF Operations, for each VM.
-VM_STATS = list(SOURCE_STATS.values()) + [MEM_COMPRESSED, MEM_SWAPPED, GUEST_USED_MEMORY]
+VM_STATS = list(SOURCE_STATS.values()) + memory_wait.VM_STATS + [MEM_COMPRESSED, MEM_SWAPPED, GUEST_USED_MEMORY]
 
 
 def read_vm_performance_stats(suite_api_client: SuiteApiClient, vm_ids: List[str]) -> Dict[str, VmStats]:
@@ -158,13 +171,23 @@ def vm_performance_values(vm_stats: VmStats) -> Dict[str, Optional[float]]:
     return {row.metric.name: row.value(vm_stats) for row in ROWS}
 
 
-def collect_vm_performance_metrics(vm_obj: Object, vm_name: str, vm_stats: VmStats) -> Optional[float]:
-    """Publishes the calculated row, then the VM Performance KPI. Returns the KPI, or None.
+def collect_vm_performance_metrics(
+    vm_obj: Object, vm_name: str, vm_stats: VmStats,
+    vcpus: Optional[float] = None, host_nvme_latency_us: Optional[float] = None,
+) -> Optional[float]:
+    """Publishes the calculated rows, then the VM Performance KPI. Returns the KPI, or None.
 
-    vm_stats is the entry of this VM in the result of read_vm_performance_stats().
+    vm_stats is the entry of this VM in the result of read_vm_performance_stats(). vcpus is the vCPU count of the VM and
+    host_nvme_latency_us the NVMe read latency of its host, for the NVMe wait of Memory Wait. Without them, Memory Wait
+    is the Memory Contention alone.
     """
     try:
-        values = vm_performance_values(vm_stats)
+        extra = {}
+        if vcpus:
+            extra[VM_VCPUS] = float(vcpus)
+        if host_nvme_latency_us is not None:
+            extra[HOST_NVME_LATENCY] = host_nvme_latency_us
+        values = vm_performance_values({**vm_stats, **extra})
 
         published = publish_kpi(vm_obj, GROUP, KPI_KEY, METRICS, PUBLISHED_METRICS, values)
         # Logged at debug level only: there can be thousands of VMs, and no Tools is a normal case.

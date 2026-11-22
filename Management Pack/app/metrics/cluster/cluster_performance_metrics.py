@@ -16,7 +16,11 @@ from aria.ops.object import Object
 from aria.ops.suite_api_client import SuiteApiClient
 from metrics.kpi_score import publish_kpi
 from metrics.host.host_bad_network_packets import bad_network_packets_metric, bad_packet_pct, read_host_packet_stats
-from metrics.vm.contention_by_vms import VM_CONTENTION_METRICS, worst_and_percentile, read_vm_contention_stats
+from metrics.vm.contention_by_vms import (
+    CLUSTER_ROWS, CLUSTER_METRICS, worst_and_percentile, read_vm_contention_stats, read_host_nvme_latency,
+    with_memory_wait,
+)
+from metrics.vm.memory_wait import VmMemoryContext
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +52,7 @@ def highest_host_bad_packet_pct(suite_api_client: SuiteApiClient, host_ids: List
 
 
 # The rows, in the order of the source table. Every row is published on the cluster: none exists there already.
-METRICS = VM_CONTENTION_METRICS + [BAD_PACKETS]
+METRICS = CLUSTER_METRICS + [BAD_PACKETS]
 PUBLISHED_METRICS = METRICS
 
 
@@ -56,9 +60,18 @@ PUBLISHED_METRICS = METRICS
 # Part 2. The KPI
 # =================================================================================================================
 
-def vm_contention_values(suite_api_client: SuiteApiClient, vm_ids: List[str]) -> Dict[str, Optional[float]]:
-    """Rows 1-8, over the cluster's powered-on VMs, read in one request."""
-    return worst_and_percentile(read_vm_contention_stats(suite_api_client, vm_ids), vm_ids)
+def vm_contention_values(
+    suite_api_client: SuiteApiClient, vm_ids: List[str], host_ids: List[str],
+    vm_context: Optional[Dict[str, VmMemoryContext]] = None,
+) -> Dict[str, Optional[float]]:
+    """Rows 1-8, over the cluster's powered-on VMs, read in one request.
+
+    The memory rows are Memory Wait: Memory Contention plus NVMe wait, see metrics/vm/memory_wait.py. vm_context
+    gives each VM's vCPUs and host for the NVMe wait. Without it, Memory Wait is the Memory Contention alone.
+    """
+    stats = read_vm_contention_stats(suite_api_client, vm_ids)
+    host_latency = read_host_nvme_latency(suite_api_client, host_ids) if vm_context else {}
+    return worst_and_percentile(CLUSTER_ROWS, with_memory_wait(stats, vm_ids, vm_context or {}, host_latency), vm_ids)
 
 
 def collect_cluster_performance_metrics(
@@ -66,14 +79,16 @@ def collect_cluster_performance_metrics(
     cluster_name: str,
     vm_ids: List[str],
     host_ids: List[str],
-    suite_api_client: SuiteApiClient
+    suite_api_client: SuiteApiClient,
+    vm_context: Optional[Dict[str, VmMemoryContext]] = None,
 ) -> None:
     """Publishes the rows, then the Cluster Performance KPI computed from them.
 
-    vm_ids are the VCF Operations ids of the cluster's powered-on VMs, host_ids those of its ESXi hosts.
+    vm_ids are the VCF Operations ids of the cluster's powered-on VMs, host_ids those of its ESXi hosts, vm_context
+    the vCPUs and host of each VM, for the NVMe wait of Memory Wait.
     """
     try:
-        values = vm_contention_values(suite_api_client, vm_ids)
+        values = vm_contention_values(suite_api_client, vm_ids, host_ids, vm_context)
         values[BAD_PACKETS.name] = highest_host_bad_packet_pct(suite_api_client, host_ids)
 
         no_data = publish_kpi(cluster_obj, GROUP, KPI_KEY, METRICS, PUBLISHED_METRICS, values).no_data
