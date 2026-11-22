@@ -17,7 +17,7 @@ from aria.ops.suite_api_client import SuiteApiClient
 from metrics.kpi_score import publish_kpi
 from metrics.host.host_bad_network_packets import bad_network_packets_metric, bad_packet_pct, read_host_packet_stats
 from metrics.vm.contention_by_vms import (
-    CLUSTER_ROWS, CLUSTER_METRICS, worst_and_percentile, read_vm_contention_stats, read_host_nvme_latency,
+    VM_CONTENTION, VM_CONTENTION_METRICS, worst_and_percentile, read_vm_contention_stats, read_host_nvme_latency,
     with_memory_wait,
 )
 from metrics.vm.memory_wait import VmMemoryContext
@@ -52,8 +52,23 @@ def highest_host_bad_packet_pct(suite_api_client: SuiteApiClient, host_ids: List
 
 
 # The rows, in the order of the source table. Every row is published on the cluster: none exists there already.
-METRICS = CLUSTER_METRICS + [BAD_PACKETS]
+METRICS = VM_CONTENTION_METRICS + [BAD_PACKETS]
 PUBLISHED_METRICS = METRICS
+
+# The labels VCF Operations shows, in the words of the Agent E2 catalog (knowledge/catalog/thresholds-performance.yaml).
+# The keys stay the row names: renaming a key would start a new metric and leave its history behind. The CPU and disk
+# rows read a 20-second peak, so their labels say peak. The memory rows are Memory Wait (Memory Contention plus NVMe wait,
+# metrics/vm/memory_wait.py): the key keeps the word latency, the label says wait.
+LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
+    "Worst peak vCPU Ready among all VMs",
+    "Worst peak vCPU Co-stop among all VMs",
+    "Worst memory wait among all VMs",
+    "Worst peak disk latency among all VM virtual disks",
+    "90th percentile peak vCPU Ready among VMs",
+    "90th percentile peak vCPU Co-stop among VMs",
+    "90th percentile memory wait among VMs",
+    "90th percentile peak disk latency among VM virtual disks",
+], strict=True))
 
 
 # =================================================================================================================
@@ -71,7 +86,7 @@ def vm_contention_values(
     """
     stats = read_vm_contention_stats(suite_api_client, vm_ids)
     host_latency = read_host_nvme_latency(suite_api_client, host_ids) if vm_context else {}
-    return worst_and_percentile(CLUSTER_ROWS, with_memory_wait(stats, vm_ids, vm_context or {}, host_latency), vm_ids)
+    return worst_and_percentile(VM_CONTENTION, with_memory_wait(stats, vm_ids, vm_context or {}, host_latency), vm_ids)
 
 
 def collect_cluster_performance_metrics(

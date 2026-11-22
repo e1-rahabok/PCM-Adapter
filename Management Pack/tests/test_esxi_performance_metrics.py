@@ -43,10 +43,10 @@ def collect(samples, host_id="host-1", vm_ids=HOST_1_VMS, status_code=200):
 def test_limits_match_the_source_table():
     # docs/reference/metrics/formula/esxi-performance.png
     limits = {m.name: (m.green, m.yellow, m.orange, m.zero_at, m.skip_when_green) for m in ep.METRICS}
-    assert limits["Worst peak vCPU Ready among VMs on the host"] == (4, 8, 16, 32, False)
-    assert limits["Worst peak disk latency among virtual disks of VMs on the host"] == (40, 80, 160, 320, False)
-    assert limits["90th percentile peak vCPU Co-stop among VMs on the host"] == (0.5, 1, 2, 4, False)
-    assert limits["90th percentile peak disk latency among virtual disks of VMs on the host"] == (20, 40, 60, 80, False)
+    assert limits["Worst VM CPU Ready"] == (4, 8, 16, 32, False)
+    assert limits["Worst VM Disk Latency"] == (40, 80, 160, 320, False)
+    assert limits["90th Percentile VM CPU Co-Stop"] == (0.5, 1, 2, 4, False)
+    assert limits["90th Percentile VM Disk Latency"] == (20, 40, 60, 80, False)
     assert limits["ESXi Bad Network Packets"] == (0, 0.2, 0.4, 0.8, True)          # green is "Excluded"
 
 
@@ -59,8 +59,8 @@ def test_healthy_host_publishes_every_metric_and_scores_100():
 def test_only_the_vms_of_this_host_count():
     # vm-11 runs on host-2 and has 30 % CPU Ready. host-1 does not see it.
     samples = {**HEALTHY, "vm-11": {**HEALTHY["vm-11"], "cpu|20_sec_peak_readyPct": [30.0]}}
-    assert collect(samples)["Worst peak vCPU Ready among VMs on the host"] == 0.0
-    assert collect(samples, "host-2", HOST_2_VMS)["Worst peak vCPU Ready among VMs on the host"] == 30.0
+    assert collect(samples)["Worst VM CPU Ready"] == 0.0
+    assert collect(samples, "host-2", HOST_2_VMS)["Worst VM CPU Ready"] == 30.0
 
 
 def test_one_bad_vm_is_deep_but_not_broad():
@@ -69,8 +69,8 @@ def test_one_bad_vm_is_deep_but_not_broad():
     # KPI = (7 x 100 + 18.75 x 9.51) / (7 + 9.51) = 53.19
     samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], "virtualDisk|20_sec_peak_totalLatency_average": [200.0]}}
     published = collect(samples)
-    assert published["Worst peak disk latency among virtual disks of VMs on the host"] == 200.0
-    assert published["90th percentile peak disk latency among virtual disks of VMs on the host"] == 0.0
+    assert published["Worst VM Disk Latency"] == 200.0
+    assert published["90th Percentile VM Disk Latency"] == 0.0
     assert published[ep.KPI_KEY] == 53.19
 
 
@@ -107,5 +107,5 @@ def test_memory_wait_rows_add_the_nvme_wait_of_the_vms_on_this_host():
     context = {vm_id: VmMemoryContext(8, "host-1") for vm_id in HOST_1_VMS}
     ep.collect_esxi_performance_metrics(host_obj, "host-1", "host-1", HOST_1_VMS, stats, context)
     published = {key.split("|")[-1]: value for key, value in host_obj.metrics.items()}
-    assert published["Worst memory wait among VMs on the host"] == 5.57
-    assert published["90th percentile memory wait among VMs on the host"] == 0.0
+    assert published["Worst VM Memory Latency"] == 5.57
+    assert published["90th Percentile VM Memory Latency"] == 0.0

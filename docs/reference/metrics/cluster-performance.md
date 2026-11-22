@@ -19,23 +19,25 @@ Eight sub-metrics look at the powered-on VMs in the cluster in two ways:
 
 The ninth is the worst host's bad network packets. Every sub-metric is lower-is-better, and 0 is best.
 
-| Group | Sub-metric | How it is calculated |
-| :--- | :--- | :--- |
-| Worst VM | Worst peak vCPU Ready among all VMs | Highest `cpu\|20_sec_peak_readyPct` of any VM |
-| Worst VM | Worst peak vCPU Co-stop among all VMs | Highest `cpu\|20_sec_peak_costopPct` of any VM |
-| Worst VM | Worst memory wait among all VMs | Highest [Memory Wait](memory-wait.md) of any VM |
-| Worst VM | Worst peak disk latency among all VM virtual disks | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
-| 90th percentile | 90th percentile peak vCPU Ready among VMs | 90th percentile of `cpu\|20_sec_peak_readyPct` across the VMs |
-| 90th percentile | 90th percentile peak vCPU Co-stop among VMs | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
-| 90th percentile | 90th percentile memory wait among VMs | 90th percentile of [Memory Wait](memory-wait.md) across the VMs |
-| 90th percentile | 90th percentile peak disk latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
-| ESXi | Highest ESXi Bad Network Packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
+VCF Operations shows the eight VM rows under a label in the words of the Agent E2 catalog: the CPU and disk rows read a 20-second peak, so their labels say peak, and the memory rows are [Memory Wait](memory-wait.md): Memory Contention plus NVMe wait, so their key keeps the word latency and their label says wait. The key stays the sub-metric name: a new key would be a new metric, without its history.
+
+| Group | Sub-metric (key) | Label in VCF Operations | How it is calculated |
+| :--- | :--- | :--- | :--- |
+| Worst VM | Worst VM CPU Ready | Worst peak vCPU Ready among all VMs | Highest `cpu\|20_sec_peak_readyPct` of any VM |
+| Worst VM | Worst VM CPU Co-Stop | Worst peak vCPU Co-stop among all VMs | Highest `cpu\|20_sec_peak_costopPct` of any VM |
+| Worst VM | Worst VM Memory Latency | Worst memory wait among all VMs | Highest [Memory Wait](memory-wait.md) of any VM |
+| Worst VM | Worst VM Disk Latency | Worst peak disk latency among all VM virtual disks | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
+| 90th percentile | 90th Percentile VM CPU Ready | 90th percentile peak vCPU Ready among VMs | 90th percentile of `cpu\|20_sec_peak_readyPct` across the VMs |
+| 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
+| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile memory wait among VMs | 90th percentile of [Memory Wait](memory-wait.md) across the VMs |
+| 90th percentile | 90th Percentile VM Disk Latency | 90th percentile peak disk latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
+| ESXi | Highest ESXi Bad Network Packets | Highest ESXi Bad Network Packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
 
 Notes:
 
 - **Which VMs count.** The powered-on VMs on the cluster's hosts. Powered-off VMs are left out because their last stats are old. Placement is read from VCF Operations properties: a host belongs to the cluster named in its `summary|parentCluster`, a VM runs on the host named in its `summary|parentHost`, and it is powered on when `summary|runtime|powerState` is "Powered On". Placement is by name, and names are unique only inside one datacenter, so two clusters with the same name in different datacenters of one vCenter can be mixed up.
-- **20-second peaks.** The CPU and disk VM stats are 20-second peaks rather than 5-minute averages, so short contention shows. "Peak" is in their names.
-- **Memory wait.** The memory rows are not the Memory Contention counter. They are the VM's Memory Wait: Memory Contention plus NVMe wait. With memory tiering, Memory Contention does not count the time a VM waits for pages on NVMe, so it can read near 0 while the VM waits. See [Memory Wait](memory-wait.md).
+- **Memory wait.** The memory rows are not the Memory Contention counter. They are the VM's Memory Wait: Memory Contention plus NVMe wait. See [Memory Wait](memory-wait.md).
+- **20-second peaks.** The VM stats are 20-second peaks rather than 5-minute averages, so short contention shows.
 - **90th percentile.** The value that 90 % of the VMs are at or below. The VMs are sorted, and the one at position 90 % of the count, rounded up, is taken. With 20 VMs that is the 18th lowest. With fewer than 10 VMs it is the highest, the same as the worst VM.
 - **Bad network packets** use the last collection cycle, as the "Bad Network Packets" super metric did. They are never averaged over a longer time, because that would hide a spike. Two of the counters, Total Packets Received and Transmitted, are deactivated by default in VCF Operations. Activate them first: see [Policy](../../configuration-guide/policy.md).
 
@@ -53,14 +55,14 @@ Because the weight grows smoothly as the score falls, a sub-metric that gets wor
 
 | Sub-metric | Unit | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Worst peak vCPU Ready among all VMs | % | 4 | 8 | 16 | 32 |
-| Worst peak vCPU Co-stop among all VMs | % | 2 | 4 | 8 | 16 |
-| Worst memory wait among all VMs | % | 1 | 2 | 4 | 8 |
-| Worst peak disk latency among all VM virtual disks | ms | 40 | 80 | 160 | 320 |
-| 90th percentile peak vCPU Ready among VMs | % | 1 | 2 | 4 | 8 |
-| 90th percentile peak vCPU Co-stop among VMs | % | 0.5 | 1 | 2 | 4 |
-| 90th percentile memory wait among VMs | % | 0.5 | 1 | 2 | 4 |
-| 90th percentile peak disk latency among VM virtual disks | ms | 20 | 40 | 60 | 80 |
+| Worst VM CPU Ready | % | 4 | 8 | 16 | 32 |
+| Worst VM CPU Co-Stop | % | 2 | 4 | 8 | 16 |
+| Worst VM Memory Latency | % | 1 | 2 | 4 | 8 |
+| Worst VM Disk Latency | ms | 40 | 80 | 160 | 320 |
+| 90th Percentile VM CPU Ready | % | 1 | 2 | 4 | 8 |
+| 90th Percentile VM CPU Co-Stop | % | 0.5 | 1 | 2 | 4 |
+| 90th Percentile VM Memory Latency | % | 0.5 | 1 | 2 | 4 |
+| 90th Percentile VM Disk Latency | ms | 20 | 40 | 60 | 80 |
 | Highest ESXi Bad Network Packets | % | Excluded (exactly 0) | 0.2 | 0.4 | 0.8 |
 
 The worst-VM rows have higher limits than the 90th-percentile rows, because a single VM peaks far above most of the others.
@@ -70,13 +72,13 @@ The worst-VM rows have higher limits than the 90th-percentile rows, because a si
 ## Worked examples
 
 - **All 9 sub-metrics are 0.** Bad network packets are left out. The other 8 score 100 with weight 1. KPI = **100**.
-- **The same, except 90th percentile peak vCPU Ready among VMs = 5** (red tier):
+- **The same, except 90th Percentile VM CPU Ready = 5** (red tier):
   - 5 is a quarter of the way through red (4 to 8), so it scores `25 − (¼ × 25) = 18.75`, with weight `2^(81.25 / 25)` ≈ 9.51.
   - Bad network packets are 0 and left out. The other 7 score 100 with weight 1.
   - KPI = `(7 × 100 + 18.75 × 9.51) / (7 + 9.51)` ≈ **53.19**.
   - A plain average would give about 89.8.
 - **The same as the first, except a small share of bad packets (0.005 %).** It is yellow, scores about 74.4 with weight 2.03, and now counts. KPI ≈ **94.80**.
-- **One VM of ten has 200 ms disk latency, the others 0.** Worst peak disk latency among all VM virtual disks is 200, in red. The 90th percentile is the 9th lowest of the 10 VMs, so it stays 0. With fewer than 10 VMs, the 90th percentile is the worst VM, so it would also be 200.
+- **One VM of ten has 200 ms disk latency, the others 0.** Worst VM Disk Latency is 200, in red. The 90th percentile is the 9th lowest of the 10 VMs, so it stays 0. With fewer than 10 VMs, the 90th percentile is the worst VM, so it would also be 200.
 
 The tests in [`Management Pack/tests/test_cluster_performance_metrics.py`](../../../Management%20Pack/tests/test_cluster_performance_metrics.py) check the same examples.
 

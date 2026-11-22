@@ -57,7 +57,7 @@ Each scoreboard lists the sub-metrics behind one KPI. Each tile is colored again
 | Scoreboard | Sub-metrics |
 | :--- | :--- |
 | **Consumption** | Cluster-wide ESXi CPU Thread Utilization, Cluster-wide ESXi Memory Consumed, Cluster-wide ESXi Memory Ballooned, Cluster-wide ESXi Memory Zip Swap |
-| **Contention** | Worst memory wait among all VMs, Worst peak disk latency among all VM virtual disks, Worst peak vCPU Ready among all VMs, Worst peak vCPU Co-stop among all VMs, Highest ESXi Bad Network Packets |
+| **Contention** | Worst VM Memory Latency, Worst VM Disk Latency, Worst VM CPU Ready, Worst VM CPU Co-Stop, Highest ESXi Bad Network Packets |
 | **Risk** | Highest ESXi CPU Thread Utilization, Worst ESXi CPU Imbalance, Worst ESXi Memory Ballooned, Worst ESXi Memory Zip Swap, Highest ESXi CPU Overcommit Ratio, Highest ESXi Memory Reservation, Highest ESXi CPU Reservation, Highest ESXi Memory Overcommit Ratio, Highest CPU Monster VM to Host Ratio, Highest Memory Monster VM to Host Ratio |
 
 The sub-metrics are defined on the KPI pages: [Cluster Performance](../reference/metrics/cluster-performance.md), [Cluster Risk](../reference/metrics/cluster-risk.md) and [Cluster Consumption](../reference/metrics/cluster-consumption.md).

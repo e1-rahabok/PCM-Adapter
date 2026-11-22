@@ -2,8 +2,8 @@
 """VM contention of a group of VMs, the rows shared by Cluster Performance and ESXi Performance.
 
 For each of 4 VM stats, two rows: how deep (the worst VM) and how broad (the 90th percentile of the VMs).
-Both KPIs use these rows, so a limit changed here changes in both. The rows carry the name of their scope, "among all
-VMs" for a cluster and "among VMs on the host" for a host, so that a name says what it measures.
+Both KPIs use these rows, so a limit changed here changes in both. The name of a row is its metric key and never
+changes (a new key is a new metric, without history); each KPI module gives the rows the label VCF Operations shows.
 
 The memory row is Memory Wait, not the Memory Contention counter: see metrics/vm/memory_wait.py.
 """
@@ -29,20 +29,6 @@ class VmContentionRows(NamedTuple):
     percentile_90: Metric
 
 
-class Scope(NamedTuple):
-    """The words that say which VMs a row covers."""
-    vms_worst: str              # "among all VMs"
-    vms_percentile: str         # "among VMs"
-    disks_worst: str            # "among all VM virtual disks"
-    disks_percentile: str       # "among VM virtual disks"
-
-
-CLUSTER_SCOPE = Scope("among all VMs", "among VMs", "among all VM virtual disks", "among VM virtual disks")
-HOST_SCOPE = Scope(
-    "among VMs on the host", "among VMs on the host",
-    "among virtual disks of VMs on the host", "among virtual disks of VMs on the host",
-)
-
 # The synthetic stat of the memory row: Memory Wait, worked out for each VM by with_memory_wait().
 MEMORY_WAIT_STAT = "memory wait"
 
@@ -54,55 +40,43 @@ MEMORY_WAIT_STAT = "memory wait"
 # Every row is "lower is better", and 0 is perfect. The five numbers of each Metric are the values where its score is
 # 100, 75, 50, 25 and 0. The worst-VM limits are higher than the 90th-percentile limits, because a single VM peaks
 # far above most of the others. The CPU and disk stats are the 20-second peaks, not the 5-minute averages, so the KPIs
-# are leading indicators: "peak" is in their names. Memory Wait is a 20-second peak of Memory Contention plus the NVMe
-# wait of the latest values, so it has no "peak" in its name.
+# are leading indicators: "peak" is in their labels. Memory Wait is a 20-second peak of Memory Contention plus the NVMe
+# wait of the latest values, so it has no "peak" in its label.
 #       name                                 unit   best  green  yellow  orange  zero-at
 
-def vm_contention_rows(scope: Scope) -> List[VmContentionRows]:
-    """The 4 stats and their 8 rows, named for a scope: a cluster or a host."""
-    return [
-        # --- CPU Ready: time the VM was ready to run, but had to wait for a physical CPU --------------------------
-        VmContentionRows(
-            "cpu|20_sec_peak_readyPct",
-            Metric(f"Worst peak vCPU Ready {scope.vms_worst}",                   "%",   0.0,  4.0,   8.0,    16.0,   32.0),
-            Metric(f"90th percentile peak vCPU Ready {scope.vms_percentile}",    "%",   0.0,  1.0,   2.0,    4.0,    8.0),
-        ),
-        # --- CPU Co-Stop: time a multi-vCPU VM was held back, so that its vCPUs stay in step ----------------------
-        VmContentionRows(
-            "cpu|20_sec_peak_costopPct",
-            Metric(f"Worst peak vCPU Co-stop {scope.vms_worst}",                 "%",   0.0,  2.0,   4.0,    8.0,    16.0),
-            Metric(f"90th percentile peak vCPU Co-stop {scope.vms_percentile}",  "%",   0.0,  0.5,   1.0,    2.0,    4.0),
-        ),
-        # --- Memory Wait: Memory Contention plus NVMe wait, see metrics/vm/memory_wait.py --------------------------
-        VmContentionRows(
-            MEMORY_WAIT_STAT,
-            Metric(f"Worst memory wait {scope.vms_worst}",                       "%",   0.0,  1.0,   2.0,    4.0,    8.0),
-            Metric(f"90th percentile memory wait {scope.vms_percentile}",        "%",   0.0,  0.5,   1.0,    2.0,    4.0),
-        ),
-        # --- Disk Latency: read and write latency of the VM's virtual disks ---------------------------------------
-        VmContentionRows(
-            "virtualDisk|20_sec_peak_totalLatency_average",
-            Metric(f"Worst peak disk latency {scope.disks_worst}",               "ms",  0.0,  40.0,  80.0,   160.0,  320.0),
-            Metric(f"90th percentile peak disk latency {scope.disks_percentile}", "ms", 0.0,  20.0,  40.0,   60.0,   80.0),
-        ),
-    ]
-
-
-CLUSTER_ROWS = vm_contention_rows(CLUSTER_SCOPE)
-HOST_ROWS = vm_contention_rows(HOST_SCOPE)
-
-
-def contention_metrics(rows: List[VmContentionRows]) -> List[Metric]:
-    """The 8 rows, in the order of the source tables: the 4 worst-VM rows, then the 4 90th-percentile rows."""
-    return [r.worst for r in rows] + [r.percentile_90 for r in rows]
-
-
-CLUSTER_METRICS = contention_metrics(CLUSTER_ROWS)
-HOST_METRICS = contention_metrics(HOST_ROWS)
+VM_CONTENTION = [
+    # --- CPU Ready: time the VM was ready to run, but had to wait for a physical CPU ------------------------------
+    VmContentionRows(
+        "cpu|20_sec_peak_readyPct",
+        Metric("Worst VM CPU Ready",                "%",   0.0,  4.0,   8.0,    16.0,   32.0),
+        Metric("90th Percentile VM CPU Ready",      "%",   0.0,  1.0,   2.0,    4.0,    8.0),
+    ),
+    # --- CPU Co-Stop: time a multi-vCPU VM was held back, so that its vCPUs stay in step --------------------------
+    VmContentionRows(
+        "cpu|20_sec_peak_costopPct",
+        Metric("Worst VM CPU Co-Stop",              "%",   0.0,  2.0,   4.0,    8.0,    16.0),
+        Metric("90th Percentile VM CPU Co-Stop",    "%",   0.0,  0.5,   1.0,    2.0,    4.0),
+    ),
+    # --- Memory Wait: Memory Contention plus NVMe wait, see metrics/vm/memory_wait.py. The key keeps the word
+    # "Memory Latency" (it was the key before NVMe wait was scored); the label says Memory Wait. ----------------------
+    VmContentionRows(
+        MEMORY_WAIT_STAT,
+        Metric("Worst VM Memory Latency",           "%",   0.0,  1.0,   2.0,    4.0,    8.0),
+        Metric("90th Percentile VM Memory Latency", "%",   0.0,  0.5,   1.0,    2.0,    4.0),
+    ),
+    # --- Disk Latency: read and write latency of the VM's virtual disks -------------------------------------------
+    VmContentionRows(
+        "virtualDisk|20_sec_peak_totalLatency_average",
+        Metric("Worst VM Disk Latency",             "ms",  0.0,  40.0,  80.0,   160.0,  320.0),
+        Metric("90th Percentile VM Disk Latency",   "ms",  0.0,  20.0,  40.0,   60.0,   80.0),
+    ),
+]
+# The 8 rows, in the order of the source tables: the 4 worst-VM rows, then the 4 90th-percentile rows.
+VM_CONTENTION_METRICS = [rows.worst for rows in VM_CONTENTION] + [rows.percentile_90 for rows in VM_CONTENTION]
 
 # The VM stats asked from VCF Operations for each VM, as VCF Operations names them: the memory row reads Memory
 # Contention and the NVMe read bandwidth, and works Memory Wait out from them.
-VM_STATS = [r.stat for r in CLUSTER_ROWS if r.stat != MEMORY_WAIT_STAT] + memory_wait.VM_STATS
+VM_STATS = [r.stat for r in VM_CONTENTION if r.stat != MEMORY_WAIT_STAT] + memory_wait.VM_STATS
 
 
 def with_memory_wait(

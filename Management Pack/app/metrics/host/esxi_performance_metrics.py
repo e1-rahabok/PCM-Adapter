@@ -17,7 +17,7 @@ from aria.ops.suite_api_client import SuiteApiClient
 from metrics.kpi_score import publish_kpi
 from metrics.host.host_bad_network_packets import bad_network_packets_metric, bad_packet_pct, read_host_packet_stats
 from metrics.vm.contention_by_vms import (
-    HOST_ROWS, HOST_METRICS, worst_and_percentile, read_vm_contention_stats, read_host_nvme_latency, with_memory_wait,
+    VM_CONTENTION, VM_CONTENTION_METRICS, worst_and_percentile, read_vm_contention_stats, read_host_nvme_latency, with_memory_wait,
 )
 from metrics.vm.memory_wait import VmMemoryContext
 
@@ -42,8 +42,23 @@ KPI_KEY = "ESXi Performance Score"
 BAD_PACKETS = bad_network_packets_metric("ESXi Bad Network Packets")
 
 # The rows, in the order of the source table. Every row is published on the host: none exists there already.
-METRICS = HOST_METRICS + [BAD_PACKETS]
+METRICS = VM_CONTENTION_METRICS + [BAD_PACKETS]
 PUBLISHED_METRICS = METRICS
+
+# The labels VCF Operations shows, in the words of the Agent E2 catalog (knowledge/catalog/thresholds-performance.yaml).
+# The keys stay the row names: renaming a key would start a new metric and leave its history behind. The CPU and disk
+# rows read a 20-second peak, so their labels say peak. The memory rows are Memory Wait (Memory Contention plus NVMe wait,
+# metrics/vm/memory_wait.py): the key keeps the word latency, the label says wait.
+LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
+    "Worst peak vCPU Ready among VMs on the host",
+    "Worst peak vCPU Co-stop among VMs on the host",
+    "Worst memory wait among VMs on the host",
+    "Worst peak disk latency among virtual disks of VMs on the host",
+    "90th percentile peak vCPU Ready among VMs on the host",
+    "90th percentile peak vCPU Co-stop among VMs on the host",
+    "90th percentile memory wait among VMs on the host",
+    "90th percentile peak disk latency among virtual disks of VMs on the host",
+], strict=True))
 
 
 # =================================================================================================================
@@ -91,7 +106,7 @@ def esxi_performance_values(
     gives each VM's vCPUs and host. Without it, Memory Wait is the Memory Contention alone.
     """
     vm_stats = with_memory_wait(stats.vm_stats, vm_ids, vm_context or {}, stats.host_nvme_latency)
-    values = worst_and_percentile(HOST_ROWS, vm_stats, vm_ids)
+    values = worst_and_percentile(VM_CONTENTION, vm_stats, vm_ids)
     values[BAD_PACKETS.name] = bad_packet_pct(stats.host_packet_stats.get(host_id, {}))
     return values
 
