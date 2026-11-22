@@ -69,7 +69,8 @@ def test_limits_match_the_source_table():
     assert limits["Highest ESXi Memory Consumed"] == (0, 80, 90, 95, 100, True)
     assert limits["Worst ESXi Memory Ballooned"] == (0, 1, 2, 4, 8, False)
     assert limits["Worst ESXi Memory Zip Swap"] == (0, 0.25, 0.5, 1, 2, False)
-    assert limits["Worst ESXi Memory Tiering Latency"] == (0, 150, 300, 450, 600, False)
+    assert limits["Worst ESXi Memory Tiering Latency"] == (0, 100, 200, 400, 800, False)
+    assert limits["Worst ESXi Active Memory"] == (0, 50, 62.5, 75, 100, True)
     assert limits["Highest ESXi CPU Reservation"] == (0, 10, 40, 60, 80, True)
     assert limits["Highest ESXi Memory Reservation"] == (0, 10, 40, 60, 80, True)
     assert limits["Highest ESXi CPU Overcommit Ratio"] == (0, 1, 2, 3, 4, True)
@@ -101,9 +102,10 @@ def test_cpu_imbalance_without_data():
 
 def test_overcommit_uses_what_vcf_operations_allocated_to_the_powered_on_vms():
     stats = {cr.VCPUS_ALLOCATED: 64.0, cr.MEM_ALLOCATED: 1024.0 * GB_IN_KB, cr.MEM_DRAM_CAPACITY: 512.0 * GB_IN_KB}
-    assert cr.cpu_overcommit(stats, HOST) == 2.0          # 64 vCPU on 32 cores
+    assert cr.cpu_overcommit(stats, HOST) == 1.0          # 64 vCPU on 64 threads (32 cores)
     assert cr.memory_overcommit(stats) == 2.0                      # 1 TB on 512 GB
-    assert cr.cpu_overcommit(stats, host(cores=None)) is None      # cores unknown
+    assert cr.cpu_overcommit(stats, host(threads=None)) is None    # threads unknown
+    assert cr.cpu_overcommit(stats, host(cores=16.0, threads=32.0)) == 2.0   # per thread, not per core
     assert cr.cpu_overcommit({}, HOST) is None            # stat missing
     assert cr.memory_overcommit({cr.MEM_ALLOCATED: 1.0}) is None   # capacity missing
 
@@ -225,7 +227,7 @@ def test_failed_stats_call_still_scores_what_the_properties_give():
 
 
 def test_memory_tiering_latency_counts_only_on_hosts_with_memory_tiering():
-    # host-2 has an NVMe memory tier with 300 µs read latency: the start of orange. host-1 has no tier.
+    # host-2 has an NVMe memory tier with 300 µs read latency: halfway through orange (200 to 400). host-1 has no tier.
     samples = {"host-1": host_stats(), "host-2": {**host_stats(), cr.MEM_TIERING_LATENCY: [300.0]}}
     assert collect(samples)["Worst ESXi Memory Tiering Latency"] == 300.0
     assert "Worst ESXi Memory Tiering Latency" not in collect(HEALTHY)
@@ -245,3 +247,26 @@ def test_risk_is_higher_is_worse():
     published = collect(HEALTHY)
     assert 0.0 <= published[cr.KPI_KEY] < 50.0
     assert cr.HIGHER_IS_WORSE
+
+
+def test_active_memory_counts_only_on_hosts_with_memory_tiering():
+    dram = {cr.MEM_DRAM_CAPACITY: 512.0 * GB_IN_KB}
+    tier = {cr.NVME_TIER_SIZE: 512.0 * GB_IN_KB}
+    # 384 GB active on 512 GB of DRAM: 75 %, the start of red.
+    assert cr.memory_active_pct({**dram, **tier, cr.MEM_ACTIVE: 384.0 * GB_IN_KB}) == 75.0
+    # No tier, or a tier of size 0: no value, even with active memory read.
+    assert cr.memory_active_pct({**dram, cr.MEM_ACTIVE: 384.0 * GB_IN_KB}) is None
+    assert cr.memory_active_pct({**dram, cr.NVME_TIER_SIZE: 0.0, cr.MEM_ACTIVE: 384.0 * GB_IN_KB}) is None
+    # Active memory missing: no value.
+    assert cr.memory_active_pct({**dram, **tier}) is None
+
+
+def test_active_memory_is_excluded_while_green_and_the_worst_host_is_kept():
+    tier = {cr.NVME_TIER_SIZE: [512.0 * GB_IN_KB]}
+    calm = {**host_stats(), **tier, cr.MEM_ACTIVE: [128.0 * GB_IN_KB]}            # 25 %: excluded green
+    busy = {**host_stats(), **tier, cr.MEM_ACTIVE: [320.0 * GB_IN_KB]}            # 62.5 %: the start of orange
+    assert collect({"host-1": calm, "host-2": busy})["Worst ESXi Active Memory"] == 62.5
+    # Both hosts calm: the row shows 25, and its excluded green leaves it out of the KPI, so the KPI is the healthy one.
+    both_calm = collect({"host-1": calm, "host-2": calm})
+    assert both_calm["Worst ESXi Active Memory"] == 25.0
+    assert both_calm[cr.KPI_KEY] == collect(HEALTHY)[cr.KPI_KEY]

@@ -8,11 +8,11 @@ Every sub-metric takes the highest or worst ESXi host in the cluster, because on
 
 Host memory means DRAM only. Every memory percentage and ratio is measured against the host's DRAM, called `MEM_DRAM_CAPACITY`. A memory tier such as NVMe is never added. See [Host memory capacity](#host-memory-capacity-mem_dram_capacity).
 
-The KPI and its 12 sub-metrics are published on the cluster object under `vCommunity|Cluster Risk`. The KPI is `vCommunity|Cluster Risk|Cluster Risk Score`.
+The KPI and its 13 sub-metrics are published on the cluster object under `vCommunity|Cluster Risk`. The KPI is `vCommunity|Cluster Risk|Cluster Risk Score`.
 
 Code: [`Management Pack/app/metrics/cluster/cluster_risk_metrics.py`](../../../Management%20Pack/app/metrics/cluster/cluster_risk_metrics.py)
 
-Source of the limits: [`formula/cluster-risk.png`](formula/cluster-risk.png)
+Source of the limits: [`formula/cluster-risk.png`](formula/cluster-risk.png), except two rows changed or added later: Worst ESXi Memory Tiering Latency (100, 200, 400, 800) and Worst ESXi Active Memory (new).
 
 ## Thresholds
 
@@ -25,7 +25,8 @@ Every sub-metric is lower-is-better.
 | Utilization | Highest ESXi Memory Consumed | % | Excluded (below 80) | 90 | 95 | 100 |
 | Saturation | Worst ESXi Memory Ballooned | % | 1 | 2 | 4 | 8 |
 | Saturation | Worst ESXi Memory Zip Swap (swapped + compressed) | % | 0.25 | 0.5 | 1 | 2 |
-| Saturation | Worst ESXi Memory Tiering Latency | µs | 150 | 300 | 450 | 600 |
+| Saturation | Worst ESXi Active Memory (tiered hosts) | % | Excluded (below 50) | 62.5 | 75 | 100 |
+| Saturation | Worst ESXi Memory Tiering Latency | µs | 100 | 200 | 400 | 800 |
 | Reservation | Highest ESXi CPU Reservation | % | Excluded (below 10) | 40 | 60 | 80 |
 | Reservation | Highest ESXi Memory Reservation | % | Excluded (below 10) | 40 | 60 | 80 |
 | Allocation | Highest ESXi CPU Overcommit Ratio | ratio | Excluded (below 1) | 2 | 3 | 4 |
@@ -35,7 +36,7 @@ Every sub-metric is lower-is-better.
 
 Every row scores 100 at 0, except CPU Imbalance, which scores 100 at 1: one running thread per running core. Any imbalance above 1 is yellow.
 
-**Excluded.** The source table marks six green ranges as "Excluded". A host that is not busy, has little reserved or is not overcommitted tells you nothing about risk. While these sub-metrics are green, they are left out of the KPI instead of scoring 100. They count once they leave green.
+**Excluded.** The source table marks six green ranges as "Excluded", and the Active Memory row is excluded in the same way, so seven rows are. A host that is not busy, has little reserved or is not overcommitted tells you nothing about risk. While these sub-metrics are green, they are left out of the KPI instead of scoring 100. They count once they leave green.
 
 ## How each sub-metric is calculated
 
@@ -48,10 +49,11 @@ Each sub-metric is calculated per host, and the highest (worst) host is kept.
 | Memory Consumed | Consumed memory, as a % of host DRAM | VCF Operations: `mem\|consumed_average` / `MEM_DRAM_CAPACITY` |
 | Memory Ballooned | Ballooned memory, as a % of host DRAM | VCF Operations: `mem\|vmmemctl_average` / `MEM_DRAM_CAPACITY` |
 | Memory Zip Swap | Compressed plus swapped memory, as a % of host DRAM | VCF Operations: (`mem\|compressed_average` + `mem\|swapout_average`) / `MEM_DRAM_CAPACITY` |
+| Memory Active (tiered hosts) | Active memory, as a % of host DRAM. Only hosts with memory tiering have it (the NVMe tier size is above 0); other hosts are left out of this row. Active pages that do not fit in DRAM are read back from the NVMe tier, so a value near or above 100 means the working set needs the tier. | VCF Operations: `mem\|active_average` (KB) / `MEM_DRAM_CAPACITY`. Tier: `mem:NVMe\|memory_tier_size`. Not checked on a live host yet. |
 | Memory Tiering Latency | Read latency of the NVMe memory tier. Only hosts with memory tiering have it; other hosts are left out of this row. | VCF Operations: `mem:NVMe\|latency.read_latest` (µs) |
 | CPU Reservation | Reserved CPU, as a % of host CPU capacity | VCF Operations: `cpu\|reservedCapacity_average` / `cpu\|totalCapacity_average` |
 | Memory Reservation | Reserved memory, as a % of host DRAM | VCF Operations: `mem\|reservedCapacity_average` / `MEM_DRAM_CAPACITY` |
-| CPU Overcommit Ratio | vCPUs of the powered-on VMs, per physical core | VCF Operations: `cpu\|vcpus_allocated_on_all_powered_on_vms`, `hardware\|cpuInfo\|numCpuCores` |
+| CPU Overcommit Ratio | vCPUs of the powered-on VMs, per physical thread. Per thread, not per core: the CPU executes per thread, and the class plans (Gold 1:1, Silver 2:1, Bronze 3:1) count per thread. With hyper-threading, 3 per thread is 6 per core. | VCF Operations: `cpu\|vcpus_allocated_on_all_powered_on_vms`. Threads: see below. |
 | Memory Overcommit Ratio | Memory of the powered-on VMs ÷ host DRAM. Both are in KB. | VCF Operations: `mem\|memory_allocated_on_all_powered_on_vms` / `MEM_DRAM_CAPACITY` |
 | CPU Monster VM to Host Ratio | vCPUs of the largest powered-on VM, against the monster size of its host (see below) | VCF Operations: VM `config\|hardware\|numCpu`, host `hardware\|cpuInfo\|numCpuCores` |
 | Memory Monster VM to Host Ratio | Memory of the largest powered-on VM, against the monster size of its host (see below) | VCF Operations: VM `config\|hardware\|memoryKB`. Host: `MEM_DRAM_CAPACITY`. |
@@ -186,7 +188,7 @@ Take the cluster from [One busy host](#worked-examples), at Cluster Risk 67.89. 
 | CPU Overcommit Ratio | Tier | Score × weight | Cluster Risk |
 | :--- | :--- | :--- | :--- |
 | 0.5 | Excluded green | left out | 67.89 |
-| 1.125, published as 1.12 (ten 4-vCPU VMs, five per host) | yellow | 72.00 × 2.17 | **64.52** |
+| 1.125, published as 1.12 (eighteen 4-vCPU VMs on each 64-thread host) | yellow | 72.00 × 2.17 | **64.52** |
 | 1.5 | yellow | 62.50 × 2.83 | **64.63** |
 | 2.5 | orange | 37.50 × 5.66 | **66.85** |
 | 2.8 | orange | 30.00 × 6.96 | 68.37 |

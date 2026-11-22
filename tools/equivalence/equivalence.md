@@ -10,7 +10,7 @@ About 3,400 cases. Each case is named after what it covers, and goes through the
 
 | KPI | Cases |
 | :--- | :--- |
-| Cluster Risk | Each of the 12 rows at 0, at every band limit, just below and just above each limit, mid-band and beyond the end. No data. DRAM at 0 or missing, with and without the fallback. Cores or threads missing or 0. VMs without a size. The Monster VM settings at default, minimum, maximum and invalid values. The highest host, ties, and hosts without data. All rows together, in every combination of two bands. |
+| Cluster Risk | Each of the 13 rows at 0, at every band limit, just below and just above each limit, mid-band and beyond the end. No data. DRAM at 0 or missing, with and without the fallback. Cores or threads missing or 0. VMs without a size. The Monster VM settings at default, minimum, maximum and invalid values. The highest host, ties, and hosts without data. All rows together, in every combination of two bands. |
 | Cluster Performance, ESXi Performance | Each VM stat at every planned value, for its worst-VM and 90th-percentile rows. 0 to 30 VMs, covering where the 90th-percentile position changes, in any order, with ties. VMs without stats. Bad network packets at every planned value, each counter missing, no packets, several hosts. All rows together. |
 | VM Performance, Guest OS Performance | Each row at every planned value. No data. Each input of a calculated row missing, or its divisor at 0. All rows together. |
 | Cluster Consumption | Every host state, against each kind of Usable Capacity. All hosts down. Every way Usable Capacity can be reported. Each row at every planned value. Each host stat missing. The NVMe tier. |
