@@ -5,7 +5,7 @@
 added up, so a big host counts more than a small one. Saturation (ballooned, swapped and zipped memory) is real
 consumption, so it has its own rows.
 
-Published on the cluster as vCommunity|Cluster Consumption|Cluster Consumption Score (the KPI) and its 5 rows.
+Published on the cluster as vCommunity|Cluster Consumption|Cluster Consumption Score (the KPI) and its 6 rows.
 
 Called from: collectors/cluster/collectClusterData.py, once per cluster. Also used by periodic_cluster_check.py.
 Limits: docs/reference/metrics/formula/cluster-consumption.png. Description: docs/reference/metrics/cluster-consumption.md
@@ -47,8 +47,8 @@ StatsByHost = Dict[str, Dict[str, float]]
 # How the threads are obtained: VCF Operations' Usable Capacity is taken as a percentage of its Total Capacity, and
 # that percentage is applied to the threads of the running hosts. No step converts MHz to threads, so this is exact
 # only when every host has the same clock speed and the same hyper-threading setting (a known limitation, in the
-# doc). Memory is done the same way, on DRAM only. The NVMe memory tier has no Usable Capacity of its own: the
-# tiering row divides by the usable DRAM of the tiered hosts.
+# doc). Memory is done the same way. Memory Consumed is the raw vCenter metric, so its capacity is the host memory
+# vSphere counts: DRAM, plus the NVMe tier on a tiered host. Every other memory row divides by usable DRAM.
 #
 # The hosts that count are the running hosts with data (host_is_gone below): a host in maintenance mode,
 # disconnected, powered off or in standby stays in Total Capacity, but adds nothing to Usable Capacity, because no
@@ -106,6 +106,7 @@ class UsableCapacity(NamedTuple):
     cpu_hosts: List[HostInfo]
     dram_kb: Optional[float]
     dram_hosts: List[HostInfo]
+    memory_kb: Optional[float]
     tiered_dram_kb: Optional[float]
     tiered_hosts: List[HostInfo]
 
@@ -158,9 +159,14 @@ def usable_capacity(hosts: List[HostInfo], stats_by_host: StatsByHost, tier_stat
                     and not host_is_gone(host, tier_stats_by_host.get(host.id, {}).get(NVME_TIER_USAGE))]
     tiered_dram_kb = sum(dram_capacity_kb(stats_by_host[host.id]) for host in tiered_hosts)
 
+    # Host memory as vSphere counts it, for Memory Consumed: the DRAM of the hosts above, plus the NVMe tier of the
+    # hosts that have one.
+    memory_kb = dram_kb + sum(tier_stats_by_host.get(host.id, {}).get(NVME_TIER_SIZE) or 0.0 for host in dram_hosts)
+
     return UsableCapacity(
         cpu_threads=_apply(cpu_percent, cpu_threads, cpu_hosts), cpu_hosts=cpu_hosts,
         dram_kb=_apply(memory_percent, dram_kb, dram_hosts), dram_hosts=dram_hosts,
+        memory_kb=_apply(memory_percent, memory_kb, dram_hosts),
         tiered_dram_kb=_apply(memory_percent, tiered_dram_kb, tiered_hosts), tiered_hosts=tiered_hosts,
     )
 
@@ -191,7 +197,7 @@ def _consumed(used: Optional[float], usable: Optional[float]) -> Optional[float]
 
 
 # =================================================================================================================
-# Part 2. The 5 rows
+# Part 2. The 6 rows
 # =================================================================================================================
 #
 # Every row is "lower is better", in % of the Usable Capacity of its resource. The five numbers of each Metric are
@@ -211,16 +217,36 @@ def cpu_thread_utilization(usable: UsableCapacity, stats_by_host: StatsByHost) -
 
 
 # --- Row 2. Memory Consumed (Utilization) ------------------------------------------------------------------------
-# The consumed memory of the running hosts, out of Memory Usable Capacity in DRAM.
+# The consumed memory of the running hosts, out of their usable memory: DRAM, plus the NVMe tier on a tiered host.
+# Memory Consumed is the raw vCenter metric and covers both tiers, so it is against both, as vSphere counts host
+# memory. On a tiered cluster it can read green while DRAM is full: that is Row 3.
 MEMORY = "Cluster-wide ESXi Memory Consumed"
 MEMORY_ROW = Metric(MEMORY, "%", 0.0, 70.0, 80.0, 90.0, 100.0)
 
 
 def memory_consumed(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optional[float]:
-    return _consumed(_add_up(usable.dram_hosts, stats_by_host, [MEM_CONSUMED]), usable.dram_kb)
+    return _consumed(_add_up(usable.dram_hosts, stats_by_host, [MEM_CONSUMED]), usable.memory_kb)
 
 
-# --- Row 3. Memory Tiering Consumption (Saturation) --------------------------------------------------------------
+# --- Row 3. DRAM Consumed (Utilization) --------------------------------------------------------------------------
+# A separate metric, not Memory Consumed: the DRAM in use on the tiered hosts, out of their usable DRAM. DRAM in use
+# = Memory Consumed - NVMe tier in use, per host. Tiering starts at about 80 % of DRAM, so green runs to 80. A
+# cluster with no tier has no value.
+DRAM = "Cluster-wide ESXi DRAM Consumed"
+DRAM_ROW = Metric(DRAM, "%", 0.0, 80.0, 85.0, 90.0, 100.0)
+
+
+def dram_consumed(usable: UsableCapacity, stats_by_host: StatsByHost, tier_stats_by_host: StatsByHost
+                  ) -> Optional[float]:
+    in_use_kb = 0.0
+    for host in usable.tiered_hosts:
+        consumed_kb = stats_by_host[host.id][MEM_CONSUMED]
+        nvme_kb = tier_stats_by_host[host.id][NVME_TIER_USAGE] * 1024.0
+        in_use_kb += max(consumed_kb - nvme_kb, 0.0)
+    return _consumed(in_use_kb if usable.tiered_hosts else None, usable.tiered_dram_kb)
+
+
+# --- Row 4. Memory Tiering Consumption (Saturation) --------------------------------------------------------------
 # The NVMe memory tier in use on the tiered hosts, out of their Memory Usable Capacity in DRAM: how much memory has
 # moved off DRAM. Against DRAM, not the tier, like the overcommit ratio and the Ballooned and Zip Swap rows, so the
 # value does not change with the DRAM:NVMe ratio. A cluster with no tier has no value. VCF Operations reports the
@@ -234,7 +260,7 @@ def memory_tiering_consumption(usable: UsableCapacity, tier_stats_by_host: Stats
     return _consumed(None if used_mb is None else used_mb * 1024.0, usable.tiered_dram_kb)
 
 
-# --- Row 4. Memory Ballooned (Saturation) ------------------------------------------------------------------------
+# --- Row 5. Memory Ballooned (Saturation) ------------------------------------------------------------------------
 # The ballooned memory of the running hosts, out of Memory Usable Capacity in DRAM.
 BALLOONED = "Cluster-wide ESXi Memory Ballooned"
 BALLOONED_ROW = Metric(BALLOONED, "%", 0.0, 1.0, 2.0, 4.0, 8.0)
@@ -244,7 +270,7 @@ def memory_ballooned(usable: UsableCapacity, stats_by_host: StatsByHost) -> Opti
     return _consumed(_add_up(usable.dram_hosts, stats_by_host, [MEM_BALLOONED]), usable.dram_kb)
 
 
-# --- Row 5. Memory Zip Swap (Saturation) -------------------------------------------------------------------------
+# --- Row 6. Memory Zip Swap (Saturation) -------------------------------------------------------------------------
 # The compressed plus swapped memory of the running hosts, out of Memory Usable Capacity in DRAM.
 ZIP_SWAP = "Cluster-wide ESXi Memory Zip Swap"
 ZIP_SWAP_ROW = Metric(ZIP_SWAP, "%", 0.0, 0.25, 0.5, 1.0, 2.0)
@@ -255,7 +281,7 @@ def memory_zip_swap(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optio
 
 
 # The rows, in the order of the source table. Every row is published on the cluster: none exists there already.
-METRICS = [CPU_ROW, MEMORY_ROW, TIERING_ROW, BALLOONED_ROW, ZIP_SWAP_ROW]
+METRICS = [CPU_ROW, MEMORY_ROW, DRAM_ROW, TIERING_ROW, BALLOONED_ROW, ZIP_SWAP_ROW]
 PUBLISHED_METRICS = METRICS
 
 
@@ -270,6 +296,7 @@ def consumption_values(hosts: List[HostInfo], stats_by_host: StatsByHost, tier_s
     return {
         CPU: cpu_thread_utilization(usable, stats_by_host),
         MEMORY: memory_consumed(usable, stats_by_host),
+        DRAM: dram_consumed(usable, stats_by_host, tier_stats_by_host),
         TIERING: memory_tiering_consumption(usable, tier_stats_by_host),
         BALLOONED: memory_ballooned(usable, stats_by_host),
         ZIP_SWAP: memory_zip_swap(usable, stats_by_host),
