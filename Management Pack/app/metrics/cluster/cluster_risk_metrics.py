@@ -53,6 +53,11 @@ MEM_DRAM_CAPACITY = "mem:DRAM|memory_tier_total_capacity"
 MEM_DRAM_CAPACITY_FALLBACK = "mem|host_provisioned"                     # KB
 DRAM_STATS = [MEM_DRAM_CAPACITY, MEM_DRAM_CAPACITY_FALLBACK]
 
+# Consumed memory of a host, in KB. No row of this KPI uses it: Cluster Consumption reads it from the host stats of this
+# module, so it is still asked from VCF Operations. There is no Risk row for it: it passes 100 % of DRAM on a host with
+# memory tiering by design, and the Ballooned, Zip Swap and Active Memory rows cover the pressure.
+MEM_CONSUMED = "mem|consumed_average"
+
 
 def dram_capacity_kb(stats: HostStats) -> Optional[float]:
     """The host's DRAM, in KB. Falls back to MEM_DRAM_CAPACITY_FALLBACK when the DRAM stat has nothing."""
@@ -165,25 +170,9 @@ IMBALANCE = RiskRow(
     Metric("Worst ESXi CPU Imbalance",                None,  1.0,  1.0,   1.3,    1.6,    2.0),
     [CPU_THREAD_UTIL, CPU_CORE_UTIL], lambda stats, host, monster: cpu_imbalance(stats, host))
 
-# --- Row 3. Highest ESXi Memory Consumed -------------------------------------------------------------------------
-# Consumed memory, as a % of the host's DRAM. Green (below 80 %) is "Excluded": a host that is not full says nothing
-# about risk.
-MEM_CONSUMED = "mem|consumed_average"
-
-
-def memory_consumed_pct(stats: HostStats) -> Optional[float]:
-    if MEM_CONSUMED not in stats:
-        return None
-    return percent_of_dram(stats, stats[MEM_CONSUMED])
-
-
-MEMORY_CONSUMED = RiskRow(
-    Metric("Highest ESXi Memory Consumed",            "%",   0.0,  80.0,  90.0,   95.0,   100.0,  True),
-    [MEM_CONSUMED], lambda stats, host, monster: memory_consumed_pct(stats))
-
 # ----- Saturation: the host is already reclaiming memory from its VMs ---------------------------------------------
 
-# --- Row 4. Worst ESXi Memory Ballooned --------------------------------------------------------------------------
+# --- Row 3. Worst ESXi Memory Ballooned --------------------------------------------------------------------------
 # Ballooned memory, as a % of the host's DRAM.
 MEM_BALLOONED = "mem|vmmemctl_average"
 
@@ -198,7 +187,7 @@ BALLOONED = RiskRow(
     Metric("Worst ESXi Memory Ballooned",             "%",   0.0,  1.0,   2.0,    4.0,    8.0),
     [MEM_BALLOONED], lambda stats, host, monster: memory_ballooned_pct(stats))
 
-# --- Row 5. Worst ESXi Memory Zip Swap ---------------------------------------------------------------------------
+# --- Row 4. Worst ESXi Memory Zip Swap ---------------------------------------------------------------------------
 # Compressed (zipped) plus swapped memory, as a % of the host's DRAM. The same stats as the former "Memory Zip Swap"
 # super metric.
 MEM_COMPRESSED = "mem|compressed_average"
@@ -216,6 +205,25 @@ ZIP_SWAP = RiskRow(
     Metric("Worst ESXi Memory Zip Swap",              "%",   0.0,  0.25,  0.5,    1.0,    2.0),
     [MEM_COMPRESSED, MEM_SWAPPED], lambda stats, host, monster: memory_zip_swap_pct(stats))
 
+# --- Row 5. Worst ESXi Active Memory, tiered hosts ---------------------------------------------------------------
+# Active memory of a host with memory tiering, as a % of its DRAM. Active pages that do not fit in DRAM are read back
+# from the NVMe tier, so this is the share of DRAM the working set needs. Green (below 50 %) is "Excluded": a small
+# working set says nothing about risk. A host without memory tiering has no value (the NVMe tier size is 0 or missing).
+MEM_ACTIVE = "mem|active_average"                       # KB. Not checked on a live host yet.
+NVME_TIER_SIZE = "mem:NVMe|memory_tier_size"            # KB, above 0 on a host with memory tiering
+
+
+def memory_active_pct(stats: HostStats) -> Optional[float]:
+    """Active memory of a host with memory tiering, as a % of its DRAM. None on a host without a tier."""
+    if not stats.get(NVME_TIER_SIZE) or MEM_ACTIVE not in stats:
+        return None
+    return percent_of_dram(stats, stats[MEM_ACTIVE])
+
+
+ACTIVE_MEMORY = RiskRow(
+    Metric("Worst ESXi Active Memory",                "%",   0.0,  50.0,  62.5,   75.0,   100.0,  True),
+    [MEM_ACTIVE, NVME_TIER_SIZE], lambda stats, host, monster: memory_active_pct(stats))
+
 # --- Row 6. Worst ESXi Memory Tiering Latency --------------------------------------------------------------------
 # Read latency of the NVMe memory tier, in µs (confirmed). Only hosts with memory tiering have it.
 MEM_TIERING_LATENCY = "mem:NVMe|latency.read_latest"
@@ -227,7 +235,7 @@ def memory_tiering_latency(stats: HostStats) -> Optional[float]:
 
 
 TIERING_LATENCY = RiskRow(
-    Metric("Worst ESXi Memory Tiering Latency",       "µs",  0.0,  150.0, 300.0,  450.0,  600.0),
+    Metric("Worst ESXi Memory Tiering Latency",       "µs",  0.0,  100.0, 200.0,  400.0,  800.0),
     [MEM_TIERING_LATENCY], lambda stats, host, monster: memory_tiering_latency(stats))
 
 # ----- Reservation: capacity promised to VMs, even when they do not use it ----------------------------------------
@@ -269,16 +277,17 @@ MEMORY_RESERVATION = RiskRow(
 # ----- Allocation: vCPU and memory allocated to the powered-on VMs, against what the host has ---------------------
 
 # --- Row 9. Highest ESXi CPU Overcommit Ratio --------------------------------------------------------------------
-# vCPUs allocated to the powered-on VMs, per physical core. Green (below 1, no overcommit) is "Excluded".
+# vCPUs allocated to the powered-on VMs, per physical thread: the CPU executes per thread, and the class plans (Gold 1:1,
+# Silver 2:1, Bronze 3:1) count per thread. Green (below 1, no overcommit) is "Excluded".
 # VCF Operations adds up the VMs, so the code does not have to.
 VCPUS_ALLOCATED = "cpu|vcpus_allocated_on_all_powered_on_vms"            # number of vCPUs
 
 
 def cpu_overcommit(stats: HostStats, host: HostInventory) -> Optional[float]:
-    """vCPUs allocated to the powered-on VMs, per physical core of the host."""
-    if not host.cores or VCPUS_ALLOCATED not in stats:
+    """vCPUs allocated to the powered-on VMs, per physical thread of the host."""
+    if not host.threads or VCPUS_ALLOCATED not in stats:
         return None
-    return stats[VCPUS_ALLOCATED] / host.cores
+    return stats[VCPUS_ALLOCATED] / host.threads
 
 
 CPU_OVERCOMMIT = RiskRow(
@@ -338,8 +347,8 @@ MEMORY_MONSTER = RiskRow(
 
 # The rows, in the order of the source table.
 ROWS = [
-    THREAD_UTILIZATION, IMBALANCE, MEMORY_CONSUMED,
-    BALLOONED, ZIP_SWAP, TIERING_LATENCY,
+    THREAD_UTILIZATION, IMBALANCE,
+    BALLOONED, ZIP_SWAP, ACTIVE_MEMORY, TIERING_LATENCY,
     CPU_RESERVATION, MEMORY_RESERVATION,
     CPU_OVERCOMMIT, MEMORY_OVERCOMMIT,
     CPU_MONSTER, MEMORY_MONSTER,
@@ -347,8 +356,9 @@ ROWS = [
 METRICS = [row.metric for row in ROWS]
 # Every row is published on the cluster, because none of them exists there as a stat already.
 PUBLISHED_METRICS = METRICS
-# Every stat asked from VCF Operations for each host: the DRAM capacity, and what each row reads.
-HOST_STATS = list(dict.fromkeys(DRAM_STATS + [key for row in ROWS for key in row.stats]))
+# Every stat asked from VCF Operations for each host: the DRAM capacity, the consumed memory that Cluster Consumption
+# needs, and what each row reads.
+HOST_STATS = list(dict.fromkeys(DRAM_STATS + [MEM_CONSUMED] + [key for row in ROWS for key in row.stats]))
 
 
 # =================================================================================================================
