@@ -46,8 +46,9 @@ StatsByHost = Dict[str, Dict[str, float]]
 #
 # How the threads are obtained: VCF Operations' Usable Capacity is taken as a percentage of its Total Capacity, and
 # that percentage is applied to the threads of the running hosts. No step converts MHz to threads, so this is exact
-# only when every host has the same clock speed and the same hyper-threading setting. Memory is done the same way,
-# and the memory percentage is applied to the NVMe tier too. Both are known limitations, in the doc.
+# only when every host has the same clock speed and the same hyper-threading setting (a known limitation, in the
+# doc). Memory is done the same way, on DRAM only. The NVMe memory tier has no Usable Capacity of its own: the
+# tiering row divides by the usable DRAM of the tiered hosts.
 #
 # The hosts that count are the running hosts with data (host_is_gone below): a host in maintenance mode,
 # disconnected, powered off or in standby stays in Total Capacity, but adds nothing to Usable Capacity, because no
@@ -63,7 +64,7 @@ CLUSTER_STATS = [CPU_USABLE, CPU_TOTAL, MEM_USABLE, MEM_TOTAL]
 # Host stats of the NVMe memory tier, read once per cycle for all hosts. Only hosts with memory tiering have them.
 # The CPU and DRAM host stats are the ones Cluster Risk already read this cycle (cluster_risk_metrics.HOST_STATS).
 NVME_TIER_USAGE = "mem:NVMe|tier.usage"             # MB in use
-NVME_TIER_SIZE = "mem:NVMe|memory_tier_size"        # KB
+NVME_TIER_SIZE = "mem:NVMe|memory_tier_size"        # KB, above 0 on a host with memory tiering
 HOST_STATS = [NVME_TIER_USAGE, NVME_TIER_SIZE]
 
 
@@ -105,8 +106,8 @@ class UsableCapacity(NamedTuple):
     cpu_hosts: List[HostInfo]
     dram_kb: Optional[float]
     dram_hosts: List[HostInfo]
-    nvme_tier_kb: Optional[float]
-    nvme_tier_hosts: List[HostInfo]
+    tiered_dram_kb: Optional[float]
+    tiered_hosts: List[HostInfo]
 
 
 def usable_percent(cluster_stats: Dict[str, float], usable_key: str, total_key: str) -> Optional[float]:
@@ -150,16 +151,17 @@ def usable_capacity(hosts: List[HostInfo], stats_by_host: StatsByHost, tier_stat
                   and not host_is_gone(host, stats_by_host.get(host.id, {}).get(MEM_CONSUMED))]
     dram_kb = sum(dram_capacity_kb(stats_by_host[host.id]) for host in dram_hosts)
 
-    # NVMe tier: the running hosts that have a tier and report its usage. Never the DRAM.
-    nvme_tier_hosts = [host for host in hosts
-                       if tier_stats_by_host.get(host.id, {}).get(NVME_TIER_SIZE)
-                       and not host_is_gone(host, tier_stats_by_host.get(host.id, {}).get(NVME_TIER_USAGE))]
-    nvme_tier_kb = sum(tier_stats_by_host[host.id][NVME_TIER_SIZE] for host in nvme_tier_hosts)
+    # Tiered DRAM: the DRAM of the hosts above that also have an NVMe tier and report its usage. The DRAM of hosts
+    # without a tier is left out, so it does not dilute the tiering row in a mixed cluster.
+    tiered_hosts = [host for host in dram_hosts
+                    if tier_stats_by_host.get(host.id, {}).get(NVME_TIER_SIZE)
+                    and not host_is_gone(host, tier_stats_by_host.get(host.id, {}).get(NVME_TIER_USAGE))]
+    tiered_dram_kb = sum(dram_capacity_kb(stats_by_host[host.id]) for host in tiered_hosts)
 
     return UsableCapacity(
         cpu_threads=_apply(cpu_percent, cpu_threads, cpu_hosts), cpu_hosts=cpu_hosts,
         dram_kb=_apply(memory_percent, dram_kb, dram_hosts), dram_hosts=dram_hosts,
-        nvme_tier_kb=_apply(memory_percent, nvme_tier_kb, nvme_tier_hosts), nvme_tier_hosts=nvme_tier_hosts,
+        tiered_dram_kb=_apply(memory_percent, tiered_dram_kb, tiered_hosts), tiered_hosts=tiered_hosts,
     )
 
 
@@ -219,15 +221,17 @@ def memory_consumed(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optio
 
 
 # --- Row 3. Memory Tiering Consumption (Saturation) --------------------------------------------------------------
-# The NVMe memory tier in use on the running hosts, out of Memory Usable Capacity in NVMe tier. A cluster with no
-# tier has no value. VCF Operations reports the usage in MB and the tier size in KB.
+# The NVMe memory tier in use on the tiered hosts, out of their Memory Usable Capacity in DRAM: how much memory has
+# moved off DRAM. Against DRAM, not the tier, like the overcommit ratio and the Ballooned and Zip Swap rows, so the
+# value does not change with the DRAM:NVMe ratio. A cluster with no tier has no value. VCF Operations reports the
+# usage in MB. Linear limits: about 5 % spilled at Gold (1:1), 20 % at Silver (1.2:1), 40 % at Bronze (1.4:1).
 TIERING = "Cluster Memory Tiering Consumption"
-TIERING_ROW = Metric(TIERING, "%", 0.0, 4.0, 8.0, 16.0, 32.0)
+TIERING_ROW = Metric(TIERING, "%", 0.0, 15.0, 30.0, 45.0, 60.0)
 
 
 def memory_tiering_consumption(usable: UsableCapacity, tier_stats_by_host: StatsByHost) -> Optional[float]:
-    used_mb = _add_up(usable.nvme_tier_hosts, tier_stats_by_host, [NVME_TIER_USAGE])
-    return _consumed(None if used_mb is None else used_mb * 1024.0, usable.nvme_tier_kb)
+    used_mb = _add_up(usable.tiered_hosts, tier_stats_by_host, [NVME_TIER_USAGE])
+    return _consumed(None if used_mb is None else used_mb * 1024.0, usable.tiered_dram_kb)
 
 
 # --- Row 4. Memory Ballooned (Saturation) ------------------------------------------------------------------------

@@ -79,7 +79,7 @@ How each metric and KPI is calculated is in [Metrics](metrics/README.md).
 | Metric | `vCommunity\|Cluster Consumption\|Cluster Consumption Score` | KPI, 0 to 100 %, of how much of the cluster's usable capacity (Total − HA − Buffer) is consumed, from the 5 sub-metrics below. Higher is worse: red is 75 to 100. See [Cluster Consumption](metrics/cluster-consumption.md). |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi CPU Thread Utilization` | CPU threads in use on all running hosts, as a % of their usable threads. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Consumed` | Consumed memory of all running hosts, as a % of their usable DRAM. |
-| Metric | `vCommunity\|Cluster Consumption\|Cluster Memory Tiering Consumption` | NVMe memory tier in use on all running hosts, as a % of their usable NVMe tier. Published only when the cluster has memory tiering. |
+| Metric | `vCommunity\|Cluster Consumption\|Cluster Memory Tiering Consumption` | NVMe memory tier in use on all running tiered hosts, as a % of their usable DRAM. Published only when the cluster has memory tiering. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Ballooned` | Ballooned memory of all running hosts, as a % of their usable DRAM. |
 | Metric | `vCommunity\|Cluster Consumption\|Cluster-wide ESXi Memory Zip Swap` | Compressed plus swapped memory of all running hosts, as a % of their usable DRAM. |
 | Metric | `vCommunity\|Periodic Cluster Check\|Worst Cluster Performance` | The low end (%) of Cluster Performance Score over the last window (24 hours by default), ignoring the Cluster Check Worst Percent of the worst samples. Published once per window. See [Worst](metrics/periodic-cluster-check.md#worst). |

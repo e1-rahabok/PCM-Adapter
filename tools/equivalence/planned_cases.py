@@ -407,7 +407,7 @@ for name, field in [(cc.MEMORY, "consumed"), (cc.BALLOONED, "ballooned"), (cc.ZI
                  {"h1": chost_stats(**{field: frac}), "h2": chost_stats(dram=256.0, **{field: frac})}, {}, usable())
 for v in points(CONS[cc.TIERING]):
     size = 256 * GB_KB
-    tiers = {"h1": {cc.NVME_TIER_SIZE: size, cc.NVME_TIER_USAGE: v / 100.0 * 0.8 * size / 1024.0}}
+    tiers = {"h1": {cc.NVME_TIER_SIZE: size, cc.NVME_TIER_USAGE: v / 100.0 * 0.8 * 512 * GB_KB / 1024.0}}
     run_cons(f"row=tiering|value={v!r}", [chost("h1"), chost("h2", 16.0)], TWO, tiers, usable())
 
 # A host missing one stat. Ballooned, compressed and swapped are the partial-memory-stat cases.
