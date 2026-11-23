@@ -276,3 +276,28 @@ def test_there_is_no_memory_consumed_row_but_the_stat_is_still_read():
     assert "Highest ESXi Memory Consumed" not in [m.name for m in cr.METRICS]
     assert len(cr.METRICS) == 12
     assert cr.MEM_CONSUMED in cr.HOST_STATS
+
+
+# --- Labels: the Agent E2 catalog names, the keys kept ------------------------
+
+def test_risk_and_consumption_rows_show_the_catalog_name_and_keep_their_keys():
+    import json
+    from definition import get_adapter_definition
+    from metrics.cluster import cluster_consumption_metrics as cc
+    found = {}
+
+    def walk(node, group=None):
+        if isinstance(node, dict):
+            if "attributes" in node and node.get("key") in ("Cluster Risk", "Cluster Consumption"):
+                found.update({(node["key"], a["key"]): a["label"] for a in node["attributes"]})
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+    walk(json.loads(json.dumps(get_adapter_definition().to_json())))
+    for group, module in (("Cluster Risk", cr), ("Cluster Consumption", cc)):
+        for metric in module.PUBLISHED_METRICS:
+            assert found[(group, metric.name)] == module.LABELS[metric.name]  # the key never changes
+    assert found[("Cluster Risk", "Worst ESXi Memory Tiering Latency")] == "Worst ESXi NVMe read latency"
+    assert found[("Cluster Consumption", "Cluster-wide ESXi Memory Zip Swap")] == "Cluster-wide ESXi swapped + zipped memory"

@@ -34,14 +34,16 @@ Source of the limits: [`formula/cluster-consumption.png`](formula/cluster-consum
 
 Every sub-metric is lower-is-better, in % of the usable capacity.
 
-| Group | Sub-metric | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Utilization | Cluster-wide ESXi CPU Thread Utilization | 55 | 70 | 85 | 100 |
-| Utilization | Cluster-wide ESXi Memory Consumed | 70 | 80 | 90 | 100 |
-| Utilization | Cluster-wide ESXi DRAM Consumed | 80 | 85 | 90 | 100 |
-| Saturation | Cluster Memory Tiering Consumption | 15 | 30 | 45 | 60 |
-| Saturation | Cluster-wide ESXi Memory Ballooned | 1 | 2 | 4 | 8 |
-| Saturation | Cluster-wide ESXi Memory Zip Swap (swapped + compressed) | 0.25 | 0.5 | 1 | 2 |
+VCF Operations shows each sub-metric under the Agent E2 catalog name (Label below). The key stays the sub-metric name: a new key would be a new metric, without its history.
+
+| Group | Sub-metric (key) | Label | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Utilization | Cluster-wide ESXi CPU Thread Utilization | Cluster-wide ESXi CPU thread utilization | 55 | 70 | 85 | 100 |
+| Utilization | Cluster-wide ESXi Memory Consumed | Cluster-wide ESXi memory consumed | 70 | 80 | 90 | 100 |
+| Utilization | Cluster-wide ESXi DRAM Consumed | Cluster-wide ESXi DRAM Consumed | 80 | 85 | 90 | 100 |
+| Saturation | Cluster Memory Tiering Consumption | Cluster memory tiering consumption | 15 | 30 | 45 | 60 |
+| Saturation | Cluster-wide ESXi Memory Ballooned | Cluster-wide ESXi memory ballooned | 1 | 2 | 4 | 8 |
+| Saturation | Cluster-wide ESXi Memory Zip Swap (swapped + compressed) | Cluster-wide ESXi swapped + zipped memory | 0.25 | 0.5 | 1 | 2 |
 
 Every row scores 100 at 0. No green range is excluded, so every row with data counts in the KPI.
 

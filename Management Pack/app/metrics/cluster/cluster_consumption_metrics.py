@@ -284,6 +284,18 @@ def memory_zip_swap(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optio
 METRICS = [CPU_ROW, MEMORY_ROW, DRAM_ROW, TIERING_ROW, BALLOONED_ROW, ZIP_SWAP_ROW]
 PUBLISHED_METRICS = METRICS
 
+# The labels VCF Operations shows: the Agent E2 catalog names (knowledge/catalog/thresholds-capacity.yaml, section model),
+# without the unit, which VCF Operations shows on its own. The keys stay the row names: renaming a key would start a
+# new metric and leave its history and the dashboards that read it behind.
+LABELS = {
+    CPU: "Cluster-wide ESXi CPU thread utilization",
+    MEMORY: "Cluster-wide ESXi memory consumed",
+    DRAM: "Cluster-wide ESXi DRAM Consumed",
+    TIERING: "Cluster memory tiering consumption",
+    BALLOONED: "Cluster-wide ESXi memory ballooned",
+    ZIP_SWAP: "Cluster-wide ESXi swapped + zipped memory",
+}
+
 
 # =================================================================================================================
 # Part 3. The KPI

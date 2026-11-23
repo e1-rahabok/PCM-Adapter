@@ -18,20 +18,22 @@ Source of the limits: [`formula/cluster-risk.png`](formula/cluster-risk.png), ex
 
 Every sub-metric is lower-is-better.
 
-| Group | Sub-metric | Unit | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Utilization | Highest ESXi CPU Thread Utilization | % | Excluded (below 60) | 80 | 90 | 95 |
-| Utilization | Worst ESXi CPU Imbalance | ratio | 1 (exactly) | 1.3 | 1.6 | 2 |
-| Saturation | Worst ESXi Memory Ballooned | % | 1 | 2 | 4 | 8 |
-| Saturation | Worst ESXi Memory Zip Swap (swapped + compressed) | % | 0.25 | 0.5 | 1 | 2 |
-| Saturation | Worst ESXi Active Memory (tiered hosts) | % | Excluded (below 50) | 62.5 | 75 | 100 |
-| Saturation | Worst ESXi Memory Tiering Latency | µs | 100 | 200 | 400 | 800 |
-| Reservation | Highest ESXi CPU Reservation | % | Excluded (below 10) | 40 | 60 | 80 |
-| Reservation | Highest ESXi Memory Reservation | % | Excluded (below 10) | 40 | 60 | 80 |
-| Allocation | Highest ESXi CPU Overcommit Ratio | ratio | Excluded (below 1) | 2 | 3 | 4 |
-| Allocation | Highest ESXi Memory Overcommit Ratio | ratio | Excluded (below 1) | 1.4 | 1.8 | 2.2 |
-| Monster VM | Highest CPU Monster VM to Host Ratio | ratio | 1 | 2 | 3 | 4 |
-| Monster VM | Highest Memory Monster VM to Host Ratio | ratio | 1 | 2 | 3 | 4 |
+VCF Operations shows each sub-metric under the Agent E2 catalog name (Label below). The key stays the sub-metric name: a new key would be a new metric, without its history.
+
+| Group | Sub-metric (key) | Label | Unit | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Utilization | Highest ESXi CPU Thread Utilization | Highest ESXi CPU thread utilization | % | Excluded (below 60) | 80 | 90 | 95 |
+| Utilization | Worst ESXi CPU Imbalance | Worst ESXi CPU imbalance | ratio | 1 (exactly) | 1.3 | 1.6 | 2 |
+| Saturation | Worst ESXi Memory Ballooned | Worst ESXi memory ballooned | % | 1 | 2 | 4 | 8 |
+| Saturation | Worst ESXi Memory Zip Swap (swapped + compressed) | Worst ESXi swapped + zipped memory | % | 0.25 | 0.5 | 1 | 2 |
+| Saturation | Worst ESXi Active Memory (tiered hosts) | Worst ESXi active memory, tiered hosts | % | Excluded (below 50) | 62.5 | 75 | 100 |
+| Saturation | Worst ESXi Memory Tiering Latency | Worst ESXi NVMe read latency | µs | 100 | 200 | 400 | 800 |
+| Reservation | Highest ESXi CPU Reservation | Highest ESXi CPU reservation | % | Excluded (below 10) | 40 | 60 | 80 |
+| Reservation | Highest ESXi Memory Reservation | Highest ESXi memory reservation | % | Excluded (below 10) | 40 | 60 | 80 |
+| Allocation | Highest ESXi CPU Overcommit Ratio | Highest ESXi CPU overcommit ratio | ratio | Excluded (below 1) | 2 | 3 | 4 |
+| Allocation | Highest ESXi Memory Overcommit Ratio | Highest ESXi memory overcommit ratio | ratio | Excluded (below 1) | 1.4 | 1.8 | 2.2 |
+| Monster VM | Highest CPU Monster VM to Host Ratio | Highest CPU monster VM : host ratio | ratio | 1 | 2 | 3 | 4 |
+| Monster VM | Highest Memory Monster VM to Host Ratio | Highest memory monster VM : host ratio | ratio | 1 | 2 | 3 | 4 |
 
 Every row scores 100 at 0, except CPU Imbalance, which scores 100 at 1: one running thread per running core. Any imbalance above 1 is yellow.
 
