@@ -29,7 +29,7 @@ VCF Operations shows the eight VM rows under a label in the words of the Agent E
 | 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs on the host | % | 0.5 | 1 | 2 | 4 |
 | 90th percentile | 90th Percentile VM Memory Latency | 90th percentile memory wait among VMs on the host | % | 0.5 | 1 | 2 | 4 |
 | 90th percentile | 90th Percentile VM Disk Latency (read and write) | 90th percentile peak disk latency among virtual disks of VMs on the host | ms | 20 | 40 | 60 | 80 |
-| ESXi | ESXi Bad Network Packets (errored + dropped) | ESXi Bad Network Packets | % | Excluded (exactly 0) | 0.2 | 0.4 | 0.8 |
+| ESXi | ESXi Bad Network Packets (errored + dropped) | ESXi (error + dropped) network packets | % | Excluded (exactly 0) | 0.2 | 0.4 | 0.8 |
 
 Bad network packets are green only at exactly 0, and the source table marks that range "Excluded". Any bad packet is yellow. While the value is 0 the sub-metric is left out of the KPI, because bad packets are rare and a constant 100 would dilute the other sub-metrics.
 

@@ -165,7 +165,7 @@ def test_vm_rows_keep_their_keys_and_show_the_catalog_label():
             # The CPU and disk rows read a 20-second peak. The memory rows are Memory Wait, not a peak.
             assert ("memory wait" in labels[metric.name]) != ("peak" in labels[metric.name])
         assert attributes["Worst VM CPU Ready"].startswith("Worst peak vCPU Ready") and where in attributes["Worst VM CPU Ready"]
-    assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi Bad Network Packets"
+    assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi (error + dropped) network packets"
 
 
 # --- Memory Wait: Memory Contention plus NVMe wait --------------------------
@@ -190,3 +190,15 @@ def test_memory_wait_rows_add_the_nvme_wait_of_each_vm():
 def test_without_vm_context_memory_wait_is_memory_contention():
     samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], mw.NVME_READ_BANDWIDTH: [6.0], mw.MEMORY_CONTENTION: [0.4]}}
     assert collect(samples)["Worst VM Memory Latency"] == 0.4
+
+
+def test_packets_and_vm_rows_show_the_catalog_name():
+    # Bad network packets and the two published VM Performance rows: catalog names as labels, keys kept (gap review 2026-11-23).
+    from metrics.host import esxi_performance_metrics as ep
+    from metrics.vm import vm_performance_metrics as vp
+    assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi (error + dropped) network packets"
+    assert _group_attributes("ESXi Performance")["ESXi Bad Network Packets"] == "ESXi (error + dropped) network packets"
+    vm = _group_attributes("VM Performance")
+    assert vm["Memory Wait"] == "Memory wait" and vm["Memory Zip Swap"] == "VM swapped + zipped memory"
+    assert set(vp.LABELS) == {m.name for m in vp.PUBLISHED_METRICS}  # only what the pack publishes gets a label
+    assert ep.LABELS[ep.BAD_PACKETS.name] == "ESXi (error + dropped) network packets"

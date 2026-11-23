@@ -69,6 +69,8 @@ LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
     "90th percentile memory wait among VMs",
     "90th percentile peak disk latency among VM virtual disks",
 ], strict=True))
+# Bad network packets: the catalog name. The key stays the row name, for the history.
+LABELS[BAD_PACKETS.name] = "Highest ESXi (error + dropped) network packets"
 
 
 # =================================================================================================================

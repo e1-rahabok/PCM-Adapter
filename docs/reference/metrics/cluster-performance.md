@@ -31,7 +31,7 @@ VCF Operations shows the eight VM rows under a label in the words of the Agent E
 | 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
 | 90th percentile | 90th Percentile VM Memory Latency | 90th percentile memory wait among VMs | 90th percentile of [Memory Wait](memory-wait.md) across the VMs |
 | 90th percentile | 90th Percentile VM Disk Latency | 90th percentile peak disk latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
-| ESXi | Highest ESXi Bad Network Packets | Highest ESXi Bad Network Packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
+| ESXi | Highest ESXi Bad Network Packets | Highest ESXi (error + dropped) network packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
 
 Notes:
 
