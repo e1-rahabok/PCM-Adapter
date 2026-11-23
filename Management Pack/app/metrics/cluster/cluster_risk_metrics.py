@@ -356,6 +356,24 @@ ROWS = [
 METRICS = [row.metric for row in ROWS]
 # Every row is published on the cluster, because none of them exists there as a stat already.
 PUBLISHED_METRICS = METRICS
+
+# The labels VCF Operations shows: the Agent E2 catalog names (knowledge/catalog/thresholds-risk.yaml, section model),
+# without the unit, which VCF Operations shows on its own. The keys stay the row names: renaming a key would start a
+# new metric and leave its history and the dashboards that read it behind.
+LABELS = {
+    "Highest ESXi CPU Thread Utilization": "Highest ESXi CPU thread utilization",
+    "Worst ESXi CPU Imbalance": "Worst ESXi CPU imbalance",
+    "Worst ESXi Memory Ballooned": "Worst ESXi memory ballooned",
+    "Worst ESXi Memory Zip Swap": "Worst ESXi swapped + zipped memory",
+    "Worst ESXi Active Memory": "Worst ESXi active memory, tiered hosts",
+    "Worst ESXi Memory Tiering Latency": "Worst ESXi NVMe read latency",
+    "Highest ESXi CPU Reservation": "Highest ESXi CPU reservation",
+    "Highest ESXi Memory Reservation": "Highest ESXi memory reservation",
+    "Highest ESXi CPU Overcommit Ratio": "Highest ESXi CPU overcommit ratio",
+    "Highest ESXi Memory Overcommit Ratio": "Highest ESXi memory overcommit ratio",
+    "Highest CPU Monster VM to Host Ratio": "Highest CPU monster VM : host ratio",
+    "Highest Memory Monster VM to Host Ratio": "Highest memory monster VM : host ratio",
+}
 # Every stat asked from VCF Operations for each host: the DRAM capacity, the consumed memory that Cluster Consumption
 # needs, and what each row reads.
 HOST_STATS = list(dict.fromkeys(DRAM_STATS + [MEM_CONSUMED] + [key for row in ROWS for key in row.stats]))
