@@ -162,6 +162,31 @@ def test_vm_rows_keep_their_keys_and_show_the_catalog_label():
         for metric in vc.VM_CONTENTION_METRICS:
             assert metric.name in attributes, metric.name  # the key never changes: it would lose the history
             assert attributes[metric.name] == labels[metric.name]
-            assert "peak" in labels[metric.name]  # every VM row reads a 20-second peak
+            # The CPU and disk rows read a 20-second peak. The memory rows are Memory Wait, not a peak.
+            assert ("memory wait" in labels[metric.name]) != ("peak" in labels[metric.name])
         assert attributes["Worst VM CPU Ready"].startswith("Worst peak vCPU Ready") and where in attributes["Worst VM CPU Ready"]
     assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi Bad Network Packets"
+
+
+# --- Memory Wait: Memory Contention plus NVMe wait --------------------------
+
+from metrics.vm import memory_wait as mw
+from metrics.vm.memory_wait import VmMemoryContext
+
+
+def test_memory_wait_rows_add_the_nvme_wait_of_each_vm():
+    # vm-1 has 8 vCPUs on host-1, reads 6 MB/s from NVMe, and host-1 reads at 290 us: NVMe wait 5.57 %.
+    # Its Memory Contention is 0, so only Memory Wait shows the wait. The others wait for nothing.
+    samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], mw.NVME_READ_BANDWIDTH: [6.0]}, "host-1": {
+        **HEALTHY["host-1"], mw.NVME_READ_LATENCY: [290.0]}}
+    context = {vm_id: VmMemoryContext(8, "host-1") for vm_id in VM_IDS}
+    cluster_obj = FakeObject(CLUSTER_ID)
+    cp.collect_cluster_performance_metrics(cluster_obj, "Cluster 1", VM_IDS, HOST_IDS, FakeSuiteApi(samples), context)
+    published = {key.split("|")[-1]: value for key, value in cluster_obj.metrics.items()}
+    assert published["Worst VM Memory Latency"] == 5.57              # the key keeps its name, the label says wait
+    assert published["90th Percentile VM Memory Latency"] == 0.0     # one VM of ten: deep, not broad
+
+
+def test_without_vm_context_memory_wait_is_memory_contention():
+    samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], mw.NVME_READ_BANDWIDTH: [6.0], mw.MEMORY_CONTENTION: [0.4]}}
+    assert collect(samples)["Worst VM Memory Latency"] == 0.4

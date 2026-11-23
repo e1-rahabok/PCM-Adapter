@@ -16,7 +16,10 @@ from aria.ops.object import Object
 from aria.ops.suite_api_client import SuiteApiClient
 from metrics.kpi_score import publish_kpi
 from metrics.host.host_bad_network_packets import bad_network_packets_metric, bad_packet_pct, read_host_packet_stats
-from metrics.vm.contention_by_vms import VM_CONTENTION_METRICS, worst_and_percentile, read_vm_contention_stats
+from metrics.vm.contention_by_vms import (
+    VM_CONTENTION, VM_CONTENTION_METRICS, worst_and_percentile, read_vm_contention_stats, read_host_nvme_latency, with_memory_wait,
+)
+from metrics.vm.memory_wait import VmMemoryContext
 
 logger = logging.getLogger(__name__)
 
@@ -43,17 +46,18 @@ METRICS = VM_CONTENTION_METRICS + [BAD_PACKETS]
 PUBLISHED_METRICS = METRICS
 
 # The labels VCF Operations shows, in the words of the Agent E2 catalog (knowledge/catalog/thresholds-performance.yaml).
-# The keys stay the row names: renaming a key would start a new metric and leave its history behind. Every VM row
-# reads a 20-second peak, so every label says peak. Memory says latency, not wait, until NVMe wait is scored.
+# The keys stay the row names: renaming a key would start a new metric and leave its history behind. The CPU and disk
+# rows read a 20-second peak, so their labels say peak. The memory rows are Memory Wait (Memory Contention plus NVMe wait,
+# metrics/vm/memory_wait.py): the key keeps the word latency, the label says wait.
 LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
     "Worst peak vCPU Ready among VMs on the host",
     "Worst peak vCPU Co-stop among VMs on the host",
-    "Worst peak memory latency among VMs on the host",
-    "Worst peak read/write disk latency, all vDisks of VMs on the host",
+    "Worst memory wait among VMs on the host",
+    "Worst peak disk latency among virtual disks of VMs on the host",
     "90th percentile peak vCPU Ready among VMs on the host",
     "90th percentile peak vCPU Co-stop among VMs on the host",
-    "90th percentile peak memory latency among VMs on the host",
-    "90th percentile peak read/write latency among virtual disks of VMs on the host",
+    "90th percentile memory wait among VMs on the host",
+    "90th percentile peak disk latency among virtual disks of VMs on the host",
 ], strict=True))
 
 
@@ -62,11 +66,14 @@ LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
 # =================================================================================================================
 
 class EsxiPerformanceStats:
-    """The stats of one collection cycle: of every powered-on VM, and the packet counters of every host."""
+    """The stats of one collection cycle: of every powered-on VM, the packet counters and the NVMe read latency of
+    every host."""
 
-    def __init__(self, vm_stats: Dict[str, Dict[str, float]], host_packet_stats: Dict[str, Dict[str, float]]):
+    def __init__(self, vm_stats: Dict[str, Dict[str, float]], host_packet_stats: Dict[str, Dict[str, float]],
+                 host_nvme_latency: Optional[Dict[str, float]] = None):
         self.vm_stats = vm_stats
         self.host_packet_stats = host_packet_stats
+        self.host_nvme_latency = host_nvme_latency or {}
 
 
 def read_esxi_performance_stats(
@@ -77,6 +84,7 @@ def read_esxi_performance_stats(
         return EsxiPerformanceStats(
             read_vm_contention_stats(suite_api_client, vm_ids),
             read_host_packet_stats(suite_api_client, host_ids),
+            read_host_nvme_latency(suite_api_client, host_ids),
         )
     except Exception as e:
         # Without stats there is no score, but the rest of the host collection must still run.
@@ -88,23 +96,32 @@ def read_esxi_performance_stats(
 # Part 3. The KPI, once per host
 # =================================================================================================================
 
-def esxi_performance_values(stats: EsxiPerformanceStats, host_id: str, vm_ids: List[str]) -> Dict[str, Optional[float]]:
-    """The value of every row for one host. None means "no data"."""
-    values = worst_and_percentile(stats.vm_stats, vm_ids)
+def esxi_performance_values(
+    stats: EsxiPerformanceStats, host_id: str, vm_ids: List[str],
+    vm_context: Optional[Dict[str, VmMemoryContext]] = None,
+) -> Dict[str, Optional[float]]:
+    """The value of every row for one host. None means "no data".
+
+    The memory rows are Memory Wait: Memory Contention plus NVMe wait, see metrics/vm/memory_wait.py. vm_context
+    gives each VM's vCPUs and host. Without it, Memory Wait is the Memory Contention alone.
+    """
+    vm_stats = with_memory_wait(stats.vm_stats, vm_ids, vm_context or {}, stats.host_nvme_latency)
+    values = worst_and_percentile(VM_CONTENTION, vm_stats, vm_ids)
     values[BAD_PACKETS.name] = bad_packet_pct(stats.host_packet_stats.get(host_id, {}))
     return values
 
 
 def collect_esxi_performance_metrics(
-    host_obj: Object, host_name: str, host_id: str, vm_ids: List[str], stats: EsxiPerformanceStats
+    host_obj: Object, host_name: str, host_id: str, vm_ids: List[str], stats: EsxiPerformanceStats,
+    vm_context: Optional[Dict[str, VmMemoryContext]] = None,
 ) -> None:
     """Publishes the rows, then the ESXi Performance KPI computed from them.
 
     host_id is the VCF Operations id of this host, vm_ids those of the powered-on VMs on it.
-    stats is the result of read_esxi_performance_stats().
+    stats is the result of read_esxi_performance_stats(), vm_context the vCPUs and host of each VM.
     """
     try:
-        values = esxi_performance_values(stats, host_id, vm_ids)
+        values = esxi_performance_values(stats, host_id, vm_ids, vm_context)
 
         no_data = publish_kpi(host_obj, GROUP, KPI_KEY, METRICS, PUBLISHED_METRICS, values).no_data
         if no_data:

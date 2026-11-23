@@ -89,3 +89,23 @@ def test_host_without_vms_is_scored_on_its_network():
 
 def test_failed_stats_calls_publish_nothing():
     assert collect(HEALTHY, status_code=500) == {}
+
+
+# --- Memory Wait: Memory Contention plus NVMe wait --------------------------
+
+from metrics.vm import memory_wait as mw
+from metrics.vm.memory_wait import VmMemoryContext
+
+
+def test_memory_wait_rows_add_the_nvme_wait_of_the_vms_on_this_host():
+    # vm-1 has 8 vCPUs, reads 6 MB/s from NVMe, and its host reads at 290 us: NVMe wait 5.57 %, Memory Contention 0.
+    samples = {**HEALTHY, "vm-1": {**HEALTHY["vm-1"], mw.NVME_READ_BANDWIDTH: [6.0]},
+               "host-1": {**HEALTHY["host-1"], mw.NVME_READ_LATENCY: [290.0]}}
+    api = FakeSuiteApi(samples)
+    stats = ep.read_esxi_performance_stats(api, HOST_1_VMS + HOST_2_VMS, ["host-1", "host-2"])
+    host_obj = FakeObject("host-1")
+    context = {vm_id: VmMemoryContext(8, "host-1") for vm_id in HOST_1_VMS}
+    ep.collect_esxi_performance_metrics(host_obj, "host-1", "host-1", HOST_1_VMS, stats, context)
+    published = {key.split("|")[-1]: value for key, value in host_obj.metrics.items()}
+    assert published["Worst VM Memory Latency"] == 5.57
+    assert published["90th Percentile VM Memory Latency"] == 0.0

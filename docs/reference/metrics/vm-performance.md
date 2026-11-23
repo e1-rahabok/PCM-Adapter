@@ -21,14 +21,14 @@ It replaces the "vSphere VM Performance" super metric, and it feeds [Business Ap
 
 ## Step 1: Collect the 9 sub-metrics
 
-Eight sub-metrics are stats the VM already has. The pack reads them and does not publish them again. Memory Zip Swap is calculated and published.
+Seven sub-metrics are stats the VM already has. The pack reads them and does not publish them again. Memory Wait and Memory Zip Swap are calculated and published.
 
 | Group | Sub-metric | Source |
 | :--- | :--- | :--- |
 | VM contention | CPU Co-Stop | `cpu\|20_sec_peak_costopPct` |
 | VM contention | CPU Ready | `cpu\|20_sec_peak_readyPct` |
 | VM contention | CPU Overlap | `cpu\|20_sec_peak_overlap` (%) |
-| VM contention | Memory Contention | `mem\|20_sec_peak_host_contentionPct` |
+| VM contention | Memory Wait | Calculated: `mem\|20_sec_peak_host_contentionPct` + NVMe wait. Published as `vCommunity\|VM Performance\|Memory Wait`. See [Memory Wait](memory-wait.md). |
 | VM contention | Disk Latency | `virtualDisk\|20_sec_peak_totalLatency_average` |
 | VM contention | Network Dropped Tx | `net\|droppedTxPct_max` |
 | VM utilization | CPU Run | `cpu\|net_run` |
@@ -36,6 +36,8 @@ Eight sub-metrics are stats the VM already has. The pack reads them and does not
 | IaaS high utilization | Memory Zip Swap | Calculated: `(mem\|compressed_average + mem\|swapped_average) / guest\|used_memory × 100`. Published as `vCommunity\|VM Performance\|Memory Zip Swap`. |
 
 The 20-second peaks are used where they exist, rather than the 5-minute averages, so short contention shows.
+
+Memory Wait is Memory Contention plus NVMe wait, not Memory Contention alone. With memory tiering, the Memory Contention counter does not count the time a VM waits for pages on NVMe, so it can read near 0 while the VM waits. See [Memory Wait](memory-wait.md).
 
 Memory Zip Swap is divided by the memory the guest OS uses, not by the VM's configured memory. Configured memory includes memory the guest does not use, so dividing by it would make the percentage smaller and under-report the problem. This is the formula of the "vSphere VM Memory Zip Swap" super metric, which this metric replaces.
 
@@ -52,7 +54,7 @@ Every sub-metric is lower-is-better, and 0 is best.
 | CPU Co-Stop | % | 1 | 2 | 4 | 8 |
 | CPU Ready | % | 2 | 4 | 8 | 16 |
 | CPU Overlap | % | Excluded (below 0.5) | 1 | 2 | 4 |
-| Memory Contention | % | 0.5 | 1 | 2 | 4 |
+| Memory Wait | % | 0.5 | 1 | 2 | 4 |
 | Disk Latency | ms | 10 | 20 | 40 | 80 |
 | Network Dropped Tx | % | Excluded (exactly 0) | 0.5 | 1 | 2 |
 | CPU Run | % | Excluded (below 95) | 97 | 99 | 100 |

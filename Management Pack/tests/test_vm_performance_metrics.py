@@ -10,11 +10,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 
 from metrics.vm import vm_performance_metrics as vp
 from metrics.vm import guest_os_performance_metrics as go
+from metrics.vm import memory_wait as mw
 from fakes import FakeSuiteApi, FakeObject
 
 # A VM with nothing wrong: no contention, CPU Run low, nothing compressed or swapped.
 HEALTHY = {
     **{stat_key: 0.0 for stat_key in vp.SOURCE_STATS.values()},
+    mw.MEMORY_CONTENTION: 0.0,
     vp.MEM_COMPRESSED: 0.0,
     vp.MEM_SWAPPED: 0.0,
     vp.GUEST_USED_MEMORY: 4000000.0,
@@ -35,7 +37,7 @@ def test_limits_match_the_source_table():
     assert limits["CPU Co-Stop"] == (1, 2, 4, 8, False)
     assert limits["CPU Ready"] == (2, 4, 8, 16, False)
     assert limits["CPU Overlap"] == (0.5, 1, 2, 4, True)            # green is "Excluded"
-    assert limits["Memory Contention"] == (0.5, 1, 2, 4, False)
+    assert limits["Memory Wait"] == (0.5, 1, 2, 4, False)
     assert limits["Disk Latency"] == (10, 20, 40, 80, False)
     assert limits["Network Dropped Tx"] == (0, 0.5, 1, 2, True)     # green is "Excluded", exactly 0
     assert limits["CPU Run"] == (95, 97, 99, 100, True)            # green is "Excluded"
@@ -60,7 +62,7 @@ def test_memory_zip_swap():
 # --- The KPI ----------------------------------------------------------------
 
 def test_healthy_vm_scores_100_and_publishes_only_what_the_vm_does_not_have():
-    assert collect(HEALTHY) == {"Memory Zip Swap": 0.0, vp.KPI_KEY: 100.0}
+    assert collect(HEALTHY) == {"Memory Wait": 0.0, "Memory Zip Swap": 0.0, vp.KPI_KEY: 100.0}
 
 
 # In HEALTHY, CPU Overlap, Network Dropped Tx and CPU Run are 0, in their excluded green, so they are left out.
@@ -92,6 +94,47 @@ def test_disk_latency_uses_the_new_limits():
     assert collect({**HEALTHY, "virtualDisk|20_sec_peak_totalLatency_average": 30.0})[vp.KPI_KEY] == 66.82
 
 
+# --- Memory Wait: Memory Contention plus NVMe wait --------------------------
+
+def collect_with_nvme(vm_stats, vcpus, latency_us):
+    vm_obj = FakeObject("vm-1")
+    vp.collect_vm_performance_metrics(vm_obj, "VM 1", vm_stats, vcpus, latency_us)
+    return {key.split("|")[-1]: value for key, value in vm_obj.metrics.items()}
+
+
+def test_memory_wait_adds_the_nvme_wait_to_memory_contention():
+    # 6 MB/s x 256 pages = 1,536 fetches per second, each 290 us: 0.445 vCPU frozen on average, of 8 vCPUs: 5.57 %.
+    # Memory Contention is 0 (it does not count NVMe fetches), so Memory Wait is the NVMe wait alone, red (above 4).
+    stats = {**HEALTHY, mw.NVME_READ_BANDWIDTH: 6.0}
+    assert collect_with_nvme(stats, 8, 290.0)["Memory Wait"] == 5.57
+    assert collect_with_nvme({**stats, mw.MEMORY_CONTENTION: 0.5}, 8, 290.0)["Memory Wait"] == 6.07
+
+
+def test_memory_wait_on_a_host_without_memory_tiering_is_memory_contention():
+    # No NVMe stats, no host latency: nothing to add.
+    assert collect_with_nvme({**HEALTHY, mw.MEMORY_CONTENTION: 0.7}, 8, None)["Memory Wait"] == 0.7
+    assert collect_with_nvme({**HEALTHY, mw.MEMORY_CONTENTION: 0.7}, 8, 290.0)["Memory Wait"] == 0.7
+
+
+def test_memory_wait_without_vcpus_is_memory_contention_alone():
+    stats = {**HEALTHY, mw.NVME_READ_BANDWIDTH: 6.0, mw.MEMORY_CONTENTION: 0.7}
+    assert collect_with_nvme(stats, None, 290.0)["Memory Wait"] == 0.7
+
+
+def test_nvme_wait_formula_is_littles_law():
+    assert round(mw.nvme_wait_pct(6.0, 290.0, 8), 2) == 5.57
+    assert mw.nvme_wait_pct(6.0, 290.0, 0) is None
+    assert mw.memory_wait_pct({}, 8, 290.0) is None          # no Memory Contention: nothing is known
+
+
+def test_a_vm_waiting_on_nvme_lowers_vm_performance():
+    # Memory Wait 5.57 % is past the end of red for a VM (4): it scores 0 with weight 16.
+    # The other five that count score 100 with weight 1: KPI = 5 x 100 / (5 + 16) = 23.81.
+    stats = {**HEALTHY, mw.NVME_READ_BANDWIDTH: 6.0}
+    assert collect_with_nvme(stats, 8, 290.0)[vp.KPI_KEY] == 23.81
+    assert collect(stats)[vp.KPI_KEY] == 100.0               # the same VM without the NVMe inputs
+
+
 # --- Missing data -----------------------------------------------------------
 
 def test_vm_without_tools_is_scored_on_the_stats_it_has():
@@ -100,7 +143,7 @@ def test_vm_without_tools_is_scored_on_the_stats_it_has():
     # Memory Zip Swap needs a Tools stat, so it has no data. Three more are in their excluded green.
     # That leaves four at 100 and CPU Ready at 18.75 with weight 9.51.
     # KPI = (4 x 100 + 18.75 x 9.51) / (4 + 9.51) = 42.80
-    assert published == {vp.KPI_KEY: 42.8}
+    assert published == {"Memory Wait": 0.0, vp.KPI_KEY: 42.8}
 
 
 def test_vm_with_no_stats_publishes_nothing():

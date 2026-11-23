@@ -19,23 +19,24 @@ Eight sub-metrics look at the powered-on VMs in the cluster in two ways:
 
 The ninth is the worst host's bad network packets. Every sub-metric is lower-is-better, and 0 is best.
 
-VCF Operations shows the eight VM rows under a label in the words of the Agent E2 catalog: every row reads a 20-second peak, so every label says peak. The key stays the sub-metric name: a new key would be a new metric, without its history. Memory says latency, not wait, until the pack scores NVMe wait.
+VCF Operations shows the eight VM rows under a label in the words of the Agent E2 catalog: the CPU and disk rows read a 20-second peak, so their labels say peak, and the memory rows are [Memory Wait](memory-wait.md): Memory Contention plus NVMe wait, so their key keeps the word latency and their label says wait. The key stays the sub-metric name: a new key would be a new metric, without its history.
 
 | Group | Sub-metric (key) | Label in VCF Operations | How it is calculated |
 | :--- | :--- | :--- | :--- |
 | Worst VM | Worst VM CPU Ready | Worst peak vCPU Ready among all VMs | Highest `cpu\|20_sec_peak_readyPct` of any VM |
 | Worst VM | Worst VM CPU Co-Stop | Worst peak vCPU Co-stop among all VMs | Highest `cpu\|20_sec_peak_costopPct` of any VM |
-| Worst VM | Worst VM Memory Latency | Worst peak memory latency among all VMs | Highest `mem\|20_sec_peak_host_contentionPct` of any VM |
-| Worst VM | Worst VM Disk Latency | Worst peak read/write disk latency, all VM vDisks | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
+| Worst VM | Worst VM Memory Latency | Worst memory wait among all VMs | Highest [Memory Wait](memory-wait.md) of any VM |
+| Worst VM | Worst VM Disk Latency | Worst peak disk latency among all VM virtual disks | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
 | 90th percentile | 90th Percentile VM CPU Ready | 90th percentile peak vCPU Ready among VMs | 90th percentile of `cpu\|20_sec_peak_readyPct` across the VMs |
 | 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
-| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile peak memory latency among VMs | 90th percentile of `mem\|20_sec_peak_host_contentionPct` across the VMs |
-| 90th percentile | 90th Percentile VM Disk Latency | 90th percentile peak read/write latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
+| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile memory wait among VMs | 90th percentile of [Memory Wait](memory-wait.md) across the VMs |
+| 90th percentile | 90th Percentile VM Disk Latency | 90th percentile peak disk latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
 | ESXi | Highest ESXi Bad Network Packets | Highest ESXi Bad Network Packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
 
 Notes:
 
 - **Which VMs count.** The powered-on VMs on the cluster's hosts. Powered-off VMs are left out because their last stats are old. Placement is read from VCF Operations properties: a host belongs to the cluster named in its `summary|parentCluster`, a VM runs on the host named in its `summary|parentHost`, and it is powered on when `summary|runtime|powerState` is "Powered On". Placement is by name, and names are unique only inside one datacenter, so two clusters with the same name in different datacenters of one vCenter can be mixed up.
+- **Memory wait.** The memory rows are not the Memory Contention counter. They are the VM's Memory Wait: Memory Contention plus NVMe wait. See [Memory Wait](memory-wait.md).
 - **20-second peaks.** The VM stats are 20-second peaks rather than 5-minute averages, so short contention shows.
 - **90th percentile.** The value that 90 % of the VMs are at or below. The VMs are sorted, and the one at position 90 % of the count, rounded up, is taken. With 20 VMs that is the 18th lowest. With fewer than 10 VMs it is the highest, the same as the worst VM.
 - **Bad network packets** use the last collection cycle, as the "Bad Network Packets" super metric did. They are never averaged over a longer time, because that would hide a spike. Two of the counters, Total Packets Received and Transmitted, are deactivated by default in VCF Operations. Activate them first: see [Policy](../../configuration-guide/policy.md).
