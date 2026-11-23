@@ -37,6 +37,10 @@ NVMe wait (%) = VM NVMe read bandwidth (MB/s) × 256 pages per MB × NVMe read l
 | NVMe read latency (µs) | `mem:NVMe\|latency.read_latest` | The host the VM runs on |
 | vCPUs | `config\|hardware\|numCpu` | VM property |
 
+## Metric keys
+
+The memory rows of Cluster Performance and ESXi Performance keep their keys `Worst VM Memory Latency` and `90th Percentile VM Memory Latency`, by design: the keys date from before NVMe wait was scored. VCF Operations treats a new key as a new metric, without history, and the dashboards, views and reports that read the old key would go empty. So the key stays and the label says memory wait: "Worst memory wait among all VMs", "90th percentile memory wait among VMs" (and "... among VMs on the host" on ESXi Performance). The VM Performance row is new, so its key is `Memory Wait`.
+
 ## Known limitations
 
 - **NVMe wait is calculated, not measured.** One 4 KB page per fetch is assumed. With prefetch or a large page there are fewer fetches than `MB/s × 256`, and the formula overstates the wait.

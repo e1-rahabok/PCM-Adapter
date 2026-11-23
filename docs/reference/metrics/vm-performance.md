@@ -23,17 +23,19 @@ It replaces the "vSphere VM Performance" super metric, and it feeds [Business Ap
 
 Seven sub-metrics are stats the VM already has. The pack reads them and does not publish them again. Memory Wait and Memory Zip Swap are calculated and published.
 
+Names are the Agent E2 catalog names (one name per sub-metric across the catalog, PCM and this pack). Only Memory Wait and Memory Zip Swap are published by the pack, under those keys and with these names as labels; the other rows are stats the VM already has.
+
 | Group | Sub-metric | Source |
 | :--- | :--- | :--- |
-| VM contention | CPU Co-Stop | `cpu\|20_sec_peak_costopPct` |
-| VM contention | CPU Ready | `cpu\|20_sec_peak_readyPct` |
-| VM contention | CPU Overlap | `cpu\|20_sec_peak_overlap` (%) |
-| VM contention | Memory Wait | Calculated: `mem\|20_sec_peak_host_contentionPct` + NVMe wait. Published as `vCommunity\|VM Performance\|Memory Wait`. See [Memory Wait](memory-wait.md). |
-| VM contention | Disk Latency | `virtualDisk\|20_sec_peak_totalLatency_average` |
-| VM contention | Network Dropped Tx | `net\|droppedTxPct_max` |
-| VM utilization | CPU Run | `cpu\|net_run` |
-| IaaS high utilization | Memory Ballooned | `mem\|balloonPct` |
-| IaaS high utilization | Memory Zip Swap | Calculated: `(mem\|compressed_average + mem\|swapped_average) / guest\|used_memory × 100`. Published as `vCommunity\|VM Performance\|Memory Zip Swap`. |
+| VM contention | Peak CPU Co-stop among any vCPU | `cpu\|20_sec_peak_costopPct` |
+| VM contention | Peak CPU Ready among any vCPU | `cpu\|20_sec_peak_readyPct` |
+| VM contention | Peak CPU Overlap | `cpu\|20_sec_peak_overlap` (%) |
+| VM contention | Memory wait | Calculated: `mem\|20_sec_peak_host_contentionPct` + NVMe wait. Published as `vCommunity\|VM Performance\|Memory Wait`. See [Memory Wait](memory-wait.md). |
+| VM contention | Peak read/write latency among vDisks | `virtualDisk\|20_sec_peak_totalLatency_average` |
+| VM contention | Peak network TX dropped packets | `net\|droppedTxPct_max` |
+| VM utilization | CPU Net Run | `cpu\|net_run` |
+| IaaS high utilization | VM Memory Ballooned | `mem\|balloonPct` |
+| IaaS high utilization | VM swapped + zipped memory | Calculated: `(mem\|compressed_average + mem\|swapped_average) / guest\|used_memory × 100`. Published as `vCommunity\|VM Performance\|Memory Zip Swap`. |
 
 The 20-second peaks are used where they exist, rather than the 5-minute averages, so short contention shows.
 
@@ -51,15 +53,15 @@ Every sub-metric is lower-is-better, and 0 is best.
 
 | Sub-metric | Unit | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| CPU Co-Stop | % | 1 | 2 | 4 | 8 |
-| CPU Ready | % | 2 | 4 | 8 | 16 |
-| CPU Overlap | % | Excluded (below 0.5) | 1 | 2 | 4 |
-| Memory Wait | % | 0.5 | 1 | 2 | 4 |
-| Disk Latency | ms | 10 | 20 | 40 | 80 |
-| Network Dropped Tx | % | Excluded (exactly 0) | 0.5 | 1 | 2 |
-| CPU Run | % | Excluded (below 95) | 97 | 99 | 100 |
-| Memory Ballooned | % | 2 | 4 | 8 | 16 |
-| Memory Zip Swap | % | 0.25 | 0.5 | 1 | 2 |
+| Peak CPU Co-stop among any vCPU | % | 1 | 2 | 4 | 8 |
+| Peak CPU Ready among any vCPU | % | 2 | 4 | 8 | 16 |
+| Peak CPU Overlap | % | Excluded (below 0.5) | 1 | 2 | 4 |
+| Memory wait | % | 0.5 | 1 | 2 | 4 |
+| Peak read/write latency among vDisks | ms | 10 | 20 | 40 | 80 |
+| Peak network TX dropped packets | % | Excluded (exactly 0) | 0.5 | 1 | 2 |
+| CPU Net Run | % | Excluded (below 95) | 97 | 99 | 100 |
+| VM Memory Ballooned | % | 2 | 4 | 8 | 16 |
+| VM swapped + zipped memory | % | 0.25 | 0.5 | 1 | 2 |
 
 **Excluded.** The source table marks three green ranges "Excluded". While a value is in that range, it is left out of the KPI, as [described for every KPI](../../concepts/kpi-scoring-models.md#skip-when-green).
 

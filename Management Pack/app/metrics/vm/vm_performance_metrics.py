@@ -136,6 +136,10 @@ ROWS = [CO_STOP, READY, OVERLAP, MEMORY_WAIT, DISK_LATENCY, DROPPED_TX, CPU_RUN,
 METRICS = [row.metric for row in ROWS]
 # Only the rows the VM does not already have as a stat: the calculated ones, Memory Wait and Memory Zip Swap.
 PUBLISHED_METRICS = [row.metric for row in ROWS if row.formula]
+
+# The labels VCF Operations shows for the two published rows: the Agent E2 catalog names (thresholds-performance.yaml,
+# VirtualMachine lines), without the unit. The keys stay the row names. The other rows are stats the VM already has.
+LABELS = {MEMORY_WAIT.metric.name: "Memory wait", ZIP_SWAP.metric.name: "VM swapped + zipped memory"}
 # Row -> the VM stat it is read from, as it is.
 SOURCE_STATS = {row.metric.name: row.stat for row in ROWS if row.stat}
 
