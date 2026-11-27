@@ -1,8 +1,8 @@
 # Guest OS Performance KPI
 
-**Guest OS Performance** is a 0 to 100 % score for the operating system inside a VM, Windows or Linux. 100 is best. It shows whether the guest OS gets the CPU, disk and memory it needs, from 4 sub-metrics.
+**Guest OS Performance** is a 0 to 100 % score for the operating system inside a VM, Windows or Linux. 100 is best. It shows whether the guest OS gets the CPU, disk and memory it needs, from 4 sub-metrics. What it means and how to read it: Agent E2's [Guest OS Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/guest-os/system/guest-os-performance.md).
 
-[VM Performance](vm-performance.md) scores the virtual hardware. This KPI scores the operating system that runs on it. The two are averaged into the [VM Guest OS KPI](vm-performance.md#vm-guest-os-kpi).
+It is averaged with [VM Performance](vm-performance.md) into the [VM Guest OS KPI](vm-performance.md#vm-guest-os-kpi).
 
 It is published on every powered-on VM with VMware Tools as `vCommunity|Guest OS Performance|Guest OS Performance Score`.
 

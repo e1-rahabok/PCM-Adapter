@@ -8,8 +8,8 @@ The adapter is built with the [VCF Operations Integration SDK](https://github.co
 
 **Concepts**
 
-- [Capacity Management Model](concepts/capacity-management.md): how consumption, contention and risk decide whether a cluster can take more VMs.
-- [KPI Scoring Models](concepts/kpi-scoring-models.md): three ways to combine colored sub-metrics into one KPI, which one suits performance, capacity and availability, and how the adapter scores a KPI (limits, weights, skipped and missing data).
+- [Capacity Management Model](concepts/capacity-management.md): what the adapter publishes for the capacity model, and how it computes Close for Business. The model itself is Agent E2's knowledge.
+- [KPI Scoring Models](concepts/kpi-scoring-models.md): how the adapter scores a KPI (limits, weights, skipped and missing data). Why it combines the colors as a weighted average is Agent E2's knowledge.
 - [Templates and Content Libraries](concepts/templates-and-content-libraries.md): VM templates, OVF and OVA templates, and the content libraries that hold them.
 
 **Installation Guide**
@@ -37,7 +37,7 @@ The adapter is built with the [VCF Operations Integration SDK](https://github.co
 **Reference**
 
 - [Metrics and Properties](reference/metrics-and-properties.md): every key the adapter publishes, by object type.
-- [Metrics](reference/metrics/README.md): how each metric and KPI is calculated, and its known limitations: [Business Application Performance](reference/metrics/business-application-performance.md), [Cluster Consumption](reference/metrics/cluster-consumption.md), [Cluster Performance](reference/metrics/cluster-performance.md), [Cluster Risk](reference/metrics/cluster-risk.md), [ESXi Performance](reference/metrics/esxi-performance.md), [Guest OS Performance](reference/metrics/guest-os-performance.md), [Memory Wait](reference/metrics/memory-wait.md), [Network Speed Degradation](reference/metrics/network-speed-degradation.md), [Operational Availability](reference/metrics/operational-availability.md), [Periodic Cluster Check](reference/metrics/periodic-cluster-check.md), [VM Performance](reference/metrics/vm-performance.md), [VM Shares](reference/metrics/vm-shares.md), [vSphere World Cluster Metrics](reference/metrics/vsphere-world-metrics.md).
+- [Metrics](reference/metrics/README.md): how each metric and KPI is calculated, and its known limitations. Each page links the Agent E2 knowledge file that explains what the metric means: [Business Application Performance](reference/metrics/business-application-performance.md), [Cluster Consumption](reference/metrics/cluster-consumption.md), [Cluster Performance](reference/metrics/cluster-performance.md), [Cluster Risk](reference/metrics/cluster-risk.md), [ESXi Performance](reference/metrics/esxi-performance.md), [Guest OS Performance](reference/metrics/guest-os-performance.md), [Memory Wait](reference/metrics/memory-wait.md), [Network Speed Degradation](reference/metrics/network-speed-degradation.md), [Operational Availability](reference/metrics/operational-availability.md), [Periodic Cluster Check](reference/metrics/periodic-cluster-check.md), [VM Performance](reference/metrics/vm-performance.md), [VM Shares](reference/metrics/vm-shares.md), [vSphere World Cluster Metrics](reference/metrics/vsphere-world-metrics.md).
 - [Text Display Widget](reference/text-display-widget.md): which HTML a Text Display widget keeps and drops, and how to add a page to one.
 
 **Troubleshooting Guide**

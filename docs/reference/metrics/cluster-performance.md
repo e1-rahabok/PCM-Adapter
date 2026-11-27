@@ -1,8 +1,6 @@
 # Cluster Performance KPI
 
-**Cluster Performance** is a 0 to 100 % score for a vSphere cluster. 100 is best. It measures the contention the VMs have now, from 9 sub-metrics. The worse a sub-metric is, the more weight it gets, so one bad sub-metric pulls the score down even when the others are fine.
-
-Use it to watch many clusters at once. When a score drops, open the 9 sub-metrics on that cluster to see which one caused it.
+**Cluster Performance** is a 0 to 100 % score for a vSphere cluster. 100 is best. It measures the contention the VMs have now, from 9 sub-metrics. What it means and how to read it: Agent E2's [Cluster Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/cluster-performance.md).
 
 The KPI and its 9 sub-metrics are published on the cluster object under `vCommunity|Cluster Performance`. The KPI is `vCommunity|Cluster Performance|Cluster Performance Score`.
 
@@ -12,12 +10,7 @@ Source of the sub-metrics and limits: [`formula/cluster-performance.png`](formul
 
 ## Step 1: Collect the 9 sub-metrics
 
-Eight sub-metrics look at the powered-on VMs in the cluster in two ways:
-
-- The worst VM shows a problem that hits one VM hard.
-- The 90th percentile across the VMs shows a problem that many VMs have.
-
-The ninth is the worst host's bad network packets. Every sub-metric is lower-is-better, and 0 is best.
+Eight sub-metrics take the worst VM and the 90th percentile of the powered-on VMs in the cluster. The ninth is the worst host's bad network packets. Every sub-metric is lower-is-better, and 0 is best.
 
 VCF Operations shows the eight VM rows under a label in the words of the Agent E2 catalog: the CPU and disk rows read a 20-second peak, so their labels say peak, and the memory rows are [Memory Wait](memory-wait.md): Memory Contention plus NVMe wait, so their key keeps the word latency and their label says wait. The key stays the sub-metric name: a new key would be a new metric, without its history.
 
@@ -37,9 +30,9 @@ Notes:
 
 - **Which VMs count.** The powered-on VMs on the cluster's hosts. Powered-off VMs are left out because their last stats are old. Placement is read from VCF Operations properties: a host belongs to the cluster named in its `summary|parentCluster`, a VM runs on the host named in its `summary|parentHost`, and it is powered on when `summary|runtime|powerState` is "Powered On". Placement is by name, and names are unique only inside one datacenter, so two clusters with the same name in different datacenters of one vCenter can be mixed up.
 - **Memory wait.** The memory rows are not the Memory Contention counter. They are the VM's Memory Wait: Memory Contention plus NVMe wait. See [Memory Wait](memory-wait.md).
-- **20-second peaks.** The VM stats are 20-second peaks rather than 5-minute averages, so short contention shows.
+- **20-second peaks.** The VM stats are 20-second peaks rather than 5-minute averages.
 - **90th percentile.** The value that 90 % of the VMs are at or below. The VMs are sorted, and the one at position 90 % of the count, rounded up, is taken. With 20 VMs that is the 18th lowest. With fewer than 10 VMs it is the highest, the same as the worst VM.
-- **Bad network packets** use the last collection cycle, as the "Bad Network Packets" super metric did. They are never averaged over a longer time, because that would hide a spike. Two of the counters, Total Packets Received and Transmitted, are deactivated by default in VCF Operations. Activate them first: see [Policy](../../configuration-guide/policy.md).
+- **Bad network packets** use the last collection cycle, as the "Bad Network Packets" super metric did. They are never averaged over a longer time. Two of the counters, Total Packets Received and Transmitted, are deactivated by default in VCF Operations. Activate them first: see [Policy](../../configuration-guide/policy.md).
 
 ## Step 2: Score each sub-metric
 
@@ -65,9 +58,9 @@ Because the weight grows smoothly as the score falls, a sub-metric that gets wor
 | 90th Percentile VM Disk Latency | ms | 20 | 40 | 60 | 80 |
 | Highest ESXi Bad Network Packets | % | Excluded (exactly 0) | 0.2 | 0.4 | 0.8 |
 
-The worst-VM rows have higher limits than the 90th-percentile rows, because a single VM peaks far above most of the others.
+Why the limits are what they are, and why the worst-VM rows have higher limits than the 90th-percentile rows: Agent E2's [Cluster Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/cluster-performance.md) and [KPI design](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/sp5-framework/performance/performance-kpi-design.md), section Depth and breadth.
 
-**Excluded.** The source table marks the green range of bad network packets, exactly 0, as "Excluded". Bad packets are rare. While the value is 0, the sub-metric is left out of the KPI, so it does not add a score of 100 that would dilute the others. Any bad packet is yellow, and then it counts.
+**Excluded.** The source table marks the green range of bad network packets, exactly 0, as "Excluded". While the value is 0, the sub-metric is left out of the KPI. Any bad packet is yellow, and then it counts.
 
 ## Worked examples
 

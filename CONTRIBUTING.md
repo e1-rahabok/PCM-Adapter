@@ -91,7 +91,7 @@ The documentation is in `docs/`, and [`docs/README.md`](docs/README.md) lists ev
 
 | The page is about... | Folder |
 | :--- | :--- |
-| a model or functional architecture: what the parts are for and how they relate, without formulas | `docs/concepts/` |
+| what the adapter publishes for a model or functional architecture, and how its parts relate, without formulas | `docs/concepts/` |
 | prerequisites and installation, including dark sites | `docs/installation-guide/` |
 | what to set after installing: policy, Adapter Instance, customization | `docs/configuration-guide/` |
 | how to use the content: dashboards, views, reports | `docs/user-guide/` |
@@ -103,6 +103,7 @@ The documentation is in `docs/`, and [`docs/README.md`](docs/README.md) lists ev
 Rules for documentation:
 
 - Describe what is built and why: the design decisions and the alternatives that were considered. A page about a design that is not built yet says so at the top.
+- Describe what the adapter computes and publishes: keys, inputs, settings, states and limitations, and how to install and run it. What a metric means and how to use it is Agent E2's knowledge: link its file in [agent-e2's knowledge folder](https://github.com/e1-rahabok/agent-e2/tree/main/knowledge), with at most one sentence on the meaning. A fact that the knowledge base lacks goes to Agent E2 first, as a question for its author (R-REPO-001, R-REPO-002).
 - One topic per page. Don't write a step twice; link to the page that has it.
 - File names are lowercase, with `-` between words and no spaces. Don't repeat the folder name: `metrics/cluster-risk.md`, not `metrics/cluster-risk-kpi.md`.
 - Images go in an `images/` folder next to the page that uses them. KPI formula images go in `docs/reference/metrics/formula/`.

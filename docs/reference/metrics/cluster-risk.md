@@ -2,9 +2,9 @@
 
 **Cluster Risk** is a 0 to 100 % value for a vSphere cluster. **Higher is worse: 0 is no risk, 100 is the highest risk.** Cluster Consumption works the same way. The other KPIs are higher-is-better.
 
-Cluster Risk is a leading indicator. It shows how close the cluster is to contention, before the VMs feel it, and covers both capacity and performance. [Cluster Performance](cluster-performance.md) shows the contention that is happening now.
+Cluster Risk is a leading indicator of contention; [Cluster Performance](cluster-performance.md) scores the contention that is happening now. What Cluster Risk means and how to read it: Agent E2's [Cluster Risk (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-risk.md).
 
-Every sub-metric takes the highest or worst ESXi host in the cluster, because one full host can hurt its VMs while the cluster average still looks fine.
+Every sub-metric takes the highest or worst ESXi host in the cluster.
 
 Host memory means DRAM only. Every memory percentage and ratio is measured against the host's DRAM, called `MEM_DRAM_CAPACITY`. A memory tier such as NVMe is never added. See [Host memory capacity](#host-memory-capacity-mem_dram_capacity).
 
@@ -37,7 +37,7 @@ VCF Operations shows each sub-metric under the Agent E2 catalog name (Label belo
 
 Every row scores 100 at 0, except CPU Imbalance, which scores 100 at 1: one running thread per running core. Any imbalance above 1 is yellow.
 
-**Excluded.** The source table marks five green ranges as "Excluded", and the Active Memory row is excluded in the same way, so six rows are. A host that is not busy, has little reserved or is not overcommitted tells you nothing about risk. While these sub-metrics are green, they are left out of the KPI instead of scoring 100. They count once they leave green.
+**Excluded.** The source table marks five green ranges as "Excluded", and the Active Memory row is excluded in the same way, so six rows are. While these sub-metrics are green, they are left out of the KPI instead of scoring 100. They count once they leave green. Why: Agent E2's [Cluster Risk (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-risk.md), section Thresholds.
 
 ## How each sub-metric is calculated
 
@@ -49,11 +49,11 @@ Each sub-metric is calculated per host, and the highest (worst) host is kept.
 | CPU Imbalance | Running CPU threads ÷ running CPU cores. Running threads = `cpu.utilization` % × threads. Running cores = `cpu.coreUtilization` % × cores. | VCF Operations: `cpu\|utilization_average`, `cpu\|coreUtilization_average`, `hardware\|cpuInfo\|numCpuCores`. Threads: see below. |
 | Memory Ballooned | Ballooned memory, as a % of host DRAM | VCF Operations: `mem\|vmmemctl_average` / `MEM_DRAM_CAPACITY` |
 | Memory Zip Swap | Compressed plus swapped memory, as a % of host DRAM | VCF Operations: (`mem\|compressed_average` + `mem\|swapout_average`) / `MEM_DRAM_CAPACITY` |
-| Memory Active (tiered hosts) | Active memory, as a % of host DRAM. Only hosts with memory tiering have it (the NVMe tier size is above 0); other hosts are left out of this row. Active pages that do not fit in DRAM are read back from the NVMe tier, so a value near or above 100 means the working set needs the tier. | VCF Operations: `mem\|active_average` (KB) / `MEM_DRAM_CAPACITY`. Tier: `mem:NVMe\|memory_tier_size`. Not checked on a live host yet. |
+| Memory Active (tiered hosts) | Active memory, as a % of host DRAM. Only hosts with memory tiering have it (the NVMe tier size is above 0); other hosts are left out of this row. | VCF Operations: `mem\|active_average` (KB) / `MEM_DRAM_CAPACITY`. Tier: `mem:NVMe\|memory_tier_size`. Not checked on a live host yet. |
 | Memory Tiering Latency | Read latency of the NVMe memory tier. Only hosts with memory tiering have it; other hosts are left out of this row. | VCF Operations: `mem:NVMe\|latency.read_latest` (µs) |
 | CPU Reservation | Reserved CPU, as a % of host CPU capacity | VCF Operations: `cpu\|reservedCapacity_average` / `cpu\|totalCapacity_average` |
 | Memory Reservation | Reserved memory, as a % of host DRAM | VCF Operations: `mem\|reservedCapacity_average` / `MEM_DRAM_CAPACITY` |
-| CPU Overcommit Ratio | vCPUs of the powered-on VMs, per physical thread. Per thread, not per core: the CPU executes per thread, and the class plans (Gold 1:1, Silver 2:1, Bronze 3:1) count per thread. With hyper-threading, 3 per thread is 6 per core. | VCF Operations: `cpu\|vcpus_allocated_on_all_powered_on_vms`. Threads: see below. |
+| CPU Overcommit Ratio | vCPUs of the powered-on VMs, per physical thread. With hyper-threading, 3 per thread is 6 per core. | VCF Operations: `cpu\|vcpus_allocated_on_all_powered_on_vms`. Threads: see below. |
 | Memory Overcommit Ratio | Memory of the powered-on VMs ÷ host DRAM. Both are in KB. | VCF Operations: `mem\|memory_allocated_on_all_powered_on_vms` / `MEM_DRAM_CAPACITY` |
 | CPU Monster VM to Host Ratio | vCPUs of the largest powered-on VM, against the monster size of its host (see below) | VCF Operations: VM `config\|hardware\|numCpu`, host `hardware\|cpuInfo\|numCpuCores` |
 | Memory Monster VM to Host Ratio | Memory of the largest powered-on VM, against the monster size of its host (see below) | VCF Operations: VM `config\|hardware\|memoryKB`. Host: `MEM_DRAM_CAPACITY`. |
@@ -83,7 +83,7 @@ Placement is by name, because `summary|parentCluster` and `summary|parentHost` h
 | 2 | `mem\|host_provisioned` | The first returns nothing or 0. Also in KB. |
 
 - If both return nothing, the memory rows of that host are left out. They are never scored against a guess.
-- The expanded capacity (DRAM + NVMe) is never used. VMs run in DRAM, and NVMe holds only cold pages, so a % of DRAM + NVMe would understate the real pressure.
+- The expanded capacity (DRAM + NVMe) is never used. Why: Agent E2's [Cluster Risk (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-risk.md), section DRAM as the memory base.
 
 ### When a VM is a monster
 

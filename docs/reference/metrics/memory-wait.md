@@ -10,13 +10,10 @@ It is a row of [VM Performance](vm-performance.md) (**Memory Wait**), and the me
 
 Code: [`Management Pack/app/metrics/vm/memory_wait.py`](../../../Management%20Pack/app/metrics/vm/memory_wait.py)
 
-## Why a new metric
+The Memory Contention counter does not count the time a vCPU waits for a page on the NVMe tier of a host with memory tiering. Why the adapter adds that wait, and how to read the sum: Agent E2's [VM Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/vm/vm-performance.md), section Memory Wait, and [Cluster Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/cluster-performance.md), section NVMe wait formula.
 
-Memory tiering keeps a VM's cold pages on an NVMe device. When a vCPU touches one of them, it waits for the whole NVMe read. The vSphere Memory Contention counter is unaware of memory tiering: it does not count these fetches. A VM that waits on NVMe all day can therefore show a Memory Contention near 0, and a KPI built on Memory Contention alone would score it as healthy.
-
-Memory Wait adds the missing part. The VM does not care where it waits for memory, so the two waits are summed and read like CPU Ready: the share of the VM's vCPU time spent waiting. The limits are those of Memory Contention.
-
-On a host without memory tiering, the NVMe wait is 0 and Memory Wait equals Memory Contention.
+- The limits are those of Memory Contention.
+- On a host without memory tiering, the NVMe wait is 0 and Memory Wait equals Memory Contention.
 
 ## How it is calculated
 

@@ -1,6 +1,6 @@
 # Metrics Code
 
-The code that calculates the metrics and KPIs and publishes them to VCF Operations. Read this page before you change or add one. What a KPI means and how its score is calculated is in [KPI scoring rules](../concepts/kpi-scoring-models.md#kpi-scoring-rules). The metrics as users see them are listed in [Metrics and Properties](../reference/metrics-and-properties.md).
+The code that calculates the metrics and KPIs and publishes them to VCF Operations. Read this page before you change or add one. How a KPI's score is calculated is in [KPI scoring rules](../concepts/kpi-scoring-models.md#kpi-scoring-rules); what a KPI means is in Agent E2's knowledge, linked from each [metric page](../reference/metrics/README.md). The metrics as users see them are listed in [Metrics and Properties](../reference/metrics-and-properties.md).
 
 Code: [`Management Pack/app/metrics/`](../../Management%20Pack/app/metrics/)
 
