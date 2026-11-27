@@ -132,7 +132,7 @@ Before publishing a release:
 5. The pak that passed step 3 is attached to the GitHub release. The pak is what administrators install, so every release must have it:
 
    ```
-   gh release upload v<version> "Management Pack/build/vCommunity_<version>.pak" --repo e1-rahabok/VCF-vCommunity-Adapter
+   gh release upload v<version> "Management Pack/build/vCommunity_<version>.pak" --repo e1-rahabok/PCM-Adapter
    ```
 
 If an Adapter Instance is `FAILED` right after the install, restart its collection as described in [After an Upgrade: Restart Collection](../../docs/installation-guide/installation.md#after-an-upgrade-restart-collection), wait one collection cycle, and run the script again.

@@ -1,6 +1,6 @@
-[![Release](https://img.shields.io/github/v/release/e1-rahabok/VCF-vCommunity-Adapter)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/releases) [![Files](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FVCF-vCommunity-Adapter%2Fbadges%2Ffiles.json)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter) [![Lines](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FVCF-vCommunity-Adapter%2Fbadges%2Flines.json)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter) [![Repo size](https://img.shields.io/github/repo-size/e1-rahabok/VCF-vCommunity-Adapter)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter)
+[![Release](https://img.shields.io/github/v/release/e1-rahabok/PCM-Adapter)](https://github.com/e1-rahabok/PCM-Adapter/releases) [![Files](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FPCM-Adapter%2Fbadges%2Ffiles.json)](https://github.com/e1-rahabok/PCM-Adapter) [![Lines](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FPCM-Adapter%2Fbadges%2Flines.json)](https://github.com/e1-rahabok/PCM-Adapter) [![Repo size](https://img.shields.io/github/repo-size/e1-rahabok/PCM-Adapter)](https://github.com/e1-rahabok/PCM-Adapter)
 
-# VCF Operations vCommunity MP
+# VCF vCommunity Adapter
 
 A free management pack for VCF Operations. It collects ESXi, VM and vCenter settings that VCF Operations does not collect by default, and it calculates capacity and performance scores for clusters, hosts and VMs. Everything it publishes appears on the vCenter objects you already monitor, under the `vCommunity|` prefix.
 
@@ -47,7 +47,7 @@ A dashboard for Microsoft Windows services is available from [Dale Hassinger](ht
 ## Get started
 
 1. Check the [system requirements](docs/installation-guide/system-requirements.md). If the Cloud Proxy has no internet access, follow the [dark site](docs/installation-guide/dark-site.md) steps.
-2. Download the `.pak` file from [Releases](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/releases) and [install](docs/installation-guide/installation.md) it.
+2. Download the `.pak` file from [Releases](https://github.com/e1-rahabok/PCM-Adapter/releases) and [install](docs/installation-guide/installation.md) it.
 3. [Activate the policy](docs/configuration-guide/policy.md) metrics the pack needs. Some are off by default.
 4. Create an [Adapter Instance](docs/configuration-guide/adapter-instance.md) for each vCenter, or use the [bulk importer](tools/importer/importer.md) for many.
 5. Choose what to collect: [Customization](docs/configuration-guide/customization.md).
@@ -58,13 +58,16 @@ If something does not work, start with the [Troubleshooting Guide](docs/troubles
 
 The pack is written in Python with the [VCF Operations Integration SDK](https://github.com/vmware/vmware-vcf-operations-integration-sdk/tree/main/docs). It reads vCenter with pyVmomi and the vSphere Automation API, and reads VCF Operations through its REST API. The [Development Guide](docs/development-guide/repository-layout.md) explains the code and how to change it.
 
-## 3 in 1
+## Related repositories
 
-Three projects share one body of knowledge about managing global private cloud based on VMware Cloud Foundation:
+Four repositories share one body of knowledge about managing a global private cloud based on VMware Cloud Foundation:
 
 - [Agent E2](https://github.com/e1-rahabok/agent-e2) holds the knowledge. You can download it and deploy it privately.
-- [isvara.io](https://isvara.io) is where Agent E2 runs on the internet. Use it to try Agent E2 without installing anything.
-- The vCommunity Management Pack, this repository, implements that knowledge as a VCF Operations adapter: the metrics, KPIs, properties and dashboards run in your own VCF Operations.
+- [isvara.io](https://isvara.io) ([repository](https://github.com/e1-rahabok/isvara)) is the public website. Agent E2 is to replace its current agent, AskIO, so you can try Agent E2 without installing anything.
+- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, is a web app for operations roles. It reads the KPIs this pack publishes through the VCF Operations API.
+- The VCF vCommunity Adapter, this repository, implements that knowledge as a VCF Operations management pack: the metrics, KPIs, properties and dashboards run in your own VCF Operations.
+
+How the four fit, their contracts, decisions and roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 The isvara.io content (metrics, dashboards, alerts, properties and more) and this pack are both documented in the **Private Cloud Management** book, 5th edition, which you can download from [isvara.io/download](https://isvara.io/download).
 

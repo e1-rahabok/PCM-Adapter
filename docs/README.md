@@ -1,4 +1,4 @@
-# VCF Operations vCommunity Management Pack
+# VCF vCommunity Adapter
 
 The pack collects ESXi, VM and vCenter settings that VCF Operations does not collect by default, and calculates extra metrics and KPIs. It publishes them on the existing vCenter objects in VCF Operations under the `vCommunity|` key prefix. It also creates three object types of its own for content libraries and VM templates.
 
@@ -71,7 +71,7 @@ For contributors: how the code is organized, what each part does, and how to cha
     - [29 Oct 2026 Completed](development-guide/engineering-review/2026-10-29-completed.md): the decision and action for each finding.
     - [30 Oct 2026 Review](development-guide/engineering-review/2026-10-30-review.md): the re-score after the 0.7.0 fixes, with the verdict on each rejection and deferral, and new findings.
 
-Planned enhancements are on the [To Do project](https://github.com/users/e1-rahabok/projects/1), one line each. Bugs are [GitHub issues](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues).
+Planned enhancements are on the [To Do project](https://github.com/users/e1-rahabok/projects/1), one line each. Bugs are [GitHub issues](https://github.com/e1-rahabok/PCM-Adapter/issues).
 
 ## Why the pack exists
 
@@ -151,7 +151,7 @@ The pack adds data. It does not replace these:
 
 - The pack is free.
 - It installs like any VCF Operations Management Pack. Nothing is installed on ESXi and nothing changes in vCenter. The Windows checks are optional and need no agent.
-- Collection runs in parallel jobs, and the slow per-host calls are limited to the data you choose. Collection time at large scale has not been measured yet, see [issue #42](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues/42).
+- Collection runs in parallel jobs, and the slow per-host calls are limited to the data you choose. Collection time at large scale has not been measured yet, see [issue #42](https://github.com/e1-rahabok/PCM-Adapter/issues/42).
 - Start with a few settings from your hardening guide and add more over time.
 
 For an overview of features and how to get started, see the main [README](../README.md). For help, see [Support](../SUPPORT.md).

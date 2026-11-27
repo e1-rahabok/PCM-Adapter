@@ -12,7 +12,7 @@
 
 ## Get the PAK file
 
-Download `vCommunity_<version>.pak` from the [Releases](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/releases) page. Each release from 0.8.1 on has the validated `.pak` file attached.
+Download `vCommunity_<version>.pak` from the [Releases](https://github.com/e1-rahabok/PCM-Adapter/releases) page. Each release from 0.8.1 on has the validated `.pak` file attached.
 
 ## Enable Unsigned PAK Installation
 

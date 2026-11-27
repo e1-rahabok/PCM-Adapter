@@ -107,7 +107,7 @@ Ticking the EULA box and the "unsigned pack" confirmation dialog made no request
     "solutionName": "VCF vCommunity Adapter",
     "solutionVersion": "0.4.1",
     "solutionFilename": "vCommunity_0.4.1.pak",
-    "solutionDescription": "This Management Pack provides a framework to bring your own content … More details: <a href=\"https://github.com/e1-rahabok/VCF-vCommunity-Adapter\" …>…</a>",
+    "solutionDescription": "This Management Pack provides a framework to bring your own content … More details: <a href=\"https://github.com/e1-rahabok/PCM-Adapter\" …>…</a>",
     "signingStatus": "NotSigned",
     "estimatedInstallTime": "Not available",
     "containsSystemUpdate": false,

@@ -1,6 +1,9 @@
-# VCF Operations vCommunity Management Pack
+# VCF vCommunity Adapter
 
 A Python adapter (`Management Pack/app`) that collects extra properties and metrics from vCenter and publishes them onto the existing vCenter objects in VCF Operations under the `vCommunity|` key prefix.
+
+- Its repository is PCM-Adapter; the pack's name is VCF vCommunity Adapter (WD-032).
+- Contracts with the other repositories, the decisions that bind several of them, releases and milestones: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 ## Documentation
 

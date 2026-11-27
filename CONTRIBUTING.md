@@ -8,8 +8,8 @@ If you have a GitHub account, star the repository to follow it.
 
 | What you can do | Why it helps | How |
 | :--- | :--- | :--- |
-| **Run the pack and report what you see** | Real environments find problems a lab does not. | Install the pack on a test instance. If something is broken, open a [bug report](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues/new/choose) with the version, the Adapter Instance settings without credentials, and the lines from the adapter log. The [Troubleshooting Guide](docs/troubleshooting-guide/first-steps.md) shows where to find them. |
-| **Ask for a setting you need** | Your hardening guide may name settings the pack does not collect yet. | Open a [feature request](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues/new/choose) with the setting name, its vSphere path, and the guide that names it. Many settings are a one-line change to a configuration file, see [Add a setting](#add-a-setting-to-a-configuration-file). |
+| **Run the pack and report what you see** | Real environments find problems a lab does not. | Install the pack on a test instance. If something is broken, open a [bug report](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose) with the version, the Adapter Instance settings without credentials, and the lines from the adapter log. The [Troubleshooting Guide](docs/troubleshooting-guide/first-steps.md) shows where to find them. |
+| **Ask for a setting you need** | Your hardening guide may name settings the pack does not collect yet. | Open a [feature request](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose) with the setting name, its vSphere path, and the guide that names it. Many settings are a one-line change to a configuration file, see [Add a setting](#add-a-setting-to-a-configuration-file). |
 | **Improve the documentation** | Many readers never open the code. | Fix a sentence, add an example, or describe a symptom you hit. See [Documentation](#documentation). |
 | **Share your content** | Dashboards, reports and super metrics from users make the pack more useful. | Export the dashboard or report from VCF Operations and open a pull request with it, with a short note on what it shows and who it is for. |
 | **Tell others** | Many VMware administrators have not heard of the pack. | Write about it, present it at your user group, or point a colleague to the [README](README.md). |
@@ -123,7 +123,7 @@ The build needs Docker and PowerShell 7. The install, restart and validation scr
 
 ## Reporting a problem
 
-Use the [bug report template](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues/new/choose). The most useful reports include:
+Use the [bug report template](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose). The most useful reports include:
 
 - The pack version and the VCF Operations version.
 - What you expected and what you see. A screenshot helps.
