@@ -131,7 +131,7 @@ def test_world_summary_over_all_vcenters():
     )
     world = FakeObject("vSphere World")
     summary.collect_availability_summary_metrics(world, api)
-    # h3 has no stored value (for example, its vCenter has no account of this pack): left out.
+    # h3 has no stored value (for example, its vCenter has no account of the VCF vCommunity Adapter): left out.
     assert world.metrics == {
         "vCommunity|Availability|Worst Cluster Operational Availability": 91.67,
         "vCommunity|Availability|ESXi Hosts Operational Availability": 87.5,

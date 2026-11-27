@@ -77,7 +77,7 @@ Three counts on the vSphere World object, across all vCenters.
 - **15 minutes on vSphere World.** The total uses each vCenter's stored value for up to 15 minutes, because a port group count comes from settings and changes rarely. A vCenter whose value is older, or that has never published one, is left out. See [the two limits](README.md#two-limits-10-minutes-and-15-minutes-for-settings-based-metrics).
 - **No value on vSphere World.** When no vCenter has a value from the last 15 minutes, or the stats read fails, the total is not published for that cycle, so the chart shows a gap.
 - **NSX.** Only vCenter is checked, not NSX Manager. An NSX segment that vCenter shows as a distributed port group counts once, as that port group. A segment that vCenter does not show, such as one not realized on a distributed switch, is not counted.
-- A vCenter without an Adapter Instance of this pack has no value and is left out.
+- A vCenter without an Adapter Instance of the VCF vCommunity Adapter has no value and is left out.
 
 **VMware Tools.** The two Tools counts are read from the VM properties that the vCenter adapter stores. Their possible values, as VCF Operations shows them:
 

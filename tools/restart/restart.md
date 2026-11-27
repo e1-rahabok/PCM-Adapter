@@ -1,12 +1,12 @@
 # Restart Script
 
-`restart.ps1` stops and starts collection on every Adapter Instance of this pack, and waits until each one is collecting again. It does what **Stop Collecting** and **Start Collecting** do in **Administration** > **Integrations** > **Accounts**, for all of the pack's instances at once.
+`restart.ps1` stops and starts collection on every Adapter Instance of the VCF vCommunity Adapter, and waits until each one is collecting again. It does what **Stop Collecting** and **Start Collecting** do in **Administration** > **Integrations** > **Accounts**, for all of the adapter's instances at once.
 
-After a pak upgrade, the pack's Adapter Instances often stop collecting until their collection is restarted. See [After an Upgrade: Restart Collection](../../docs/installation-guide/installation.md#after-an-upgrade-restart-collection). Run this script after [`install.ps1`](../install/install.md), and before the [live validation](../validate/validate.md).
+After a pak upgrade, the adapter's Adapter Instances often stop collecting until their collection is restarted. See [After an Upgrade: Restart Collection](../../docs/installation-guide/installation.md#after-an-upgrade-restart-collection). Run this script after [`install.ps1`](../install/install.md), and before the [live validation](../validate/validate.md).
 
 ## Safety
 
-The script **changes the instance**: it stops collection on every Adapter Instance of adapter kind `vCommunity`, then starts it again. While an instance is stopped, the pack collects nothing for its vCenter, so a restart can leave a short gap in the pack's metrics. Adapter Instances of other adapters, such as the vCenter adapter, are not touched, and no setting of any Adapter Instance changes.
+The script **changes the instance**: it stops collection on every Adapter Instance of adapter kind `vCommunity`, then starts it again. While an instance is stopped, the adapter collects nothing for its vCenter, so a restart can leave a short gap in the adapter's metrics. Adapter Instances of other adapters, such as the vCenter adapter, are not touched, and no setting of any Adapter Instance changes.
 
 It does not check the instance's TLS certificate (`-SkipCertificateCheck`), like `validate.ps1`. Use it only with a test instance on a trusted network.
 
@@ -78,13 +78,13 @@ stateDiagram-v2
 
 **Done means `STARTED/DATA_RECEIVING`.** `STARTED/NONE` means the instance runs but has not delivered data yet. The script waits for `DATA_RECEIVING`, which is also what `validate.ps1` checks.
 
-**Only this pack's instances are restarted.** The upgrade problem affects only them, and restarting other adapters would interrupt their collection.
+**Only the adapter's instances are restarted.** The upgrade problem affects only them, and restarting other adapters would interrupt their collection.
 
 ## Troubleshooting
 
 | Message | Cause | Fix |
 | :--- | :--- | :--- |
-| `No Adapter Instance of adapter kind 'vCommunity' found` | The pack is not installed, or has no Adapter Instance | Create one: see [Adapter Instance](../../docs/configuration-guide/adapter-instance.md). |
+| `No Adapter Instance of adapter kind 'vCommunity' found` | The adapter is not installed, or has no Adapter Instance | Create one: see [Adapter Instance](../../docs/configuration-guide/adapter-instance.md). |
 | `still STOPPING … starting it anyway` | The instance took longer than `-StopTimeoutMinutes` to stop | If it ends `STOPPED`, run the script again, or raise `-StopTimeoutMinutes`. |
 | An instance ends `STOPPED` | The start was not accepted | Run the script again. If it stays stopped, start it in **Administration** > **Integrations** > **Accounts** and read the adapter log. |
 | An instance ends `STARTED/NONE` or `FAILED` | It runs but delivers no data, for example because of a wrong credential or an unreachable vCenter | Open the instance in **Administration** > **Integrations** > **Accounts** and click **Validate Connection**. Read the adapter log on the Cloud Proxy. |

@@ -1,6 +1,6 @@
 # Dark Site Installation
 
-Use these steps when the Cloud Proxies cannot reach `ghcr.io`. You copy the pack's container image into a private registry, and point VCF Operations at that registry. If the Cloud Proxy can reach `ghcr.io`, you don't need this page: it pulls the image itself, see [How It Works](how-it-works.md).
+Use these steps when the Cloud Proxies cannot reach `ghcr.io`. You copy the VCF vCommunity Adapter's container image into a private registry, and point VCF Operations at that registry. If the Cloud Proxy can reach `ghcr.io`, you don't need this page: it pulls the image itself, see [How It Works](how-it-works.md).
 
 **On this page:**
 
@@ -19,7 +19,7 @@ The Cloud Proxy pulls the image named in `vCommunity.conf`, a file inside the `.
 | :--- | :--- |
 | `REGISTRY` | `ghcr.io` |
 | `REPOSITORY` | `/e1-rahabok/vcf-operations-vcommunity` |
-| `DIGEST` | `sha256:<digest>`, different for each version of the pack |
+| `DIGEST` | `sha256:<digest>`, different for each version of the adapter |
 
 To find the digest for your version, read `vCommunity.conf` on a VCF Operations node after the install. The path is in Step 5.
 
@@ -87,7 +87,7 @@ service collector restart
 
 - Then create the Adapter Instances as usual, see [Adapter Instance](../configuration-guide/adapter-instance.md). The Cloud Proxy pulls the image from your private registry.
 
-Each version of the pack has its own digest. After an upgrade, repeat steps 1 to 4 for the new image, and check that `REGISTRY` in `vCommunity.conf` still points to your registry.
+Each version of the adapter has its own digest. After an upgrade, repeat steps 1 to 4 for the new image, and check that `REGISTRY` in `vCommunity.conf` still points to your registry.
 
 ---
 

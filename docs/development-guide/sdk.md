@@ -1,29 +1,29 @@
 # The VCF Operations Integration SDK
 
-The pack is built with the VCF Operations Integration SDK, the framework that lets a program run as a VCF Operations adapter. The SDK defines how VCF Operations calls the program, how the program describes its objects, and how it returns values. This page covers the parts of the SDK this pack uses. For everything else, use the SDK documentation.
+The VCF vCommunity Adapter is built with the VCF Operations Integration SDK, the framework that lets a program run as a VCF Operations adapter. The SDK defines how VCF Operations calls the program, how the program describes its objects, and how it returns values. This page covers the parts of the SDK the adapter uses. For everything else, use the SDK documentation.
 
 ## SDK documentation
 
 - **SDK documentation:** [github.com/vmware/vmware-vcf-operations-integration-sdk, docs folder](https://github.com/vmware/vmware-vcf-operations-integration-sdk/tree/main/docs). The reference for the SDK.
 - **SDK repository:** [github.com/vmware/vmware-aria-operations-integration-sdk](https://github.com/vmware/vmware-aria-operations-integration-sdk), the repository the [README](../../README.md) links to.
 
-The SDK documentation is written for any adapter. The sections below cover only what this pack needs, and say where each part is used.
+The SDK documentation is written for any adapter. The sections below cover only what the adapter needs, and say where each part is used.
 
-## The parts this pack uses
+## SDK parts used by the adapter
 
-| SDK part | What it does | Where the pack uses it |
+| SDK part | What it does | Where the adapter uses it |
 | :--- | :--- | :--- |
 | Command interface | VCF Operations runs the adapter with a method name: `adapter_definition`, `test`, `collect` or `endpoint_urls`. | [`commands.cfg`](../../Management%20Pack/commands.cfg), `main()` in `adapter.py` |
 | `AdapterInstance` | Reads the input of a call: the Adapter Instance, its settings and its credentials. | `adapter.py`, for every call |
-| `AdapterDefinition`, `define_object_type`, `Units` | Declares the object types, groups, metrics, properties, units and Adapter Instance settings. The pack declares its own object types (Content Library, Library Item, VM Template) here too. | `get_adapter_definition()` in `definition.py` |
-| `Object`, `Key`, `Identifier`, `add_child` | An object in VCF Operations that the pack sets values on. `Key` and `Identifier` create the pack's own objects, and `add_child` links a Library Item to its Content Library. | Every collector, and every metric and property module |
-| `CollectResult`, `RelationshipUpdateModes` | The result that holds all objects of a cycle. The pack sets `PER_OBJECT`, so only the objects in the result have their child lists replaced. | `collect()` in `adapter.py`, see [App Folder](app-folder.md#design-choices) |
-| `with_event`, `Criticality` | An event on an object. The pack raises one warning event per configuration file problem on the vCenter object. | `collectors/vcenter/collectvCenterData.py` |
+| `AdapterDefinition`, `define_object_type`, `Units` | Declares the object types, groups, metrics, properties, units and Adapter Instance settings. The adapter declares its own object types (Content Library, Library Item, VM Template) here too. | `get_adapter_definition()` in `definition.py` |
+| `Object`, `Key`, `Identifier`, `add_child` | An object in VCF Operations that the adapter sets values on. `Key` and `Identifier` create the adapter's own objects, and `add_child` links a Library Item to its Content Library. | Every collector, and every metric and property module |
+| `CollectResult`, `RelationshipUpdateModes` | The result that holds all objects of a cycle. The adapter sets `PER_OBJECT`, so only the objects in the result have their child lists replaced. | `collect()` in `adapter.py`, see [App Folder](app-folder.md#design-choices) |
+| `with_event`, `Criticality` | An event on an object. The adapter raises one warning event per configuration file problem on the vCenter object. | `collectors/vcenter/collectvCenterData.py` |
 | `SuiteApiClient` | A client for the VCF Operations REST API (the Suite API), to read objects, stats, properties and relationships. | `utils/ops_stats.py`, `utils/ops_inventory.py`, `adapter.py`, the collectors, `business_app_performance.py`, `resource_pool_counts.py` and `properties/vcenter/certificate.py` |
 | `TestResult`, `EndpointResult` | The results of the `test` and `endpoint_urls` calls. | `test()` and `get_endpoints()` in `adapter.py` |
 | Logging and `Timer` | Writes to the adapter log, and times a step. | `adapter.py` and the modules |
 
-The pack talks to VCF Operations only through the SDK's calls, results and Suite API client. It reads vCenter directly with pyVmomi and, for content libraries, with the vSphere Automation REST API. Neither is part of the SDK.
+The adapter talks to VCF Operations only through the SDK's calls, results and Suite API client. It reads vCenter directly with pyVmomi and, for content libraries, with the vSphere Automation REST API. Neither is part of the SDK.
 
 ## How a call works
 
@@ -35,14 +35,14 @@ A pack is a `.pak` file. The Management Pack Builder (`mp-build`) builds it from
 
 | File or folder | What it is |
 | :--- | :--- |
-| `manifest.txt` | The name, version, minimum VCF Operations version (8.18.0), supported platforms (Linux) and adapter kind of the pack. The install script reads the version from it. |
+| `manifest.txt` | The name, version, minimum VCF Operations version (8.18.0), supported platforms (Linux) and adapter kind of the adapter. The install script reads the version from it. |
 | `commands.cfg` | The four methods that VCF Operations can call. |
 | `Dockerfile`, `adapter_requirements.txt` | The container image that the Cloud Proxy runs: a base image, the Python libraries, and the `app` folder. |
 | `app/` | The Python code. See [App Folder](app-folder.md). |
 | `content/` | The dashboards, reports, super metrics, alerts and configuration files. See [Content Folder](content-folder.md). |
 | `conf/` | The adapter kind icon, and a copy of the SDK's schema for the adapter description. The code does not read the schema. |
-| `resources/resources.properties` | The display name and description of the pack, shown in the VCF Operations UI. |
-| `eula.txt` | The license shown when the pack is installed. |
+| `resources/resources.properties` | The display name and description of the adapter, shown in the VCF Operations UI. |
+| `eula.txt` | The license shown when the adapter is installed. |
 
 [Repository Layout](repository-layout.md) lists every file.
 
@@ -54,10 +54,10 @@ The SDK build tool version is set in one place, `Management Pack/requirements.tx
 - **The build** ([Build Script](../../tools/build/build.md)) needs SDK 1.3 or later.
 - **Python:** SDK 1.3.1 requires Python 3.9 to 3.12. On Python 3.13, `pip` installs a much older SDK version instead. Use 3.12, as CI does.
 
-To change the SDK, change the line in `requirements.txt`, then build and validate the pack. A new base image is a change to the `Dockerfile` and needs the same checks.
+To change the SDK, change the line in `requirements.txt`, then build and validate the adapter. A new base image is a change to the `Dockerfile` and needs the same checks.
 
 ## Limitations
 
-- **The SDK documentation is general.** This page covers only what the pack uses.
+- **The SDK documentation is general.** This page covers only what the adapter uses.
 - **Each call starts a process,** so the start-up cost is paid at every call. For a collection every 5 minutes this is small compared to the work of the cycle.
 - **Two SDK packages are involved.** The build tool (in `requirements.txt`) and the runtime library (in `adapter_requirements.txt`) are separate packages. Keep them compatible when either changes.

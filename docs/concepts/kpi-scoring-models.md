@@ -1,10 +1,10 @@
 # KPI Scoring Models
 
-Each KPI in the pack (Performance, Consumption, Risk) is one number built from many sub-metrics. Every sub-metric gets a color from its source table: green, yellow, orange or red. The colors encode vSphere guidance. For example, an ESXi CPU Imbalance of 1.6 or more is red, and ballooning above 4 % of DRAM is red.
+Each KPI in the VCF vCommunity Adapter (Performance, Consumption, Risk) is one number built from many sub-metrics. Every sub-metric gets a color from its source table: green, yellow, orange or red. The colors encode vSphere guidance. For example, an ESXi CPU Imbalance of 1.6 or more is red, and ballooning above 4 % of DRAM is red.
 
 The way the colors are combined decides what the KPI tells the people who act on it. This page compares three ways to combine them, based on how each behaves in VMware Cloud Foundation operations: on dashboards, in alerts, in the Close for Business decision, and when many clusters are compared.
 
-The pack uses the first model, the **weighted average by color**. The calculation is described in [How the pack scores a KPI](#how-the-pack-scores-a-kpi) below. Each KPI's own page lists its sub-metrics and their limits, for example [Cluster Performance](../reference/metrics/cluster-performance.md).
+The adapter uses the first model, the **weighted average by color**. The calculation is described in [KPI scoring rules](#kpi-scoring-rules) below. Each KPI's own page lists its sub-metrics and their limits, for example [Cluster Performance](../reference/metrics/cluster-performance.md).
 
 ## The three models
 
@@ -25,7 +25,7 @@ It does not suit VMware Cloud Foundation operations. The colors in the source ta
 
 ## Weighted average by color
 
-**What the operator sees.** A KPI that reflects both how bad and how widespread a problem is. A cluster with one bad sub-metric and many good ones scores better than a cluster where several are bad. A sub-metric's weight rises smoothly as its score falls, from 1 at its best to 16 at its worst (see [How the pack scores a KPI](#how-the-pack-scores-a-kpi)). The KPI moves smoothly and rarely reaches 0 or 100, so it is good for ranking many clusters. vSphere World uses it this way for the worst cluster and the Worst 10 Percent (the 10th or 90th percentile, depending on the direction of the KPI). See [vSphere World](../reference/metrics/vsphere-world-metrics.md).
+**What the operator sees.** A KPI that reflects both how bad and how widespread a problem is. A cluster with one bad sub-metric and many good ones scores better than a cluster where several are bad. A sub-metric's weight rises smoothly as its score falls, from 1 at its best to 16 at its worst (see [KPI scoring rules](#kpi-scoring-rules)). The KPI moves smoothly and rarely reaches 0 or 100, so it is good for ranking many clusters. vSphere World uses it this way for the worst cluster and the Worst 10 Percent (the 10th or 90th percentile, depending on the direction of the KPI). See [vSphere World](../reference/metrics/vsphere-world-metrics.md).
 
 **Where it fails.** When the KPI is already bad, a sub-metric that gets worse can make the KPI look better. In Cluster Risk, a leading indicator that turns yellow or orange lowers the KPI if other indicators are worse. This matters for decisions: the Close for Business rule checks Risk at its orange closure level, above 60, so a cluster just above 60 can drop below it after more VMs are deployed, and open again.
 
@@ -60,9 +60,9 @@ In performance and capacity management, the impact on live operations rarely com
 - **Leading indicators combine.** Overcommit, reservations, monster VMs and imbalance each make contention arrive sooner. Two of them at orange bring it closer than one.
 - **A color shows a level of pressure.** An orange sub-metric means the cluster is under pressure, but it still runs every VM. A dead component means the host is down.
 
-For these reasons the pack combines the sub-metrics instead of taking the worst one, and for these three KPIs the direction of the KPI matters as much as its color.
+For these reasons the adapter combines the sub-metrics instead of taking the worst one, and for these three KPIs the direction of the KPI matters as much as its color.
 
-## How the pack scores a KPI
+## KPI scoring rules
 
 Every KPI uses the calculation below. A KPI's own page lists its sub-metrics and their limits. The code is in [`kpi_score.py`](../../Management%20Pack/app/metrics/kpi_score.py).
 

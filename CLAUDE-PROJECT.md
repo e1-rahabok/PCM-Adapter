@@ -12,7 +12,7 @@ Rules, tools and paths of PCM-Adapter, the repository of the VCF vCommunity Adap
 
 A Python adapter (`Management Pack/app`) that collects extra properties and metrics from vCenter and publishes them onto the existing vCenter objects in VCF Operations under the `vCommunity|` key prefix.
 
-- Its repository is PCM-Adapter; the pack's name is VCF vCommunity Adapter (WD-032).
+- Its repository is PCM-Adapter; the management pack's name is VCF vCommunity Adapter (WD-032).
 - Contracts with the other repositories, the decisions that bind several of them, releases and milestones: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 ## Documentation
@@ -33,7 +33,7 @@ Builds the `.pak` into `Management Pack/build` and pushes the adapter image to `
 pwsh tools/install/install.ps1
 ```
 
-Uploads and installs the newest pak for the `manifest.txt` version (unsigned, signature checking ignored). Run it directly, as part of one end-to-end process. Do not ask the user to type or run anything for the install. If the platform blocks the script, report the block and stop. Do not work around it. Then run `pwsh tools/restart/restart.ps1` (the pack's Adapter Instances often stop collecting after an upgrade), wait one collection cycle, and run the live validation. Details: [tools/install/install.md](tools/install/install.md), [tools/restart/restart.md](tools/restart/restart.md).
+Uploads and installs the newest pak for the `manifest.txt` version (unsigned, signature checking ignored). Run it directly, as part of one end-to-end process. Do not ask the user to type or run anything for the install. If the platform blocks the script, report the block and stop. Do not work around it. Then run `pwsh tools/restart/restart.ps1` (the Adapter Instances of the VCF vCommunity Adapter often stop collecting after an upgrade), wait one collection cycle, and run the live validation. Details: [tools/install/install.md](tools/install/install.md), [tools/restart/restart.md](tools/restart/restart.md).
 
 ## Releasing
 

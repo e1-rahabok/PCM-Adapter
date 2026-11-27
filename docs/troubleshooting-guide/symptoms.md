@@ -15,7 +15,7 @@ Each section gives what you see, the cause, and what to do. If you have not run 
 
 **What you see:** the alert **vCommunity Collection Warnings** is active on the vCenter object.
 
-**Cause:** the pack logged warnings or errors in its recent collection cycles, so some values were not collected. When a value cannot be read, the pack logs it and publishes the rest of the cycle. The alert is how that shows up in VCF Operations. It is one alert for the whole collection, not one per value.
+**Cause:** the VCF vCommunity Adapter logged warnings or errors in its recent collection cycles, so some values were not collected. When a value cannot be read, the adapter logs it and publishes the rest of the cycle. The alert is how that shows up in VCF Operations. It is one alert for the whole collection, not one per value.
 
 The alert fires when `vCommunity|Collection Health|Warnings in Last Cycle` on the vCenter object is above 0 for two cycles in a row, and clears after two cycles with no warnings. It ships turned off: to use it, activate **vCommunity Collection Warnings** in the policy that applies to your vCenter objects.
 
@@ -28,13 +28,13 @@ The alert fires when `vCommunity|Collection Health|Warnings in Last Cycle` on th
    - `Unexpected collection error`: the whole cycle failed. A traceback follows.
 3. Look the message up in [Log Messages](log-messages.md).
 
-Some warnings are expected, such as a value that a host does not have. The alert tells you to read the first warning. It does not mean the pack is broken.
+Some warnings are expected, such as a value that a host does not have. The alert tells you to read the first warning. It does not mean the adapter is broken.
 
 ## The account never shows Collecting
 
 **What you see:** under **Administration** > **Integrations** > **Accounts**, the account has no status, or it is not **Collecting** after 5 minutes.
 
-**Cause:** the Cloud Proxy did not start the adapter, or the first collection failed. The pack runs only on a Cloud Proxy: see [How It Works](../installation-guide/how-it-works.md).
+**Cause:** the Cloud Proxy did not start the adapter, or the first collection failed. The adapter runs only on a Cloud Proxy: see [How It Works](../installation-guide/how-it-works.md).
 
 **What to do:**
 
@@ -47,9 +47,9 @@ Some warnings are expected, such as a value that a host does not have. The alert
 
 **What you see:** the account is **Collecting**, but no `vCommunity|` value appears on the vCenter objects.
 
-**Cause:** the pack publishes onto the objects of the native vCenter adapter, and finds them by the vCenter address. If the **vCenter Server** field of the account differs from the address on the native vCenter Adapter Instance, the pack finds no vCenter and publishes nothing. The account then shows `No vCenter Adapter Instance found matching vCenter Server '…'`.
+**Cause:** the adapter publishes onto the objects of the native vCenter adapter, and finds them by the vCenter address. If the **vCenter Server** field of the account differs from the address on the native vCenter Adapter Instance, the adapter finds no vCenter and publishes nothing. The account then shows `No vCenter Adapter Instance found matching vCenter Server '…'`.
 
-The other cause is that the native vCenter adapter has not collected the objects yet. The pack reads its objects and stats, so it needs them first.
+The other cause is that the native vCenter adapter has not collected the objects yet. The adapter reads its objects and stats, so it needs them first.
 
 **What to do:**
 
@@ -64,7 +64,7 @@ The other cause is that the native vCenter adapter has not collected the objects
 **Cause:** the message names it. The common ones:
 
 - A certificate message: the certificate does not match the thumbprint, or the Cloud Proxy does not trust it. The message says what to change. See [TLS and Security Settings](../configuration-guide/tls-and-security.md).
-- `Pinned` without a thumbprint, or a thumbprint that is not SHA-256 or SHA-512. The pack refuses this setting rather than connecting without a check. Enter the thumbprint, or change the mode.
+- `Pinned` without a thumbprint, or a thumbprint that is not SHA-256 or SHA-512. The adapter refuses this setting rather than connecting without a check. Enter the thumbprint, or change the mode.
 - A login error: the credential is wrong, or the account has no rights in vCenter.
 - A network error: the Cloud Proxy cannot reach the address and port.
 
@@ -74,11 +74,11 @@ The other cause is that the native vCenter adapter has not collected the objects
 
 **What you see:** the property `vCommunity|Certificate|Status` on the vCenter object reads `Changed`, and the adapter log has a warning with both thumbprints.
 
-**Cause:** vCenter presents a different certificate from the one the pack recorded. After a planned certificate replacement this is expected.
+**Cause:** vCenter presents a different certificate from the one the adapter recorded. After a planned certificate replacement this is expected.
 
 **What to do:**
 
-1. If the replacement was planned, do nothing. The pack records the new certificate, `Changed` clears after 24 hours, and the old thumbprint stays in `Previous SHA-256 Thumbprint`.
+1. If the replacement was planned, do nothing. The adapter records the new certificate, `Changed` clears after 24 hours, and the old thumbprint stays in `Previous SHA-256 Thumbprint`.
 2. If it was not planned, check the certificate in vCenter before you trust it. Another server may be answering as vCenter.
 3. With `Enabled` or `Pinned`, a changed certificate stops the connection. After you have checked the certificate, update the thumbprint or the trust. See [TLS and Security Settings](../configuration-guide/tls-and-security.md).
 
@@ -88,7 +88,7 @@ The other cause is that the native vCenter adapter has not collected the objects
 
 **Cause:** one of these. Check them in this order:
 
-1. **The stat is not collected.** The pack reads the stats of the native vCenter adapter. If that adapter has no value for a stat, the KPI has no input. Check the same stat on the object in VCF Operations.
+1. **The stat is not collected.** The adapter reads the stats of the native vCenter adapter. If that adapter has no value for a stat, the KPI has no input. Check the same stat on the object in VCF Operations.
 2. **The value is stale.** A stat older than 10 minutes counts as no data, so the metric is left blank instead of showing an old value. A disconnected host or a powered-off VM shows this. See [No stale values](../reference/metrics/README.md#no-stale-values).
 3. **The sub-metric is skipped.** A sub-metric whose green range is marked "Excluded" is left out of the KPI while it is green. See [Skip when green](../concepts/kpi-scoring-models.md#skip-when-green).
 4. **The sub-metric has no data.** It is left out of the KPI, never counted as 0. If no sub-metric has a value, the KPI is not published. See [Missing data](../concepts/kpi-scoring-models.md#missing-data).
@@ -121,7 +121,7 @@ The other cause is that the native vCenter adapter has not collected the objects
 
 **What you see:** you edited a configuration file, and the properties it lists do not change.
 
-**Cause:** the account uses a different file from the one you edited, or the file has a problem. The pack reads the files at every collection, so no restart is needed.
+**Cause:** the account uses a different file from the one you edited, or the file has a problem. The adapter reads the files at every collection, so no restart is needed.
 
 **What to do:** see [Configuration Files](configuration-files.md). In short: check the file name set on the account, look for a `vCommunity configuration:` event on the vCenter object, and check that the file is valid XML.
 
@@ -129,7 +129,7 @@ The other cause is that the native vCenter adapter has not collected the objects
 
 **What you see:** after you added an entry to the VM Options file, VMs get no new `vCommunity|` values. VM Template objects are not updated either.
 
-**Cause:** each entry in the VM Options file is a vSphere property path, such as `config.flags.diskUuidEnabled`, and the pack adds it to the request that reads every VM. If vSphere does not know the path, the whole request fails, so no VM is read that cycle. The log has `Invalid property requested for VirtualMachine: <path>`, followed by `Main data collection thread error in collect_vm_data`.
+**Cause:** each entry in the VM Options file is a vSphere property path, such as `config.flags.diskUuidEnabled`, and the adapter adds it to the request that reads every VM. If vSphere does not know the path, the whole request fails, so no VM is read that cycle. The log has `Invalid property requested for VirtualMachine: <path>`, followed by `Main data collection thread error in collect_vm_data`.
 
 **What to do:** correct or remove the path named in the log, and save the file. Check the path in the vCenter Managed Object Browser, under a VM's `config` object. See [Configuration Files](configuration-files.md#the-format).
 
@@ -137,15 +137,15 @@ The other cause is that the native vCenter adapter has not collected the objects
 
 **What you see:** the log has the warning `Windows Service names left out because they contain characters that are not allowed`, and some services are not checked.
 
-**Cause:** a name in the Windows Service configuration file has a character the pack does not put in a command line. Only letters, digits, space and `_ . $ # @ ( ) + -` are allowed. The other names are still checked.
+**Cause:** a name in the Windows Service configuration file has a character the adapter does not put in a command line. Only letters, digits, space and `_ . $ # @ ( ) + -` are allowed. The other names are still checked.
 
-**What to do:** check the service name in the Windows Services list of the VM, and use it as Windows shows it. A service whose name has other characters cannot be checked by this pack.
+**What to do:** check the service name in the Windows Services list of the VM, and use it as Windows shows it. A service whose name has other characters cannot be checked by the adapter.
 
 ## Windows properties, services or events are missing
 
 **What you see:** some VMs have no Windows services, OS information or Windows events.
 
-**Cause:** the pack runs a PowerShell script inside the guest through the vSphere Guest API. That needs all of these:
+**Cause:** the adapter runs a PowerShell script inside the guest through the vSphere Guest API. That needs all of these:
 
 - VMware Tools running in a Windows guest.
 - A Windows user name and password on the account's credential, with rights to run the script. For event logs, the account must be in the local `Event Log Readers` group. See [System Requirements](../installation-guide/system-requirements.md).
@@ -178,7 +178,7 @@ The log tells you which one:
 
 **Cause:** the work grows with the inventory and with what is turned on:
 
-- **ESXi software packages** need one call to each host, which makes them the slowest data in the pack. See [Adapter Instance](../configuration-guide/adapter-instance.md).
+- **ESXi software packages** need one call to each host, which makes them the slowest data in the adapter. See [Adapter Instance](../configuration-guide/adapter-instance.md).
 - **Windows checks** run a script in each Windows VM, so each VM adds time.
 - **Content libraries** are read with one request per library item.
 - **A large vCenter** has more objects per cycle.

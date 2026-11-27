@@ -18,7 +18,7 @@ before, and publishes the result on the vCenter object in VCF Operations, under 
 
 Where the previous thumbprint is kept: in VCF Operations itself, as the SHA-256 Thumbprint property of the vCenter
 object. Each collection reads it back through the Suite API. So it survives a restart of the Cloud Proxy and an
-upgrade of the pack, and nothing is stored in the adapter container.
+upgrade of the VCF vCommunity Adapter, and nothing is stored in the adapter container.
 
 What "Changed" means: after a planned certificate replacement, it is expected, and it clears after 24 hours.
 When nobody replaced the certificate, another server may be answering as the vCenter, and it has received the

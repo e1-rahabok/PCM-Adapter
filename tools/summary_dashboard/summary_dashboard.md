@@ -23,9 +23,9 @@ This tool is built on Scott Bowe's work. He mapped the VCF Operations UI calls t
 - A local VCF Operations account that can manage dashboards, such as `admin`. The client logs in as a local account (`localItem`), so accounts from an identity source such as Active Directory do not work.
 - The dashboard on the instance. The script binds an existing dashboard by name and UUID. It does not create or import dashboards.
 
-## The pack's Summary dashboards
+## Summary dashboards of the VCF vCommunity Adapter
 
-The pack installs six Summary dashboards, but the install does not bind them to any object type. Bind each one with the script, using its name and UUID:
+The adapter installs six Summary dashboards, but the install does not bind them to any object type. Bind each one with the script, using its name and UUID:
 
 | Resource kind key | Dashboard name | UUID |
 | :--- | :--- | :--- |

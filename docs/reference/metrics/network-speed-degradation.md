@@ -11,7 +11,7 @@ Code: one file per object type: [host](../../../Management%20Pack/app/metrics/ho
 > **Read this before you use the metrics.**
 
 - **It needs a value that is deactivated by default.** `net|configuredSpeed` must be activated in the policy, with **Instanced State** on, so there is one value per NIC. Without it there is no result. See [Policy](../../configuration-guide/policy.md).
-- **Both NIC speeds are read with the latest-stats query.** The pack asks VCF Operations for `net|speed` and `net|configuredSpeed` through `api/resources/stats/latest/query`, one value per NIC instance. A NIC whose speeds VCF Operations does not return through that query has no value.
+- **Both NIC speeds are read with the latest-stats query.** The VCF vCommunity Adapter asks VCF Operations for `net|speed` and `net|configuredSpeed` through `api/resources/stats/latest/query`, one value per NIC instance. A NIC whose speeds VCF Operations does not return through that query has no value.
 - **Stats older than 10 minutes count as no data**, so the metric is blank rather than based on old values. See [No stale values](README.md#no-stale-values).
 - **A NIC set to auto-negotiate is left out.** When a NIC's configured speed is "Auto negotiate" in vCenter, VCF Operations has no `net|configuredSpeed` for it, so there is nothing to compare its actual speed with. A host whose NICs all auto-negotiate has no value and is not counted. To include such a NIC, set it to a fixed speed on the host in vCenter.
 - **A NIC that is down is not counted as degraded.** A speed of 0 means the NIC is down or unused, which is a different problem from running slower. It is left out.
@@ -28,7 +28,7 @@ Code: one file per object type: [host](../../../Management%20Pack/app/metrics/ho
 | Datacenter | `vCommunity\|Network\|Total Network Speed Degradation` (count) | The number of hosts in the Datacenter below 100 %, from the same collection cycle. |
 | vSphere World | `vCommunity\|Network\|Total Network Speed Degradation` (count) | The number of hosts below 100 %, across all vCenters. |
 
-The inputs are, per physical NIC and in Mbps, `net|speed` (the speed the NIC runs at) and `net|configuredSpeed`. VCF Operations returns one value per NIC, such as `net:vmnic0|speed`, and the pack compares each NIC with its own configured speed.
+The inputs are, per physical NIC and in Mbps, `net|speed` (the speed the NIC runs at) and `net|configuredSpeed`. VCF Operations returns one value per NIC, such as `net:vmnic0|speed`, and the adapter compares each NIC with its own configured speed.
 
 ## Design considerations
 

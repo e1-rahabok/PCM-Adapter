@@ -1,11 +1,11 @@
 #Requires -Version 7
 <#
 .SYNOPSIS
-  Stop and start collection on every Adapter Instance of the vCommunity pack, and
+  Stop and start collection on every Adapter Instance of the VCF vCommunity Adapter, and
   wait until each one is collecting again.
 
 .DESCRIPTION
-  After a pak upgrade, the pack's Adapter Instances often stop collecting until
+  After a pak upgrade, the adapter's Adapter Instances often stop collecting until
   collection is restarted (docs/installation-guide/installation.md, "After an
   Upgrade: Restart Collection"). This does the same as Stop Collecting and Start
   Collecting in Administration > Integrations > Accounts, for every instance of
@@ -14,7 +14,7 @@
     PUT /suite-api/api/adapters/{adapterId}/monitoringstate/stop
     PUT /suite-api/api/adapters/{adapterId}/monitoringstate/start
 
-  This CHANGES the instance: collection of this pack stops for a moment. No other
+  This CHANGES the instance: collection of the adapter stops for a moment. No other
   adapter is touched. Exits 0 only when every instance reports
   STARTED/DATA_RECEIVING, 1 otherwise.
 

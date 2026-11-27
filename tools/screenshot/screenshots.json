@@ -2,7 +2,7 @@
   "shots": [
     {
       "name": "adapter-instance-advanced-settings",
-      "description": "The Advanced Settings of the pack's Adapter Instance, all settings",
+      "description": "The Advanced Settings of an Adapter Instance of the VCF vCommunity Adapter, all settings",
       "output": "docs/configuration-guide/images/adapter-instance-advanced-settings.png",
       "page": "/vcf-operations/ui/operate/administration/integrations;tab=accounts",
       "viewport": { "width": 1600, "height": 1800 },
@@ -21,7 +21,7 @@
     },
     {
       "name": "integrations-accounts",
-      "description": "Integrations > Accounts, with the pack's Adapter Instances listed",
+      "description": "Integrations > Accounts, with the Adapter Instances of the VCF vCommunity Adapter listed",
       "output": "docs/configuration-guide/images/integrations-accounts.png",
       "page": "/vcf-operations/ui/operate/administration/integrations;tab=accounts",
       "viewport": { "width": 1600, "height": 900 },

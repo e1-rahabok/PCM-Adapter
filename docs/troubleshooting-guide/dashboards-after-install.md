@@ -1,12 +1,12 @@
 # Dashboards Show Default Sections or Empty Widgets After an Install
 
-After you install the pack, or import one of its dashboards, a dashboard can look wrong for a while: section headings read `Section`, or widgets are empty. This page explains why, how to tell a dashboard that is still loading from a broken one, and what to do.
+After you install the VCF vCommunity Adapter, or import one of its dashboards, a dashboard can look wrong for a while: section headings read `Section`, or widgets are empty. This page explains why, how to tell a dashboard that is still loading from a broken one, and what to do.
 
 ## What you see
 
 - Section headings read `Section` instead of their names, such as `KEY METRICS`.
 - Widgets show no data, or the default layout.
-- The dashboard loads, but looks different from the file the pack ships.
+- The dashboard loads, but looks different from the file the adapter ships.
 
 ## Why it happens
 
@@ -40,11 +40,11 @@ If every title is `Section`, the settings are not resolved yet. If the real name
 
 If a dashboard still shows `Section` several hours after you opened the original in the browser, something else is wrong. Then:
 
-- Check that the dashboard JSON in the pack has the section names, in `widgets[].title` of the widgets of type `Section`.
+- Check that the dashboard JSON in the pak file has the section names, in `widgets[].title` of the widgets of type `Section`.
 - Check the VCF Operations version. The dashboards were tested on VCF Operations 9.1.1.
 - Collect the appliance logs for the import. In `/storage/log/vcops/log/`, look for `DashboardImporter` lines in the `vcops-bridge` log and for `DASHBOARD.ADD_TAB` entries in `web.audit.log`.
 
 ## Related
 
 - [Summary Dashboards](../configuration-guide/summary-dashboards.md): replacing the Summary tab of an object type.
-- [Symptoms](symptoms.md): other problems while the pack runs.
+- [Symptoms](symptoms.md): other problems while the adapter runs.

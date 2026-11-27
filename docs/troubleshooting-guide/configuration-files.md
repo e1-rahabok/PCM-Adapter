@@ -1,6 +1,6 @@
 # Configuration Files
 
-The pack collects the settings that its configuration files list. This page covers what happens when a file is wrong, and how to fix it. To create a file, see [Customization](../configuration-guide/customization.md).
+The VCF vCommunity Adapter collects the settings that its configuration files list. This page covers what happens when a file is wrong, and how to fix it. To create a file, see [Customization](../configuration-guide/customization.md).
 
 - [What a problem looks like](#what-a-problem-looks-like)
 - [How to fix it](#how-to-fix-it)
@@ -11,7 +11,7 @@ The pack collects the settings that its configuration files list. This page cove
 
 ## What a problem looks like
 
-The pack reads each configuration file at every collection. When a file cannot be used, the pack collects nothing from that file, collects everything else as usual, and publishes a warning **event** on the vCenter object. The event text starts with `vCommunity configuration:` and gives the reason.
+The adapter reads each configuration file at every collection. When a file cannot be used, the adapter collects nothing from that file, collects everything else as usual, and publishes a warning **event** on the vCenter object. The event text starts with `vCommunity configuration:` and gives the reason.
 
 There are three kinds of problem:
 
@@ -28,7 +28,7 @@ A wrong name inside the list, such as a misspelt ESXi setting or VM advanced par
 ## How to fix it
 
 1. **Find the event** on the vCenter object, and note the file name and the reason.
-2. **Check the name.** Go to **Infrastructure Operations** > **Configurations** > **Management Pack Configuration**. If no file has that name, correct the name on the account: edit the account and change its configuration file field. Enter the name without `.xml`, because the pack adds it. The fields are listed in [Adapter Instance](../configuration-guide/adapter-instance.md#12-configuration-file-selection).
+2. **Check the name.** Go to **Infrastructure Operations** > **Configurations** > **Management Pack Configuration**. If no file has that name, correct the name on the account: edit the account and change its configuration file field. Enter the name without `.xml`, because the adapter adds it. The fields are listed in [Adapter Instance](../configuration-guide/adapter-instance.md#12-configuration-file-selection).
 3. **Check the XML.** Open the file and compare it with the reason in the event. The typical fixes are below.
 4. **Save the file.** Wait one collection cycle, then check the vCenter object. The event disappears after a few more cycles.
 
@@ -58,7 +58,7 @@ A custom VM Options file looks like this. Keep the root tag of the file you clon
 
 The names can be on one line or several. The last name has no comma after it.
 
-The Windows Event Log file is different. It is passed to the guest as it is, so it keeps its own structure: `<Log Name="…">` elements that hold `<EventID>` elements. The pack only checks that it is valid XML.
+The Windows Event Log file is different. It is passed to the guest as it is, so it keeps its own structure: `<Log Name="…">` elements that hold `<EventID>` elements. The adapter only checks that it is valid XML.
 
 Two XML rules cause most errors:
 
@@ -70,7 +70,7 @@ Two XML rules cause most errors:
 | Mistake | What happens | What to do |
 | :--- | :--- | :--- |
 | The name on the account does not match a file | An event says the file could not be read (HTTP 404). | Correct the name on the account. |
-| The name on the account ends in `.xml` | The pack looks for `<name>.xml.xml`, and an event says the file could not be read. | Enter the name without `.xml`. |
+| The name on the account ends in `.xml` | The adapter looks for `<name>.xml.xml`, and an event says the file could not be read. | Enter the name without `.xml`. |
 | A closing tag is missing, or a tag is misspelt | An event says the file is not valid XML. | Compare the opening and closing tags. |
 | A `&` or `<` is typed in the text | An event says the file is not valid XML. | Write `&amp;` or `&lt;`. See [The format](#the-format). |
 | An ESXi setting, VIB or VM advanced parameter is misspelt | No event. That name is not collected. | Compare it with the name in vCenter or in the Managed Object Browser (MOB). |

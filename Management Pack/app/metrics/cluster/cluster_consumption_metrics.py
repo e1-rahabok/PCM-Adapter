@@ -40,7 +40,7 @@ StatsByHost = Dict[str, Dict[str, float]]
 # Usable Capacity = Total Capacity - HA - Buffer. It is what the VMs of the cluster may use: the capacity kept for
 # a host failure (HA admission control) and the Capacity Buffer (Demand) of the policy are not for VMs.
 #
-# VCF Operations calculates it per cluster, in MHz for CPU and in KB for memory. The pack counts CPU Usable Capacity
+# VCF Operations calculates it per cluster, in MHz for CPU and in KB for memory. The VCF vCommunity Adapter counts CPU Usable Capacity
 # in THREADS, not MHz, which differs from VCF Operations on purpose: capacity is about quantity, not quality. It is
 # how many VMs fit (space), not how fast they run (speed), and MHz measures speed.
 #

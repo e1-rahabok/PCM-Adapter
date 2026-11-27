@@ -2,7 +2,7 @@
 """
 Author: Onur Yuzseven - onur.yuzseven@broadcom.com
 
-importer.py - Bulk Adapter Instance creator for the VCF Operations vCommunity Management Pack.
+importer.py - Bulk Adapter Instance creator for the VCF vCommunity Adapter.
 
 For each row in a CSV file (one row = one vCenter), this script creates or reuses a
 Credential Instance and creates an Adapter Instance - so you can onboard 20+ vCenters
@@ -423,7 +423,7 @@ def build_credential_fields(row: VCenterRow) -> list[dict]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Bulk Adapter Instance creator for the vCommunity Management Pack.")
+    parser = argparse.ArgumentParser(description="Bulk Adapter Instance creator for the VCF vCommunity Adapter.")
     parser.add_argument("--vcf-host", required=True, help="VCF Operations FQDN/IP (e.g. vcfops.example.com)")
     parser.add_argument("--vcf-user", required=True, help="VCF Operations username")
     parser.add_argument("--vcf-password", default=None, help="VCF Operations password (if omitted, the VCFOPS_PASSWORD env var or an interactive prompt is used)")

@@ -8,15 +8,15 @@ If you have a GitHub account, star the repository to follow it.
 
 | What you can do | Why it helps | How |
 | :--- | :--- | :--- |
-| **Run the pack and report what you see** | Real environments find problems a lab does not. | Install the pack on a test instance. If something is broken, open a [bug report](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose) with the version, the Adapter Instance settings without credentials, and the lines from the adapter log. The [Troubleshooting Guide](docs/troubleshooting-guide/first-steps.md) shows where to find them. |
-| **Ask for a setting you need** | Your hardening guide may name settings the pack does not collect yet. | Open a [feature request](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose) with the setting name, its vSphere path, and the guide that names it. Many settings are a one-line change to a configuration file, see [Add a setting](#add-a-setting-to-a-configuration-file). |
+| **Run the VCF vCommunity Adapter and report what you see** | Real environments find problems a lab does not. | Install the adapter on a test instance. If something is broken, open a [bug report](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose) with the version, the Adapter Instance settings without credentials, and the lines from the adapter log. The [Troubleshooting Guide](docs/troubleshooting-guide/first-steps.md) shows where to find them. |
+| **Ask for a setting you need** | Your hardening guide may name settings the adapter does not collect yet. | Open a [feature request](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose) with the setting name, its vSphere path, and the guide that names it. Many settings are a one-line change to a configuration file, see [Add a setting](#add-a-setting-to-a-configuration-file). |
 | **Improve the documentation** | Many readers never open the code. | Fix a sentence, add an example, or describe a symptom you hit. See [Documentation](#documentation). |
-| **Share your content** | Dashboards, reports and super metrics from users make the pack more useful. | Export the dashboard or report from VCF Operations and open a pull request with it, with a short note on what it shows and who it is for. |
-| **Tell others** | Many VMware administrators have not heard of the pack. | Write about it, present it at your user group, or point a colleague to the [README](README.md). |
+| **Share your content** | Dashboards, reports and super metrics from users make the adapter more useful. | Export the dashboard or report from VCF Operations and open a pull request with it, with a short note on what it shows and who it is for. |
+| **Tell others** | Many VMware administrators have not heard of the adapter. | Write about it, present it at your user group, or point a colleague to the [README](README.md). |
 
 ## Add a setting to a configuration file
 
-The pack collects the settings listed in its configuration files, so adding a setting is often a one-line change with no code.
+The adapter collects the settings listed in its configuration files, so adding a setting is often a one-line change with no code.
 
 1. Find the setting's path. For a VM advanced parameter, look at `config.extraConfig` in the vCenter Managed Object Browser (`https://<vcenter>/mob`). For an ESXi advanced setting, look at the host's **Configure** tab in vCenter. For a VM option, look at the `config` object in the MOB. A VM option is a vSphere property path, such as `config.flags.diskUuidEnabled`.
 2. Open the file under `Management Pack/content/files/solutionconfig/` and add the name on its own line. Put a comma after it unless it is the last entry. If the name is inside a comment, remove the comment markers around it.
@@ -28,7 +28,7 @@ Settings that only your company needs belong in your own clone of the file in VC
 
 ## Add code
 
-Code contributions are welcome, and you can use an AI coding assistant to write them. The pack is a normal Python project, and the same standard applies to every change, however it was written.
+Code contributions are welcome, and you can use an AI coding assistant to write them. The adapter is a normal Python project, and the same standard applies to every change, however it was written.
 
 ### What we expect from a change
 
@@ -77,7 +77,7 @@ CI runs the same tests and lint on every pull request and every push to `main`, 
 3. Make the change, with its tests and documentation.
 4. Run the tests, the lint and the link check (above). If you have a test instance, also build, install and run the live validation, see [Tools](tools/README.md). Only the live validation tests the build that is installed on an instance.
 5. Open a pull request against `main`. The template asks what changes, why, how you tested it, and whether an assistant was used.
-6. Respond to review. A reviewer may ask for a change, a test or a simpler approach. Reviews check correctness and fit with the rest of the pack.
+6. Respond to review. A reviewer may ask for a change, a test or a simpler approach. Reviews check correctness and fit with the rest of the adapter.
 
 ## Issues and planned work
 
@@ -98,7 +98,7 @@ The documentation is in `docs/`, and [`docs/README.md`](docs/README.md) lists ev
 | a metric or KPI (a KPI is a metric): how it is calculated, and its limitations | `docs/reference/metrics/` |
 | a list to look things up in, such as keys or settings | `docs/reference/` |
 | the code: how a folder or file works, why it is built that way, and how to change it | `docs/development-guide/` |
-| problems while the pack runs, and how to find the cause | `docs/troubleshooting-guide/` |
+| problems while the adapter runs, and how to find the cause | `docs/troubleshooting-guide/` |
 
 Rules for documentation:
 
@@ -125,7 +125,7 @@ The build needs Docker and PowerShell 7. The install, restart and validation scr
 
 Use the [bug report template](https://github.com/e1-rahabok/PCM-Adapter/issues/new/choose). The most useful reports include:
 
-- The pack version and the VCF Operations version.
+- The adapter version and the VCF Operations version.
 - What you expected and what you see. A screenshot helps.
 - The Validate Connection message if it failed, and the lines of the adapter log around the time of the problem. [Log Messages](docs/troubleshooting-guide/log-messages.md) explains them.
 - Whether it happens every cycle or only now and then.

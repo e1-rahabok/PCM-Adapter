@@ -2,7 +2,7 @@
 
 This is a vCommunity project with no formal support, and it is not covered by VMware GSS.
 
-- **Questions and problems:** open an issue in this repository. Include the pack version, the VCF Operations version, the steps you took and the adapter log lines. [First Steps](docs/troubleshooting-guide/first-steps.md#when-you-ask-for-help) lists what to send.
+- **Questions and problems:** open an issue in this repository. Include the version of the VCF vCommunity Adapter, the VCF Operations version, the steps you took and the adapter log lines. [First Steps](docs/troubleshooting-guide/first-steps.md#when-you-ask-for-help) lists what to send.
 - **Security issues:** don't open a public issue. See [SECURITY.md](SECURITY.md).
 
 The team:

@@ -210,7 +210,7 @@ def collect(adapter_instance: AdapterInstance) -> CollectResult:
     with Timer(logger, "Collection"):
         result = CollectResult()
         # PER_OBJECT: only objects that get a parent or child in this result have their links replaced. The default (AUTO)
-        # removes the Business Application links the pack does not return, as soon as the result has any relationship.
+        # removes the Business Application links the VCF vCommunity Adapter does not return, as soon as the result has any relationship.
         result.update_relationships = RelationshipUpdateModes.PER_OBJECT
         # Counts the warnings and errors of this cycle, for the Collection Warnings alert. See utils/collection_health.py.
         warnings = collection_health.start()

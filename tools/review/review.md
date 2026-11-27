@@ -10,7 +10,7 @@ It is read-only and is not part of CI. Run it by hand when you write or update a
 
 - Python 3. Only the standard library is used.
 - `git`, in the repository.
-- For `snapshot` and `check --snapshot`: pytest for the test count. Install the pack's requirements to collect all tests. Without them the count is left out and the snapshot says why.
+- For `snapshot` and `check --snapshot`: pytest for the test count. Install the requirements of the VCF vCommunity Adapter to collect all tests. Without them the count is left out and the snapshot says why.
 - For `snapshot --linters`: `ruff`, `bandit` and `pip-audit`. A linter that is not installed is reported as `not installed`.
 
 Run the tool with the Python that runs the unit tests. The test count and the claims check then use the same environment.

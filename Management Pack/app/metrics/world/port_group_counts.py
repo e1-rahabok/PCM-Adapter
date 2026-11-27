@@ -6,7 +6,7 @@ each. It uses the configuration limit (CONFIGURATION_STALE_AFTER_MINUTES, 15 min
 other metrics, because a port group count is based on settings and changes rarely. A vCenter whose last value is older
 than that is left out, so the total falls when a vCenter stops reporting for longer than the limit.
 
-A vCenter that has never published a count, such as one with no account of this pack, is left out.
+A vCenter that has never published a count, such as one with no account of the VCF vCommunity Adapter, is left out.
 """
 import logging
 from typing import Dict

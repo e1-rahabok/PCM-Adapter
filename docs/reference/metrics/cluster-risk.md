@@ -111,7 +111,7 @@ The worked examples below use the defaults.
 
 ## How the score is calculated
 
-Each sub-metric is scored and combined like every KPI, see [How the pack scores a KPI](../../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi). The weighted average has 100 as best, and the published value is flipped:
+Each sub-metric is scored and combined like every KPI, see [KPI scoring rules](../../concepts/kpi-scoring-models.md#kpi-scoring-rules). The weighted average has 100 as best, and the published value is flipped:
 
 **Cluster Risk = 100 − the weighted average**, so that a higher value means more risk.
 
@@ -130,7 +130,7 @@ Because Cluster Risk is published as `100 − weighted average`, its bands mirro
 
 - Only the published number is flipped. The sub-metrics, their limits, the weights, "Excluded" and missing data work exactly as for every KPI, in the same shared code. The flip is the last step, in `publish_kpi(..., higher_is_worse=True)`.
 - The order and the distances between clusters are kept. A cluster whose weighted average is 10 points higher than another's has a Cluster Risk 10 points lower.
-- Set thresholds the other way round. A symptom, alert or widget color range on `Cluster Risk Score` must treat high as bad: red from 75. The vSphere Cluster Capacity 2.0 dashboard uses the score with red from 75. The pack's other dashboards and reports use only the Risk sub-metrics.
+- Set thresholds the other way round. A symptom, alert or widget color range on `Cluster Risk Score` must treat high as bad: red from 75. The vSphere Cluster Capacity 2.0 dashboard uses the score with red from 75. The adapter's other dashboards and reports use only the Risk sub-metrics.
 - "Worst" means highest. vSphere World therefore uses the 90th percentile and the highest Cluster Risk, and the Periodic Cluster Check takes the high end of Cluster Risk and counts it red from 75.
 
 ## Worked examples

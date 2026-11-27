@@ -35,7 +35,7 @@ Bad network packets are green only at exactly 0, and the source table marks that
 
 ## How the score is calculated
 
-Like every KPI, see [How the pack scores a KPI](../../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi): each sub-metric is scored from its limits, and the KPI is the weighted average of the scores. Scoring examples are in [Cluster Performance KPI](cluster-performance.md#worked-examples). The code is [`kpi_score.py`](../../../Management%20Pack/app/metrics/kpi_score.py).
+Like every KPI, see [KPI scoring rules](../../concepts/kpi-scoring-models.md#kpi-scoring-rules): each sub-metric is scored from its limits, and the KPI is the weighted average of the scores. Scoring examples are in [Cluster Performance KPI](cluster-performance.md#worked-examples). The code is [`kpi_score.py`](../../../Management%20Pack/app/metrics/kpi_score.py).
 
 ## How each sub-metric is calculated
 

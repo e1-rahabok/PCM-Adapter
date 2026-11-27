@@ -1,6 +1,6 @@
 # Metrics
 
-How the pack calculates its metrics and KPIs. A KPI is a metric too: a 0 to 100 % score built from sub-metrics. Every key the pack publishes, by object type, is in [Metrics and Properties](../metrics-and-properties.md). Metrics that are simple counts or values read from vCenter, such as DRS Score, the resource pool counts, Collection Health and the content library counts, are described only there.
+How the VCF vCommunity Adapter calculates its metrics and KPIs. A KPI is a metric too: a 0 to 100 % score built from sub-metrics. Every key the adapter publishes, by object type, is in [Metrics and Properties](../metrics-and-properties.md). Metrics that are simple counts or values read from vCenter, such as DRS Score, the resource pool counts, Collection Health and the content library counts, are described only there.
 
 KPIs:
 
@@ -21,13 +21,13 @@ Other metrics:
 - [Business Application Performance](business-application-performance.md)
 - [vSphere World Cluster Metrics](vsphere-world-metrics.md)
 
-How every KPI scores and combines its sub-metrics is in [KPI Scoring Models](../../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi). The source tables of the KPI limits are in [formula/](formula/).
+How every KPI scores and combines its sub-metrics is in [KPI Scoring Models](../../concepts/kpi-scoring-models.md#kpi-scoring-rules). The source tables of the KPI limits are in [formula/](formula/).
 
 ## No stale values
 
 Most metrics are calculated from stats that VCF Operations already holds, read with its "latest" query. That query returns the last stored value however old it is. A host that is down or disconnected, or a VM that is powered off, keeps its last value as "latest".
 
-The pack does not use such values. It leaves a metric blank rather than publish a number built on old data.
+The adapter does not use such values. It leaves a metric blank rather than publish a number built on old data.
 
 - A stat older than 10 minutes, two 5-minute collection cycles, counts as no data. A metric that depends on it is not published for that cycle.
 - Two cycles rather than one, so that a single late collection does not blank everything.
@@ -50,4 +50,4 @@ Two other groups do not use these limits:
 - **Window history.** The [Periodic Cluster Check](periodic-cluster-check.md) and the Cluster Delta counts read the 5-minute samples of a past window, not the latest value. Each sample belongs to its own time, so age does not apply.
 - **Values read from vCenter.** DRS Score, the SCSI controller count, the license Remaining Days, the content library metrics, the vCenter Number of Port Groups and Collection Health are read from vCenter, or from the adapter itself, in the same cycle they are published.
 
-> **Limitation.** If the VMware vCenter adapter in VCF Operations collects less often than every 10 minutes, every metric of this pack that depends on its stats is blank. A metric with the 15-minute limit goes blank only after 15 minutes.
+> **Limitation.** If the VMware vCenter adapter in VCF Operations collects less often than every 10 minutes, every metric of the adapter that depends on its stats is blank. A metric with the 15-minute limit goes blank only after 15 minutes.

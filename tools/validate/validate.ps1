@@ -1,14 +1,14 @@
 #Requires -Version 7
 <#
 .SYNOPSIS
-  Read-only live check that the vCommunity adapter installed on a VCF Operations
+  Read-only live check that the VCF vCommunity Adapter installed on a VCF Operations
   instance is collecting and that its data is landing on the vCenter objects.
 
 .DESCRIPTION
   Talks to the Suite API only with GET calls (plus the token request). Nothing is
   changed on the instance. Exits 0 when no check fails, 1 otherwise.
   The one exception is -Release: it starts a content export job (a POST) to check
-  the pack's views and dashboards. The export changes no content.
+  the adapter's views and dashboards. The export changes no content.
 
   It tests the build that is INSTALLED on the instance, not the code in this repo.
 
@@ -34,10 +34,10 @@ param(
     [int]$SampleSize = 5,
     # Newest vCommunity metric and last collection must be younger than this.
     [int]$MaxAgeMinutes = 20,
-    # Version the installed pack must have. A mismatch FAILs. When omitted, the
+    # Version the installed adapter must have. A mismatch FAILs. When omitted, the
     # version in manifest.txt is compared and a mismatch only WARNs.
     [string]$ExpectedVersion,
-    # Release sign-off: also export the content and check the pack's views and
+    # Release sign-off: also export the content and check the adapter's views and
     # dashboards. This starts a content export job on the instance (a POST).
     [switch]$Release,
     # A gap between two samples longer than this is reported by the continuity check.

@@ -101,7 +101,7 @@ def snippet(text, number):
 # ---------------------------------------------------------------- citations
 
 def resolve(path, files):
-    """Find the repo file a citation names. Paths are tried from the repo root, the pack and its app folder."""
+    """Find the repo file a citation names. Paths are tried from the repo root, the Management Pack folder and its app folder."""
     tracked = set(files)
     for base in ("", "Management Pack/app", "Management Pack", "docs/development-guide/engineering-review"):
         candidate = os.path.normpath(os.path.join(base, path)).replace(os.sep, "/")

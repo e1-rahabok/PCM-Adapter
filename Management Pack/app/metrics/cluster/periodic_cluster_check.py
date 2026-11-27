@@ -27,7 +27,7 @@ as long as the period, so every hour is covered once.
 
 How it runs
 -----------
-The pack collects every 5 minutes. Each cycle, the cluster collection reads the time of the latest sample of
+The VCF vCommunity Adapter collects every 5 minutes. Each cycle, the cluster collection reads the time of the latest sample of
 the check's own metrics, and of the three KPIs, for all its clusters. A cluster is due when:
     - its latest check metric is older than the latest window end: not yet calculated for that window, and
     - a KPI has a sample at or after the start of that window: there is something to calculate.
@@ -36,7 +36,7 @@ At most MAX_CLUSTERS_PER_CYCLE due clusters are calculated per cycle, taken in t
 history is not read all at once. A cluster whose history could not be read stays due, and is tried again.
 
 No state is kept, in the adapter or as properties: the timestamps of the published metrics are the state. A
-restart or an upgrade of the pack does not lose it. A changed setting applies from the next window.
+restart or an upgrade of the adapter does not lose it. A changed setting applies from the next window.
 
 Inputs, all from VCF Operations: the 5-minute history of the three KPIs in STAT_KEYS.
 Docs: docs/reference/metrics/periodic-cluster-check.md

@@ -1,6 +1,6 @@
 # Bulk Adapter Instance Importer
 
-`importer.py` creates Adapter Instances of the vCommunity Management Pack from a CSV file, one row per vCenter. Use it when you have more vCenters than you want to set up one by one in the UI.
+`importer.py` creates Adapter Instances of the VCF vCommunity Adapter from a CSV file, one row per vCenter. Use it when you have more vCenters than you want to set up one by one in the UI.
 
 For each row, the script:
 

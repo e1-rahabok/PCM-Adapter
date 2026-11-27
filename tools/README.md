@@ -3,7 +3,7 @@
 Scripts that are not part of the management pack. None of them is in the `.pak` file or runs in VCF Operations. They run on your own machine and use the VCF Operations APIs.
 
 - **For VCF Operations administrators:** the importer, which creates Adapter Instances for many vCenters at once, and the Summary dashboard script, which binds a dashboard to an object type's Summary tab.
-- **For contributors to this repo:** scripts that build the pack, install it on a test instance, restart its collection, check that it works, take the documentation's screenshots, check the documentation's links, and check the evidence in the engineering review.
+- **For contributors to this repo:** scripts that build the VCF vCommunity Adapter, install it on a test instance, restart its collection, check that it works, take the documentation's screenshots, check the documentation's links, and check the evidence in the engineering review.
 
 ## The tools
 
@@ -12,9 +12,9 @@ Scripts that are not part of the management pack. None of them is in the `.pak` 
 | `importer/importer.py` | Administrators | Creates an Adapter Instance, with its credential, for each vCenter in a CSV file | Yes: adds Adapter Instances and credentials | [Bulk Adapter Instance Importer](importer/importer.md) |
 | `summary_dashboard/set_summary_dashboard.py` | Administrators | Replaces the Summary tab of one object type with a dashboard, or restores the built-in page | Yes: changes the Summary tab of the object type | [Summary Dashboard Script](summary_dashboard/summary_dashboard.md) |
 | `build/build.ps1` | Contributors | Builds the `.pak` file and pushes the adapter's container image | No | [Build Script](build/build.md) |
-| `install/install.ps1` | Contributors | Uploads a `.pak` file to VCF Operations and installs it | Yes: replaces the installed version of the pack | [Install Script](install/install.md) |
-| `restart/restart.ps1` | Contributors | Stops and starts collection on every Adapter Instance of this pack, and waits until each one collects again | Yes: the pack's collection stops for a moment | [Restart Script](restart/restart.md) |
-| `validate/validate.ps1` | Contributors | Checks that the installed pack collects, and that its data lands on the vCenter objects | No. With `-Release`, it starts a content export job, which changes no content. | [Live Validation Test Plan](validate/validate.md) |
+| `install/install.ps1` | Contributors | Uploads a `.pak` file to VCF Operations and installs it | Yes: replaces the installed version of the adapter | [Install Script](install/install.md) |
+| `restart/restart.ps1` | Contributors | Stops and starts collection on every Adapter Instance of the adapter, and waits until each one collects again | Yes: the adapter's collection stops for a moment | [Restart Script](restart/restart.md) |
+| `validate/validate.ps1` | Contributors | Checks that the installed adapter collects, and that its data lands on the vCenter objects | No. With `-Release`, it starts a content export job, which changes no content. | [Live Validation Test Plan](validate/validate.md) |
 | `screenshot/screenshot.ps1` | Contributors | Takes the documentation's screenshots of the VCF Operations UI, as defined in `screenshots.json`, and saves them into `docs/` | No: it only opens pages and expands sections | [Screenshot Script](screenshot/screenshot.md) |
 | `check-docs/check_links.py` | Contributors | Checks every relative link and image in the repo's Markdown files | No, it connects to nothing | [Below](#check-docs) |
 | `review/review.py` | Contributors | Checks an engineering review's evidence: that each cited file and line exists, that each finding has a decision with its evidence, and which test counts and Python versions the pages state. It can also record a snapshot of the code's facts | No, it reads the repo and runs `git` read commands only | [Review Evidence Tool](review/review.md) |
@@ -30,7 +30,7 @@ Contributors use the tools in this order:
 4. `pwsh tools/restart/restart.ps1` restarts collection on the Adapter Instances, which often stop collecting after an upgrade. See [After an Upgrade: Restart Collection](../docs/installation-guide/installation.md#after-an-upgrade-restart-collection).
 5. Wait one collection cycle, then run `pwsh tools/validate/validate.ps1` to check the installed build.
 
-Run `python tools/check-docs/check_links.py` before you commit a documentation change. When the UI or the pack's settings change, run `pwsh tools/screenshot/screenshot.ps1` to update the screenshots.
+Run `python tools/check-docs/check_links.py` before you commit a documentation change. When the UI or the adapter's settings change, run `pwsh tools/screenshot/screenshot.ps1` to update the screenshots.
 
 [CONTRIBUTING](../CONTRIBUTING.md) has the testing and documentation rules.
 

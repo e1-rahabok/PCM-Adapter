@@ -51,7 +51,7 @@ Source: Q-WS-3 in [round 1](https://github.com/e1-rahabok/private-cloud-workspac
 - And the README badges, the link in [resources.properties](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/resources/resources.properties#L7), the release command in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L135) and the image path in [dark-site.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/dark-site.md#L48) and [system-requirements.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/system-requirements.md#L19) carry no old repository name
 
 Test scenarios:
-- T-ADP-005a (anywhere, automated by `Management Pack/tests/test_repository_names.py` (new), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews and `spec/requirements/`, which names them to forbid them.
+- T-ADP-005a (anywhere, automated by [test_repository_names.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_repository_names.py), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews and `spec/requirements/`, which names them to forbid them.
 
 ### R-ADP-025 One name for the management pack
 
@@ -67,7 +67,7 @@ Source: WD-030 (guessable names, one word per concept); WD-032 (the display name
 - And the copyright lines at the top of the code files stay as they are
 
 Test scenarios:
-- T-ADP-025a (anywhere, automated by `Management Pack/tests/test_repository_names.py` (new), the test of T-ADP-005a): read each tracked text file outside the engineering reviews and `spec/requirements/`, which names the phrases to forbid them; skip each code file's copyright line and the author line under it; expect no "vCommunity MP", no "vCommunity Management Pack" and no "the pack" as whole words in any case ("the package" does not match).
+- T-ADP-025a (anywhere, automated by [test_repository_names.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_repository_names.py), the test of T-ADP-005a): read each tracked text file outside the engineering reviews and `spec/requirements/`, which names the phrases to forbid them; skip each code file's copyright line and the author line under it; expect no "vCommunity MP", no "vCommunity Management Pack" and no "the pack" as whole words in any case ("the package" does not match).
 
 ## Metric keys and names
 
@@ -102,7 +102,7 @@ Source: Q-WS-29 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 - And the case in issue #85 is closed, including the cluster property declared as `Host Isolation` ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L336)) and published as `Response \ Host Isolation` ([ha_properties.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/properties/cluster/ha_properties.py#L12))
 
 Test scenarios:
-- T-ADP-007a (anywhere, automated by `Management Pack/tests/test_declared_keys.py` (new)): build the definition; run every collector against the fakes; expect the two key sets to be equal, for each object type.
+- T-ADP-007a (anywhere, automated by [test_declared_keys.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_declared_keys.py)): build the definition; run every collector against the fakes; expect the two key sets to be equal, for each object type.
 - Its lab check is T-ADP-026b, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
 ### R-ADP-008 Each sub-metric reads the statistic its catalog name states

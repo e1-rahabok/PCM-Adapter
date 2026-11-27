@@ -1,7 +1,7 @@
 <advancedSettings>
   <!--
   DO NOT EDIT THIS CONFIG FILE, CLONE IT
-  It shouldn't used by the adapter. The reason is any changes on this default config file will be overwritten during next upgrade process.
+  It should not be used by the VCF vCommunity Adapter. The reason is any changes on this default config file will be overwritten during next upgrade process.
 
   It is a reference file as it has the complete list. 
   To monitor a setting, simply copy the line to the working file.
@@ -15,9 +15,9 @@
   
 
   WHAT HAPPENS IF THIS FILE IS WRONG:
-  If the file is missing, or is not valid XML, nothing is collected from it. The pack then publishes a warning
+  If the file is missing, or is not valid XML, nothing is collected from it. The adapter then publishes a warning
   event named 'vCommunity configuration' on the vCenter object, and the event clears when the file is fixed.
-  The Troubleshooting Guide of the pack explains how to check the file.
+  The Troubleshooting Guide of the adapter explains how to check the file.
   -->
 
   <!-- CBRC.DCacheMemReserved, -->

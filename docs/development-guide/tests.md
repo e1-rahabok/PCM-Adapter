@@ -1,12 +1,12 @@
 # Tests
 
-The pack is checked in three layers. Each catches a different kind of mistake. [CONTRIBUTING](../../CONTRIBUTING.md) says which to run after a change.
+The VCF vCommunity Adapter is checked in three layers. Each catches a different kind of mistake. [CONTRIBUTING](../../CONTRIBUTING.md) says which to run after a change.
 
 | Layer | Needs VCF Operations or vCenter? | What it catches | How to run it |
 | :--- | :--- | :--- | :--- |
 | **Unit tests** | No. They use fake data, see [`fakes.py`](../../Management%20Pack/tests/fakes.py) | A wrong formula or limit, a broken read function, a broken link in the docs | `python -m pytest tests`, from `Management Pack` |
 | **KPI equivalence** | No | A KPI restructure that changes values it should not change | [KPI Equivalence Test](../../tools/equivalence/equivalence.md), when KPI code is restructured |
-| **Live validation** | Yes, read-only, on the test instance | Whether the installed pack collects and its data lands on the vCenter objects | `pwsh tools/validate/validate.ps1` |
+| **Live validation** | Yes, read-only, on the test instance | Whether the installed adapter collects and its data lands on the vCenter objects | `pwsh tools/validate/validate.ps1` |
 
 The unit tests test the code in the repository. The live validation tests the build **installed on the instance**, so it covers a code change only after that build is installed. [Tools](../../tools/README.md) gives the order of the steps.
 
@@ -37,7 +37,7 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every pull request and on e
 **Known gaps:**
 
 - **`pip-audit` does not cover `requirements.txt`.** The build-time packages (the SDK build tool and its dependencies, such as `pillow` and `setuptools`) are not audited in CI. The engineering review found advisories on two of them (GOV-06, N-02).
-- **The lint does not cover `tools/`.** Running `ruff check .` from the repository root reports six findings in the tools: four `zip()` calls without `strict=` in `tools/equivalence/planned_cases.py` (B905), and in `tools/importer/importer.py` an unused `dataclasses.field` import (F401) and a `raise` inside an `except` without `from` (B904). They are not part of the pack and don't affect the adapter. Fix them, then extend the CI lint to `tools`.
+- **The lint does not cover `tools/`.** Running `ruff check .` from the repository root reports six findings in the tools: four `zip()` calls without `strict=` in `tools/equivalence/planned_cases.py` (B905), and in `tools/importer/importer.py` an unused `dataclasses.field` import (F401) and a `raise` inside an `except` without `from` (B904). They are not part of the `Management Pack` folder and don't affect the adapter. Fix them, then extend the CI lint to `tools`.
 
 ### Test files
 
@@ -78,8 +78,11 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every pull request and on e
 | `test_vm_template.py` | VM Template: built only for a VM marked as a template, with no parent link. |
 | `test_docs_links.py` | Every link and image in the Markdown files resolves. It runs [`check_links.py`](../../tools/check-docs/check_links.py). |
 | `test_submodule_imports.py` | The app code imports `concurrent.futures` by its full name. See [Submodule imports](#submodule-imports). |
+| `test_declared_keys.py` | The keys declared in `definition.py` equal the keys the collectors publish, for each object type: the same groups and spelling, metric or property, and an instance where a group is instanced. It runs two whole collection cycles of `adapter.collect()` against a fake vCenter and the fake VCF Operations in `fakes.py`, in which every stat and property has a value. |
+| `test_repository_names.py` | No tracked file names an old repository, or names the VCF vCommunity Adapter another way. The dated engineering reviews and `spec/requirements/` are left out, and so are the copyright and author lines of the code files. |
 
 - When you add a KPI, add its test file and add it to `KPI_MODULES` in `test_kpi_score.py`. See [Metrics Code](metrics-code.md#how-to-add-a-kpi).
+- When you add a metric or a property, declare it in `definition.py` with the key the code publishes. `test_declared_keys.py` fails on a key that is published but not declared, or declared but never published. If the new key reads a vSphere property path, give the fake vCenter in that test a value for it.
 
 ## Submodule imports
 
@@ -107,7 +110,7 @@ Code: [`tools/equivalence/`](../../tools/equivalence/). See [its page](../../too
 
 Code: [`tools/validate/`](../../tools/validate/). See [its page](../../tools/validate/validate.md).
 
-The unit tests can't show that the installed pack collects. The live validation reads the installed pack on the test instance and checks that its data is on the vCenter objects. It is read-only. It exits with 0 on a pass and 1 on any failure. Warnings are shown but don't fail the run.
+The unit tests can't show that the installed adapter collects. The live validation reads the installed adapter on the test instance and checks that its data is on the vCenter objects. It is read-only. It exits with 0 on a pass and 1 on any failure. Warnings are shown but don't fail the run.
 
 ## Documentation links
 

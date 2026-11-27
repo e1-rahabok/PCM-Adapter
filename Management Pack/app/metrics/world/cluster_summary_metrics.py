@@ -20,7 +20,7 @@ end: the 90th percentile and the highest.
 Where the scores come from
 --------------------------
 The scores already stored in VCF Operations, read with one request for all clusters. There is one vSphere World
-object, but one account of this pack per vCenter. Every account reads the clusters of all vCenters, so they all
+object, but one account of the VCF vCommunity Adapter per vCenter. Every account reads the clusters of all vCenters, so they all
 publish the same values instead of overwriting each other with the clusters of their own vCenter only.
 
 Known limitation: the stored score of a cluster is the one of its last collection, so a value can be up to one

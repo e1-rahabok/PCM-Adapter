@@ -1,6 +1,6 @@
 # Metrics Code
 
-The code that calculates the metrics and KPIs and publishes them to VCF Operations. Read this page before you change or add one. What a KPI means and how its score is calculated is in [How the pack scores a KPI](../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi). The metrics as users see them are listed in [Metrics and Properties](../reference/metrics-and-properties.md).
+The code that calculates the metrics and KPIs and publishes them to VCF Operations. Read this page before you change or add one. What a KPI means and how its score is calculated is in [KPI scoring rules](../concepts/kpi-scoring-models.md#kpi-scoring-rules). The metrics as users see them are listed in [Metrics and Properties](../reference/metrics-and-properties.md).
 
 Code: [`Management Pack/app/metrics/`](../../Management%20Pack/app/metrics/)
 
@@ -100,7 +100,7 @@ ZIP_SWAP = Row(Metric("Memory Zip Swap",      "%",    0.0,    0.25,   0.5,    1.
 METRICS = [row.metric for row in ROWS]
 ```
 
-A higher-is-better row has decreasing limits, such as `Metric("Guest Free Memory", "MB", 1024.0, 512.0, 256.0, 128.0, 0.0)` in `vm/guest_os_performance_metrics.py`. A green limit equal to the best limit marks green as a single value. Both cases are described in [How the pack scores a KPI](../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi).
+A higher-is-better row has decreasing limits, such as `Metric("Guest Free Memory", "MB", 1024.0, 512.0, 256.0, 128.0, 0.0)` in `vm/guest_os_performance_metrics.py`. A green limit equal to the best limit marks green as a single value. Both cases are described in [KPI scoring rules](../concepts/kpi-scoring-models.md#kpi-scoring-rules).
 
 ### What is published
 
@@ -140,6 +140,6 @@ A failure in one KPI doesn't stop the collection. Each entry point catches its o
 
 ## Limitations
 
-- **A new KPI is visible only after the pack is rebuilt and installed,** and the Adapter Instances restarted. See [Tests](tests.md) for the checks before that.
+- **A new KPI is visible only after the adapter is rebuilt and installed,** and the Adapter Instances restarted. See [Tests](tests.md) for the checks before that.
 - **Every KPI is one collection cycle behind** the stats it is built from. See [Metrics and Properties](../reference/metrics-and-properties.md).
 - **The sub-metric limits come from the source tables** of the vSphere guidance. They are not tuned per environment.
