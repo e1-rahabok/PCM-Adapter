@@ -1,60 +1,66 @@
-# VCF vCommunity Adapter
+# CLAUDE.md
 
-A Python adapter (`Management Pack/app`) that collects extra properties and metrics from vCenter and publishes them onto the existing vCenter objects in VCF Operations under the `vCommunity|` key prefix.
+Rules for Claude in spec-driven development, for any project. The project's own rules, tools and paths are in [CLAUDE-PROJECT.md](CLAUDE-PROJECT.md), loaded with this file:
 
-- Its repository is PCM-Adapter; the pack's name is VCF vCommunity Adapter (WD-032).
-- Contracts with the other repositories, the decisions that bind several of them, releases and milestones: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
+@CLAUDE-PROJECT.md
 
-## Documentation
+## Order of work
 
-Pages go in `docs/` by the rules in [CONTRIBUTING.md](CONTRIBUTING.md#documentation). Add every new page to the contents in `docs/README.md`.
+- Work only on the earliest milestone in ROADMAP.md that is not done. The project's hook prints it at every prompt.
+- When a request belongs to a later milestone: list it as parked, in one line, and act on nothing in it.
+- When the author makes a suggestion: reply with strengths, weaknesses, gaps and a recommendation. Write to a repository only after the author agrees, or says "do it" or "decide".
+- Write `: done` on a milestone's heading only after the author approves it, from its review page when it has one.
 
-## Building
+## Before acting
 
-```
-pwsh tools/build/build.ps1
-```
+- Read ROADMAP.md, the files the request touches, and the CLAUDE.md of each repository it touches.
+- Before asking the author: search DECISIONS.md, the glossary and the interview records, and quote what they say.
+- Decide what the code, the documents or knowledge of the field settle, and state the decision. Ask the author only about judgement, experience, scope and taste.
+- Verify a claim from an audit, a review or another session against the files. Report a contradiction with both sources.
 
-Builds the `.pak` into `Management Pack/build` and pushes the adapter image to `ghcr.io/e1-rahabok/vcf-operations-vcommunity`. Don't call `mp-build` directly from a non-interactive shell: it crashes without a Windows console, and it waits on a prompt if `config.json` (gitignored) has no registry. The script handles both. Details: [tools/build/build.md](tools/build/build.md). All tools: [tools/README.md](tools/README.md).
+## Replies to the author
 
-## Installing on the test instance
+- Bullet points and short sentences. Each name in full on first use.
+- Separate what you know, what you believe and what you have not checked. Disagree when there is a reason.
+- Describe how two parts relate by mechanism: code, network, data, dependency or contract.
 
-```
-pwsh tools/install/install.ps1
-```
+## Stop and ask
 
-Uploads and installs the newest pak for the `manifest.txt` version (unsigned, signature checking ignored). Run it directly, as part of one end-to-end process. Do not ask the user to type or run anything for the install. If the platform blocks the script, report the block and stop. Do not work around it. Then run `pwsh tools/restart/restart.ps1` (the pack's Adapter Instances often stop collecting after an upgrade), wait one collection cycle, and run the live validation. Details: [tools/install/install.md](tools/install/install.md), [tools/restart/restart.md](tools/restart/restart.md).
+Stop the line of work, add a question with a recommendation and an empty `Answer:` line to OPEN-QUESTIONS.md, and tell the author, when:
 
-## Releasing
+- the specification does not decide something, or two documents disagree;
+- a requirement cannot be tested as written;
+- a fix would change a contract's shape or reverse a decision;
+- a test needs a system that cannot be reached. Report the test as not run.
 
-A release is its pak. Every GitHub release gets the validated `vCommunity_<version>.pak` attached, after the sign-off in [tools/validate/validate.md](tools/validate/validate.md#release-sign-off) passes (`validate.ps1 -ExpectedVersion <version> -Release`).
+## Requirements
 
-## Screenshots
+- Every requirement cites the question or decision it comes from.
+- Every requirement has at least one test scenario, and every test scenario names its requirement.
+- Before writing a requirement on existing behaviour: read the code that implements it.
 
-```
-pwsh tools/screenshot/screenshot.ps1
-```
+## Tests and checks
 
-Takes the docs' screenshots of the VCF Operations UI from the instance, as defined in `tools/screenshot/screenshots.json`, logging in like `install.ps1`. Use it to take or update screenshots, never Claude in Chrome. To add one, ask the user for an example of the part of the screen once, add an entry, and run it with `-Name` and `-SaveSteps` until it matches. Details: [tools/screenshot/screenshot.md](tools/screenshot/screenshot.md).
+- Never weaken, skip, delete or loosen a test or a check. A failure is a bug to fix or a question for the author.
+- Change a contract between two parts in three steps: add the new shape, move each consumer, remove the old shape.
+- Give every new contract a check, or a ROADMAP line that adds one. Add a gap to a check's baseline only with a question in OPEN-QUESTIONS.md.
+- Before each commit: run and pass the checks listed in CLAUDE-PROJECT.md.
 
-## Testing
+## Writing
 
-Run both layers after any change under `Management Pack/app`, and report the results of each.
+- Machine documents: CLAUDE.md, CLAUDE-PROJECT.md and the requirement files. One rule or fact per bullet, trigger before action, exact names, no history.
+- All other documents, commit messages and pull request text are for people. Follow the writing rules named in CLAUDE-PROJECT.md. Reread each changed line for slogans and "X, not Y".
+- Every file reference a link. Every ID with its meaning or a glossary link on first use. Each paragraph on one source line.
+- A new ID prefix, term or heading must be guessable from itself and overlap no existing one. When a name stops being true: rename it in every file.
 
-1. **Unit tests** (fakes, no live system). From the `Management Pack` folder:
+## Decisions, questions and Git
 
-   ```
-   python -m pytest tests
-   ```
+- Record each decision in DECISIONS.md, one block per decision, with its date and reason.
+- One branch and one pull request per change. Mark finished ROADMAP lines with their pull request. Never push to a default branch.
+- Never merge while checks are pending or failing.
+- Put a warning at the top of the pull request and the report when a contract's shape changes, a decision changes, or files are deleted.
+- Wait for the author before deleting data. Never print, log or commit a credential.
 
-2. **Live validation** (read-only, against the VCF Operations test instance):
+## Session end
 
-   ```
-   pwsh tools/validate/validate.ps1
-   ```
-
-   - Reads the URL and login from `.secrets/vcf-ops.xml` (gitignored, never commit or print it).
-   - Exits 0 on pass, 1 on any FAIL. WARN lines are worth mentioning but do not fail the run.
-   - It tests the build **installed on the instance**, not the code in this repo. A code change is only covered once that build has been installed there; say so plainly if it has not.
-
-If a layer cannot be run (for example Python is not installed), say that instead of skipping it silently.
+- When work remains: give the author a prompt for the next session: files to read, settled scope, tasks, how to report.
