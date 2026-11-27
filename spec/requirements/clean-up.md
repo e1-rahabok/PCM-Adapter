@@ -1,6 +1,6 @@
 # Requirements: clean-up of PCM-Adapter
 
-The clean-up of PCM-Adapter in milestone M2 of the workspace's [ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md): knowledge pages that belong to Agent E2. Question IDs point at the interview ([round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md), [round 2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-2.md), [round 3](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-3.md), [round 4](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-4.md)); other IDs are explained in the [glossary](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md).
+The clean-up of PCM-Adapter in milestone M2 of the workspace's [ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md), R-REPO-009 in M7: knowledge pages that belong to Agent E2. Question IDs point at the interview ([round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md), [round 2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-2.md), [round 3](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-3.md), [round 4](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-4.md)); other IDs are explained in the [glossary](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md).
 
 ## Knowledge in the right place
 
@@ -12,8 +12,8 @@ Source: WD-025 (the adapter's documentation points to the knowledge instead of r
 
 - Given VCF vCommunity Adapter's knowledge pages: [docs/concepts/capacity-management.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/concepts/capacity-management.md), [docs/concepts/kpi-scoring-models.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/concepts/kpi-scoring-models.md), and the explanatory sections of the pages in [docs/reference/metrics](https://github.com/e1-rahabok/PCM-Adapter/tree/main/docs/reference/metrics)
 - When their facts are compared with Agent E2's knowledge base
-- Then every fact is found in a knowledge file, or is added to one through a source note before anything is removed from the adapter
-- And a fact that contradicts the knowledge base is listed for the author to settle, never silently dropped
+- Then every fact is found in a knowledge file, or is kept in a source note in agent-e2's `project/sources/` with a Q-E2 question in its author-questions.md, so the author chooses what enters the knowledge (agent-e2's rule), before anything is removed from the adapter
+- And a fact that contradicts the knowledge base stays on its adapter page, marked, with a Q-E2 question for the author to settle, never silently dropped; the rest of the page follows R-REPO-002
 
 Test scenarios:
 - T-REPO-001a (anywhere, manual with an AI comparison): extract the claims of each adapter page; for each, name the knowledge file and line that holds it, or the source note that adds it. Expect a complete table with no claim unaccounted for, kept in the pull request that removes the pages.

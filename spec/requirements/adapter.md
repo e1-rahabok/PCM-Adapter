@@ -45,13 +45,13 @@ Milestone: M2. The pack's identity names stay (WD-032): adapter kind `vCommunity
 
 Source: Q-WS-3 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) ("agree": one pull request per repository, archive files left as they are); Q-WS-80 in [round 2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-2.md) (the dated engineering reviews and the README's sentence about the vCommunity keep the old name).
 
-- Given the files git tracks in the PCM-Adapter repository, outside the dated engineering reviews
+- Given the files git tracks in the PCM-Adapter repository, outside the dated engineering reviews and `spec/requirements/`, which names the old names and phrases to forbid them
 - When they are searched
 - Then none contains "VCF-vCommunity-Adapter" or "private-cloud-management", the old names of two repositories
 - And the README badges, the link in [resources.properties](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/resources/resources.properties#L7), the release command in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L135) and the image path in [dark-site.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/dark-site.md#L48) and [system-requirements.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/system-requirements.md#L19) name VCF vCommunity Adapter
 
 Test scenarios:
-- T-ADP-005a (anywhere, automated by `Management Pack/tests/test_old_name.py` (new), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews and `spec/requirements/`, which names them to forbid them.
+- T-ADP-005a (anywhere, automated by `Management Pack/tests/test_repository_names.py` (new), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews and `spec/requirements/`, which names them to forbid them.
 
 ### R-ADP-025 One name for the management pack
 
@@ -59,7 +59,7 @@ Milestone: M2.
 
 Source: WD-030 (guessable names, one word per concept); WD-032 (the display name "VCF vCommunity Adapter" stays). An audit on 2026-11-27 found six names for the pack in the PCM-Adapter repository.
 
-- Given the files git tracks in the PCM-Adapter repository, outside the dated engineering reviews
+- Given the files git tracks in the PCM-Adapter repository, outside the dated engineering reviews and `spec/requirements/`, which names the old names and phrases to forbid them
 - When a file names the management pack
 - Then it uses "VCF vCommunity Adapter", and "the adapter" only after that name in the same file
 - And no file uses "vCommunity MP", "vCommunity Management Pack" or "the pack" for it
@@ -67,7 +67,7 @@ Source: WD-030 (guessable names, one word per concept); WD-032 (the display name
 - And the copyright lines at the top of the code files stay as they are
 
 Test scenarios:
-- T-ADP-025a (anywhere, automated by `Management Pack/tests/test_old_name.py` (new), the test of T-ADP-005a): read each tracked text file outside the engineering reviews and `spec/requirements/`, which names the phrases to forbid them; skip each code file's copyright line and the author line under it; expect no "vCommunity MP", no "vCommunity Management Pack" and no "the pack" as whole words in any case ("the package" does not match).
+- T-ADP-025a (anywhere, automated by `Management Pack/tests/test_repository_names.py` (new), the test of T-ADP-005a): read each tracked text file outside the engineering reviews and `spec/requirements/`, which names the phrases to forbid them; skip each code file's copyright line and the author line under it; expect no "vCommunity MP", no "vCommunity Management Pack" and no "the pack" as whole words in any case ("the package" does not match).
 
 ## Metric keys and names
 
@@ -120,7 +120,7 @@ Source: Q-WS-19 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 Test scenarios:
 - T-ADP-008a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended): for each matched row, expect the adapter's interval to equal the catalog interval that holds the matching limits.
-- T-ADP-008b (anywhere, automated by `Management Pack/tests/test_statistics.py` (new)): for every `20s` row, expect its stat key to contain `20_sec_peak`. Known cases, settled by Q-WS-81 in round 2 (agent-e2 adds "peak" to the memory wait names; the dropped TX row keeps its catalog name and interval in M2, and the lab check T-ADP-026d in M8 settles whether a 20-second peak exists): VM Network Dropped Tx reads `net|droppedTxPct_max` ([vm_performance_metrics.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/vm_performance_metrics.py#L97)) against a catalog name with "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L60)). The memory wait rows read a 20-second peak ([memory_wait.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/memory_wait.py#L25)), but their catalog names have no "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L39)).
+- T-ADP-008b (anywhere, automated by `Management Pack/tests/test_statistics.py` (new)): for every `20s` row, expect its stat key to contain `20_sec_peak`, except the dropped TX row, a known gap of the test's baseline until T-ADP-026d settles it (Q-WS-137). Known cases, settled by Q-WS-81 in round 2 (agent-e2 adds "peak" to the memory wait names; the dropped TX row keeps its catalog name and interval in M2, and the lab check T-ADP-026d in M8 settles whether a 20-second peak exists): VM Network Dropped Tx reads `net|droppedTxPct_max` ([vm_performance_metrics.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/vm_performance_metrics.py#L97)) against a catalog name with "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L60)). The memory wait rows read a 20-second peak ([memory_wait.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/memory_wait.py#L25)), but their catalog names have no "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L39)).
 
 ## Scoring tables compared with the Agent E2 catalog
 
@@ -299,7 +299,7 @@ Source: Q-WS-29 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 Test scenarios:
 - T-ADP-019a (anywhere, automated by `Management Pack/tests/test_declared_keys.py` (new)): from the module tables (`GROUP`, `KPI_KEY`, `PUBLISHED_METRICS`), build the expected key set per object type; expect it to equal the keys the collectors publish with fakes.
-- T-ADP-019b (lab, automated by a new validate.ps1 check that writes the keys it found to a file for PCM's key list): install and validate; for every sampled cluster, host and VM, expect no key outside the expected set, and a list of the expected keys not seen, each with its reason (for example no memory tiering, packet counters off).
+- T-ADP-019b (lab, automated by a new validate.ps1 check that confirms the declared keys on the lab objects; PCM's key list itself comes from the module tables, R-LIVE-023): install and validate; for every sampled cluster, host and VM, expect no key outside the expected set, and a list of the expected keys not seen, each with its reason (for example no memory tiering, packet counters off).
 
 ## Periodic Cluster Check settings
 
