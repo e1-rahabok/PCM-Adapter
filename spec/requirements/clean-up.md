@@ -17,7 +17,7 @@ Source: WD-025 (the adapter's documentation points to the knowledge instead of r
 - And only then is the page trimmed by R-REPO-002; git keeps the page, and the question keeps each fact that was not in the knowledge base, so none is dropped
 
 Test scenarios:
-- T-REPO-001a (anywhere, manual with an AI comparison): extract the claims of each adapter page; for each, name the knowledge file and line that holds it, or the Q-E2 question that quotes it. Expect a complete table with no claim unaccounted for, kept in the pull request that removes the pages.
+- T-REPO-001a (anywhere, manual with an AI comparison): extract the claims of each adapter page; for each, name the knowledge file and line that holds it, or the Q-E2 question that quotes it. Expect a complete table with no claim unaccounted for, kept in the pull request that trims the pages (R-REPO-002).
 
 ### R-REPO-002 VCF vCommunity Adapter's documentation keeps only what the adapter does
 
