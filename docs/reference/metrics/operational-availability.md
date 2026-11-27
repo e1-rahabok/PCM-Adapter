@@ -1,6 +1,6 @@
 # Operational Availability
 
-**Operational Availability** shows whether ESXi hosts and clusters are available to run workloads, in %. It is published on the host, the cluster, the vCenter and the vSphere World object.
+**Operational Availability** shows whether ESXi hosts and clusters are available to run workloads, in %. It is published on the host, the cluster, the vCenter and the vSphere World object. What it means and how to read it: Agent E2's [Cluster and ESXi availability metrics](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/metrics/availability.md).
 
 It replaces the "ESXi Host Operational Availability" and "Cluster Operational Availability" super metrics and fixes problems in their formulas. See [Changes from the super metrics](#changes-from-the-super-metrics).
 
@@ -40,11 +40,11 @@ Code: one file per object type: [host](../../../Management%20Pack/app/metrics/ho
 | Not in maintenance | `runtime\|maintenanceState` (property) | `notInMaintenance` |
 | Not in quarantine | `runtime\|quarantineState` (property) | `notInQuarantine` |
 
-Hardware redundancy is not part of the score. Workloads can run normally on a host that has lost a redundant component, so operational availability and hardware availability are measured separately.
+Hardware redundancy is not part of the score.
 
-**Cluster.** N is the number of hosts: the larger of `summary|total_number_hosts` and the number of hosts found in the cluster. k is the number of host failures vSphere HA tolerates, `configuration|dasConfig|hostFailoverLevel` (N+k). The k spare hosts are assumed to be the k worst hosts, so any other degraded host counts against the cluster. The value is capped at 100 %, so a cluster with more spare capacity does not look better than one with less, and the values can be averaged over time and across clusters.
+**Cluster.** N is the number of hosts: the larger of `summary|total_number_hosts` and the number of hosts found in the cluster. k is the number of host failures vSphere HA tolerates, `configuration|dasConfig|hostFailoverLevel` (N+k). The k spare hosts are assumed to be the k worst hosts, so any other degraded host counts against the cluster. The value is capped at 100 %.
 
-The host average is not rolled up to the cluster, because the cluster value has to take vSphere HA into account.
+The cluster value is calculated from its hosts and the HA failover level. It is not the average of its hosts.
 
 ## Design considerations
 

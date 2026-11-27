@@ -1,10 +1,9 @@
 # Cluster Consumption KPI
 
-**Cluster Consumption** is a 0 to 100 % value for a vSphere cluster. It measures the utilization and saturation of the cluster as a whole, against its usable capacity. **Higher is worse: 0 is nothing consumed, 100 is fully consumed**, the same direction as [Cluster Risk](cluster-risk.md).
+**Cluster Consumption** is a 0 to 100 % value for a vSphere cluster: the utilization and saturation of the cluster as a whole, against its usable capacity. **Higher is worse: 0 is nothing consumed, 100 is fully consumed**, the same direction as [Cluster Risk](cluster-risk.md). What it means and how to read it: Agent E2's [Cluster Consumption (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-consumption.md).
 
-- It is measured against usable capacity: Total − HA − Buffer. The capacity kept for a host failure and the buffer set in the policy are not available to VMs.
+- It is measured against usable capacity: Total − HA − Buffer.
 - It is cluster-wide. Every sub-metric adds up the hosts of the cluster, so a big host counts more than a small one. [Cluster Risk](cluster-risk.md) takes the worst host instead.
-- Ballooned, swapped and compressed memory do not mean that VMs are slow yet, but they are real consumption, so they have their own sub-metrics.
 
 The KPI and its 6 sub-metrics are published on the cluster object under `vCommunity|Cluster Consumption`. The KPI is `vCommunity|Cluster Consumption|Cluster Consumption Score`.
 
@@ -64,7 +63,7 @@ Memory Consumed divides by usable memory as vSphere counts it. Every other memor
 
 The MHz values are used only for the percentage. No step converts MHz to threads, so the result is exact only when all hosts are alike. See [Known limitations](#known-limitations).
 
-The adapter counts CPU capacity in threads rather than MHz, unlike VCF Operations. Capacity here is about how many VMs fit, not how fast they run, and MHz measures speed.
+The adapter counts CPU capacity in threads; VCF Operations counts it in MHz. Why threads: Agent E2's [Cluster Consumption (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-consumption.md), section Sub-metrics.
 
 Each Usable Capacity is calculated once per cluster, and every row of that resource divides by it. It counts the running hosts that report the resource: CPU utilization for CPU, and DRAM and consumed memory for DRAM. The DRAM of tiered hosts counts those hosts that also have a tier and report its usage. A row adds up its own stat over the same hosts. If one of them does not report the stat, the row has no data for that cycle rather than a sum that misses a host.
 
@@ -105,24 +104,8 @@ Three rows read memory on a tiered host. Each GB is counted once in each view:
 | DRAM Consumed | DRAM in use | DRAM |
 | Memory Tiering Consumption | NVMe in use (the spill) | DRAM |
 
-- **Memory Consumed keeps its vCenter meaning.** It is a raw metric. vSphere counts DRAM and NVMe as host memory, so the adapter does too. On a tiered cluster it can read green while DRAM is full: at a 1:1 tier, DRAM at 85 % and 20 % of DRAM on NVMe read (85 + 20) ÷ 200 = 52.5 %. It also reads lower with a bigger tier for the same VMs.
-- **DRAM Consumed is a separate metric, with its own name.** Tiering starts at about 80 % of DRAM, so green runs to 80. Cluster Risk has no memory consumed row: Memory Consumed (both tiers) passes 100 % of DRAM on a tiered host by design.
-
-### Why the tiering limits
-
-- **Against DRAM, not the tier.** The memory overcommit ratio and the capacity plan are against DRAM. Ballooned and Zip Swap, the saturation that tiering replaces, divide by usable DRAM too. The value does not change with the DRAM:NVMe ratio: 30 % is 30 % of DRAM spilled, whatever the tier size.
-- **Against usable, not total.** The HA host and the buffer are not for VMs, as in every row.
-- **Linear, not doubling like Ballooned.** NVMe pages are cold by design. The vendor design point, a 1:1 tier at twice the VM density, costs 0 to 10 %.
-- **The four limits follow the classes of service.** Spill ≈ memory ratio × 85 % concurrent peak − about 80 % of DRAM, where tiering starts:
-
-  | Class | Memory ratio to DRAM | Spill | Band |
-  | :--- | :--- | :--- | :--- |
-  | Gold | 1:1 | about 5 % | Green, up to 15 |
-  | Silver | 1.2:1 | about 20 % | Yellow, 15 to 30 |
-  | Bronze | 1.4:1 | about 40 % | Orange, 30 to 45 |
-  | Beyond every class | | above 45 % | Red, score 0 at 60 |
-
-- At 60 % spilled and 30 % active memory, active memory reaches 50 % of DRAM, the vendor's limit for good performance on a tiered host.
+- Memory Consumed is the raw vCenter metric, over both tiers. On a tiered cluster it can read green while DRAM is full, and it reads lower with a bigger tier for the same VMs.
+- How to read the three rows, and why Memory Tiering Consumption has the limits 15, 30, 45 and 60 against usable DRAM: Agent E2's [Cluster Consumption (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-consumption.md), section Interpretation.
 
 Cluster Consumption reuses the host stats that Cluster Risk reads for the same cluster in the same cycle. It adds two requests per cycle: one for the usable capacity of all clusters, and one for the NVMe tier of all hosts.
 

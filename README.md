@@ -2,9 +2,19 @@
 
 # VCF vCommunity Adapter
 
-A free management pack for VCF Operations. It collects ESXi, VM and vCenter settings that VCF Operations does not collect by default, and it calculates capacity and performance scores for clusters, hosts and VMs. Everything it publishes appears on the vCenter objects you already monitor, under the `vCommunity|` prefix.
+A free management pack for VCF Operations, and one part of Private Cloud Manager. It collects ESXi, VM and vCenter settings that VCF Operations does not collect by default, and it calculates capacity and performance scores for clusters, hosts and VMs. Everything it publishes appears on the vCenter objects you already monitor, under the `vCommunity|` prefix.
 
-The documentation starts at [docs/README.md](docs/README.md).
+The documentation starts at [docs/README.md](docs/README.md). It describes what the adapter computes and publishes, and how to install and run it. What each metric means, and how to use it, is in [Agent E2](https://github.com/e1-rahabok/agent-e2)'s knowledge, linked from each metric page.
+
+## Part of Private Cloud Manager
+
+Private Cloud Manager is three parts that customers take together:
+
+- [Agent E2](https://github.com/e1-rahabok/agent-e2) holds the knowledge. Its catalog defines each KPI: the name, the limits of each sub-metric, the score bands and the closure levels. Its knowledge files explain what each metric means.
+- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager's web app for operations roles. It reads the scores that this adapter publishes through the VCF Operations API, and asks Agent E2 to explain them.
+- The VCF vCommunity Adapter, this repository. It computes the KPIs inside VCF Operations, by the definitions in Agent E2's catalog, and publishes them under `vCommunity|`. The adapter does not call Agent E2 while it runs: its code holds the same definitions, and a check in the [workspace](https://github.com/e1-rahabok/private-cloud-workspace) compares the two.
+
+**The simplest deployment is the pak file alone.** Install `vCommunity_<version>.pak` in VCF Operations: the metrics, KPIs, properties, dashboards, reports and alerts then run in your own VCF Operations, with no Linux VM, no PCM and no Agent E2. See [Get started](#get-started).
 
 ## Why use it
 
@@ -60,14 +70,10 @@ The adapter is written in Python with the [VCF Operations Integration SDK](https
 
 ## Related repositories
 
-Four repositories share one body of knowledge about managing a global private cloud based on VMware Cloud Foundation:
+- [Agent E2](https://github.com/e1-rahabok/agent-e2) and [PCM](https://github.com/e1-rahabok/private-cloud-manager), the other two parts of Private Cloud Manager: see [Part of Private Cloud Manager](#part-of-private-cloud-manager). You can download Agent E2 and deploy it privately.
+- [isvara.io](https://isvara.io) ([repository](https://github.com/e1-rahabok/isvara)) is a public website built on the same knowledge. Agent E2 is to replace its current agent, AskIO, so you can try Agent E2 without installing anything.
 
-- [Agent E2](https://github.com/e1-rahabok/agent-e2) holds the knowledge. You can download it and deploy it privately.
-- [isvara.io](https://isvara.io) ([repository](https://github.com/e1-rahabok/isvara)) is the public website. Agent E2 is to replace its current agent, AskIO, so you can try Agent E2 without installing anything.
-- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, is a web app for operations roles. It reads the KPIs that the VCF vCommunity Adapter publishes through the VCF Operations API.
-- The VCF vCommunity Adapter, this repository, implements that knowledge as a VCF Operations management pack: the metrics, KPIs, properties and dashboards run in your own VCF Operations.
-
-How the four fit, their contracts, decisions and roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
+How the parts fit, their contracts, decisions and roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 The isvara.io content (metrics, dashboards, alerts, properties and more) and the VCF vCommunity Adapter are both documented in the **Private Cloud Management** book, 5th edition, which you can download from [isvara.io/download](https://isvara.io/download).
 

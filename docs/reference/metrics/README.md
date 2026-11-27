@@ -1,6 +1,6 @@
 # Metrics
 
-How the VCF vCommunity Adapter calculates its metrics and KPIs. A KPI is a metric too: a 0 to 100 % score built from sub-metrics. Every key the adapter publishes, by object type, is in [Metrics and Properties](../metrics-and-properties.md). Metrics that are simple counts or values read from vCenter, such as DRS Score, the resource pool counts, Collection Health and the content library counts, are described only there.
+How the VCF vCommunity Adapter calculates its metrics and KPIs. A KPI is a metric too: a 0 to 100 % score built from sub-metrics. What a metric means and how to use it is Agent E2's knowledge: each page links the [knowledge file](https://github.com/e1-rahabok/agent-e2/tree/main/knowledge) that explains it. Every key the adapter publishes, by object type, is in [Metrics and Properties](../metrics-and-properties.md). Metrics that are simple counts or values read from vCenter, such as DRS Score, the resource pool counts, Collection Health and the content library counts, are described only there.
 
 KPIs:
 

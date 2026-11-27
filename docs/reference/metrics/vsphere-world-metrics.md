@@ -1,6 +1,6 @@
 # vSphere World Cluster Metrics
 
-Six metrics on the **vSphere World** object summarize the [Cluster Performance](cluster-performance.md), [Cluster Risk](cluster-risk.md) and [Cluster Consumption](cluster-consumption.md) scores of every cluster across all vCenters, so you can watch the whole estate in one place.
+Six metrics on the **vSphere World** object summarize the [Cluster Performance](cluster-performance.md), [Cluster Risk](cluster-risk.md) and [Cluster Consumption](cluster-consumption.md) scores of every cluster across all vCenters, so you can watch the whole estate in one place. What each score means: Agent E2's [Cluster Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/cluster-performance.md), [Cluster Risk (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-risk.md) and [Cluster Consumption (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/cluster-consumption.md).
 
 Worst 10 Percent Cluster Performance replaces the "vSphere Clusters Performance" super metric, which was the average of all clusters.
 

@@ -1,6 +1,6 @@
 # VM Shares
 
-**Share per vCPU** and **Share per MB of Memory** divide the CPU and memory shares of a VM by its size, so that VMs of different sizes can be compared. Shares matter only under contention: a VM above Normal then gets more than its fair part, and a VM below Normal gets less.
+**Share per vCPU** and **Share per MB of Memory** divide the CPU and memory shares of a VM by its size, so that VMs of different sizes can be compared. How shares act: Agent E2's [Resource controls](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/architecture/resource-controls.md), section Shares.
 
 They replace the "Share per vCPU" and "Share per GB of Memory" super metrics. Unlike the super metrics, they need nothing enabled in the policy.
 

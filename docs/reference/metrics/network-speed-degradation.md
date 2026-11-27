@@ -1,6 +1,6 @@
 # Network Speed Degradation
 
-**Network Speed Degradation** shows whether the physical NICs of an ESXi host run at the speed they are configured for. A NIC that negotiates a lower speed, such as 1 Gbps on a 10 Gbps link after a cable or switch port problem, still passes traffic, so the problem is easy to miss.
+**Network Speed Degradation** shows whether the physical NICs of an ESXi host run at the speed they are configured for. Why a negotiated speed below the configured one matters: Agent E2's [ESXi configuration review](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/esxi/configuration/esxi-configuration-review.md), section Network connectivity.
 
 It replaces the "Network Speed Degradation" and "Total Network Speed Degradation" super metrics and fixes problems in their formulas. See [Changes from the super metrics](#changes-from-the-super-metrics).
 

@@ -1,6 +1,6 @@
 # VM Performance KPI
 
-**VM Performance** is a 0 to 100 % score for a virtual machine. 100 is best. It scores the VM as a virtual motherboard: whether ESXi gives it the CPU, memory, disk and network it asks for. It combines 9 sub-metrics, and the worse a sub-metric is, the more weight it gets.
+**VM Performance** is a 0 to 100 % score for a virtual machine. 100 is best. It scores the VM as a virtual motherboard: whether ESXi gives it the CPU, memory, disk and network it asks for. It combines 9 sub-metrics. What it means and how to read it: Agent E2's [VM Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/vm/vm-performance.md).
 
 What happens inside Windows or Linux is scored separately, by [Guest OS Performance](guest-os-performance.md).
 
@@ -37,11 +37,11 @@ Names are the Agent E2 catalog names (one name per sub-metric across the catalog
 | IaaS high utilization | VM Memory Ballooned | `mem\|balloonPct` |
 | IaaS high utilization | VM swapped + zipped memory | Calculated: `(mem\|compressed_average + mem\|swapped_average) / guest\|used_memory × 100`. Published as `vCommunity\|VM Performance\|Memory Zip Swap`. |
 
-The 20-second peaks are used where they exist, rather than the 5-minute averages, so short contention shows.
+The 20-second peaks are used where they exist, rather than the 5-minute averages.
 
-Memory Wait is Memory Contention plus NVMe wait, not Memory Contention alone. With memory tiering, the Memory Contention counter does not count the time a VM waits for pages on NVMe, so it can read near 0 while the VM waits. See [Memory Wait](memory-wait.md).
+Memory Wait is Memory Contention plus NVMe wait. See [Memory Wait](memory-wait.md).
 
-Memory Zip Swap is divided by the memory the guest OS uses, not by the VM's configured memory. Configured memory includes memory the guest does not use, so dividing by it would make the percentage smaller and under-report the problem. This is the formula of the "vSphere VM Memory Zip Swap" super metric, which this metric replaces.
+Memory Zip Swap is divided by the memory the guest OS uses (`guest|used_memory`), as the "vSphere VM Memory Zip Swap" super metric that it replaces did. Why: Agent E2's [VM Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/vm/vm-performance.md), section Reasons.
 
 ## Step 2 and 3: Score each sub-metric, then combine
 
@@ -63,11 +63,11 @@ Every sub-metric is lower-is-better, and 0 is best.
 | VM Memory Ballooned | % | 2 | 4 | 8 | 16 |
 | VM swapped + zipped memory | % | 0.25 | 0.5 | 1 | 2 |
 
-**Excluded.** The source table marks three green ranges "Excluded". While a value is in that range, it is left out of the KPI, as [described for every KPI](../../concepts/kpi-scoring-models.md#skip-when-green).
+**Excluded.** The source table marks three green ranges "Excluded". While a value is in that range, it is left out of the KPI, as [described for every KPI](../../concepts/kpi-scoring-models.md#skip-when-green). Why these three: Agent E2's [VM Performance (%)](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/vm/vm-performance.md), section Sub-metrics.
 
-- CPU Overlap below 0.5 %: some overlap is normal and says nothing about performance.
-- Network Dropped Tx at exactly 0: dropped packets are rare. Any dropped packet is yellow.
-- CPU Run below 95 %: a VM that is not busy tells you nothing about its performance. Above 95 %, the VM is too small for its load.
+- CPU Overlap below 0.5 %.
+- Network Dropped Tx at exactly 0. Any dropped packet is yellow.
+- CPU Run below 95 %.
 
 ## Worked examples
 

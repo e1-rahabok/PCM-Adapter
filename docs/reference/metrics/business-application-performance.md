@@ -1,6 +1,6 @@
 # Business Application Performance
 
-**Tier Performance**, **Business Application Performance** and **Business Applications Performance** score a business application at three levels: its tiers, the application, and the enterprise. Each is a 0 to 100 % value, published only when it has data.
+**Tier Performance**, **Business Application Performance** and **Business Applications Performance** score a business application at three levels: its tiers, the application, and the enterprise. Each is a 0 to 100 % value, published only when it has data. What a business application KPI means: Agent E2's [Business application KPI](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/sp5-framework/performance/business-application-kpi.md).
 
 They replace the "Business Application Tier Performance", "Business Application Performance" and "Business Applications Performance" super metrics. Unlike the super metrics, they need nothing enabled in the policy.
 

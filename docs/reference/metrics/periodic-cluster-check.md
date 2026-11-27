@@ -5,7 +5,7 @@ The **Periodic Cluster Check** sets **Close for Business** on every vSphere clus
 - **1, closed for business.** The cluster is full. Do not place new VMs on it.
 - **0, open.** The cluster can take new VMs.
 
-The decision uses the worst part of the last period of the three cluster KPIs, and closes only on values clearly inside the red or orange band: [Cluster Performance](cluster-performance.md), [Cluster Risk](cluster-risk.md) and [Cluster Consumption](cluster-consumption.md). See [The rule](#the-rule).
+The decision uses the worst part of the last period of the three cluster KPIs, and closes only on values clearly inside the red or orange band: [Cluster Performance](cluster-performance.md), [Cluster Risk](cluster-risk.md) and [Cluster Consumption](cluster-consumption.md). See [The rule](#the-rule). What Close for Business means, and the reasons for its rule: Agent E2's [Close for Business](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/close-for-business.md).
 
 Code: [`Management Pack/app/metrics/cluster/periodic_cluster_check.py`](../../../Management%20Pack/app/metrics/cluster/periodic_cluster_check.py)
 
@@ -94,7 +94,7 @@ Close for Business is **1** when either rule matches, and **0** otherwise. Red a
 | 1 | Consumption is red, **or** Performance is red. | The cluster is full, or its VMs already have contention. |
 | 2 | Consumption and Performance are **both orange**, **and** Risk is orange or red. | The cluster is busy and its VMs are slowing down, and the leading indicators are getting worse. |
 
-Risk never closes a cluster on its own. It is a leading indicator, so it decides only when Consumption and Performance are both orange. The threshold is orange for every cluster, which is the lower Risk threshold that the capacity model uses for a critical cluster. See [Closing the cluster](../../concepts/capacity-management.md#closing-the-cluster).
+Risk never closes a cluster on its own: it decides only when Consumption and Performance are both orange. The threshold is orange for every cluster, the capacity model's setting for production clusters. See [Closing the cluster](../../concepts/capacity-management.md#closing-the-cluster).
 
 | Performance | Risk | Consumption | Close for Business |
 | :--- | :--- | :--- | :--- |
@@ -125,8 +125,7 @@ The inputs all come from VCF Operations: the 5-minute history of the three KPI s
 ## Design considerations
 
 - **Three KPIs on the same 0 to 100 scale.** Performance, Risk and Consumption use the same bands, so the rule reads the same colors for all three.
-- **Closure levels inside the bands.** A value just across a band limit can cross back after a few VMs move. Closing needs a value clearly inside the band, so a cluster does not flip between open and closed on a small change.
-- **The worst end of the window is used.** An average would hide a problem: a cluster that is in trouble for an hour every day should not take new VMs. The Worst Percent ignores short spikes, but not a sustained problem.
+- **The rule itself**, its closure levels inside the bands and its use of the worst end of the window, come from the capacity model: Agent E2's [Close for Business](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/vsphere/object-types/cluster/models/close-for-business.md), sections Logic and The rule.
 - **The percentile is calculated in code.** VCF Operations roll-ups offer AVG, MAX, MIN and SUM, but no percentile. An estimate from Max and Avg is driven by the Max, so one spike in a quiet day would decide, and with a 0 or 1 result that is a wrong answer rather than a small error.
 - **Windows end at fixed times.** The end does not depend on when the calculation runs, so every cluster has the same window, even when it is calculated a few cycles later.
 - **No state is stored.** The timestamps of the published metrics show whether a cluster was calculated for the latest window. Nothing is kept in the adapter, so a restart of the VCF vCommunity Adapter loses nothing.
