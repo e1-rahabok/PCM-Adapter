@@ -37,20 +37,7 @@ The pack is built with the [VCF Operations Integration SDK](https://github.com/v
 **Reference**
 
 - [Metrics and Properties](reference/metrics-and-properties.md): every key the pack publishes, by object type.
-- [Metrics](reference/metrics/README.md): how each metric and KPI is calculated, and its known limitations:
-  [Business Application Performance](reference/metrics/business-application-performance.md),
-  [Cluster Consumption](reference/metrics/cluster-consumption.md),
-  [Cluster Performance](reference/metrics/cluster-performance.md),
-  [Cluster Risk](reference/metrics/cluster-risk.md),
-  [ESXi Performance](reference/metrics/esxi-performance.md),
-  [Guest OS Performance](reference/metrics/guest-os-performance.md),
-  [Memory Wait](reference/metrics/memory-wait.md),
-  [Network Speed Degradation](reference/metrics/network-speed-degradation.md),
-  [Operational Availability](reference/metrics/operational-availability.md),
-  [Periodic Cluster Check](reference/metrics/periodic-cluster-check.md),
-  [VM Performance](reference/metrics/vm-performance.md),
-  [VM Shares](reference/metrics/vm-shares.md),
-  [vSphere World Cluster Metrics](reference/metrics/vsphere-world-metrics.md).
+- [Metrics](reference/metrics/README.md): how each metric and KPI is calculated, and its known limitations: [Business Application Performance](reference/metrics/business-application-performance.md), [Cluster Consumption](reference/metrics/cluster-consumption.md), [Cluster Performance](reference/metrics/cluster-performance.md), [Cluster Risk](reference/metrics/cluster-risk.md), [ESXi Performance](reference/metrics/esxi-performance.md), [Guest OS Performance](reference/metrics/guest-os-performance.md), [Memory Wait](reference/metrics/memory-wait.md), [Network Speed Degradation](reference/metrics/network-speed-degradation.md), [Operational Availability](reference/metrics/operational-availability.md), [Periodic Cluster Check](reference/metrics/periodic-cluster-check.md), [VM Performance](reference/metrics/vm-performance.md), [VM Shares](reference/metrics/vm-shares.md), [vSphere World Cluster Metrics](reference/metrics/vsphere-world-metrics.md).
 - [Text Display Widget](reference/text-display-widget.md): which HTML a Text Display widget keeps and drops, and how to add a page to one.
 
 **Troubleshooting Guide**

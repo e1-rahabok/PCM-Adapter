@@ -10,7 +10,7 @@ After you install the pack, or import one of its dashboards, a dashboard can loo
 
 ## Why it happens
 
-When VCF Operations imports a dashboard, it stores the widgets first and resolves their settings later, in the background. Until then, each widget shows its default title and no configuration.
+- When VCF Operations imports a dashboard, it stores the widgets first and resolves their settings later, in the background. Until then, each widget shows its default title and no configuration.
 
 This can take more than ten minutes, and a dashboard may only finish resolving after someone opens it in the browser. The file itself is not damaged: the same file imports correctly on other instances.
 

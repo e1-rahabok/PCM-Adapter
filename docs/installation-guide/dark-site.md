@@ -85,7 +85,7 @@ service collector restart
 
 ---
 
-Then create the Adapter Instances as usual, see [Adapter Instance](../configuration-guide/adapter-instance.md). The Cloud Proxy pulls the image from your private registry.
+- Then create the Adapter Instances as usual, see [Adapter Instance](../configuration-guide/adapter-instance.md). The Cloud Proxy pulls the image from your private registry.
 
 Each version of the pack has its own digest. After an upgrade, repeat steps 1 to 4 for the new image, and check that `REGISTRY` in `vCommunity.conf` still points to your registry.
 

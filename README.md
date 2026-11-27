@@ -1,7 +1,4 @@
-[![Release](https://img.shields.io/github/v/release/e1-rahabok/VCF-vCommunity-Adapter)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/releases)
-[![Files](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FVCF-vCommunity-Adapter%2Fbadges%2Ffiles.json)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter)
-[![Lines](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FVCF-vCommunity-Adapter%2Fbadges%2Flines.json)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter)
-[![Repo size](https://img.shields.io/github/repo-size/e1-rahabok/VCF-vCommunity-Adapter)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter)
+[![Release](https://img.shields.io/github/v/release/e1-rahabok/VCF-vCommunity-Adapter)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/releases) [![Files](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FVCF-vCommunity-Adapter%2Fbadges%2Ffiles.json)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter) [![Lines](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fe1-rahabok%2FVCF-vCommunity-Adapter%2Fbadges%2Flines.json)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter) [![Repo size](https://img.shields.io/github/repo-size/e1-rahabok/VCF-vCommunity-Adapter)](https://github.com/e1-rahabok/VCF-vCommunity-Adapter)
 
 # VCF Operations vCommunity MP
 

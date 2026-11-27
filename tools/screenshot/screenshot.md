@@ -55,9 +55,9 @@ For each screenshot, in a new browser session:
 3. Runs the steps in order. Each step waits up to 60 s for its element to be visible, then clicks it and waits for the UI to finish drawing.
 4. Moves the mouse to the corner of the window, so no hover highlight or tooltip shows, and saves the capture into the repo.
 
-Then it closes the session.
+- Then it closes the session.
 
-When a screenshot fails because the connection dropped or was refused (`ECONNRESET`, `ECONNREFUSED`, `net::ERR_…`), it is taken once more, from the start, after 10 s. A screenshot that fails for another reason, such as an element that is not on the page, is not retried: it would fail again.
+- When a screenshot fails because the connection dropped or was refused (`ECONNRESET`, `ECONNREFUSED`, `net::ERR_…`), it is taken once more, from the start, after 10 s. A screenshot that fails for another reason, such as an element that is not on the page, is not retried: it would fail again.
 
 ## Adding a screenshot
 

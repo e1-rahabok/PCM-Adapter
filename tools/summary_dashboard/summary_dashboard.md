@@ -61,7 +61,7 @@ Don't keep the password in a file or in your shell history. Set it for the sessi
 
 ## How the binding works
 
-When you bind a dashboard, the server copies it into a Summary template for the object type. According to the notes in `ui_client.py`, the same call deletes the object type's previous copy, so there is one copy per object type.
+- When you bind a dashboard, the server copies it into a Summary template for the object type. According to the notes in `ui_client.py`, the same call deletes the object type's previous copy, so there is one copy per object type.
 
 Because it is a copy, editing the source dashboard later does not change the Summary tab. Run the script again to publish the change.
 
