@@ -27,9 +27,22 @@ Source: WD-025; the author's message of 2026-11-26 naming the adapter's concept 
 - Given VCF vCommunity Adapter's documentation after R-REPO-001
 - When a reader opens a metric or concept page
 - Then it describes what the adapter computes and publishes (keys, inputs, settings, states) and how to install and run it
-- And for what a metric means and how to use it, it links to the Agent E2 knowledge file (until isvara.io's articles exist in M4, then to the article)
+- And for what a metric means and how to use it, it links to the Agent E2 knowledge file
 - And the README presents the adapter as one part of Private Cloud Manager, with links to Agent E2 and PCM, and names the simplest deployment: the pak file alone
 
 Test scenarios:
 - T-REPO-002a (anywhere, manual review by a fresh session): read every page of the adapter's docs; expect no explanation of a metric's meaning beyond one sentence, and a knowledge link on each metric page.
 - T-REPO-002b (anywhere, automated by the adapter's existing link check, [check_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/check-docs/check_links.py)): expect no broken link after the pages are removed.
+
+### R-REPO-009 The adapter's documentation links to isvara.io's articles
+
+Milestone: M7.
+
+Source: WD-025 (the adapter's documentation points to the knowledge); [WD-017](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md) (isvara.io's articles from Agent E2's knowledge files).
+
+- Given the adapter's metric and concept pages after R-REPO-002, which link to Agent E2's knowledge files
+- When isvara.io's rebuilt site is switched over in M7
+- Then each link to a knowledge file becomes a link to the article written from it
+
+Test scenarios:
+- T-REPO-009a (anywhere, automated by the adapter's link check, [check_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/check-docs/check_links.py), extended): no page links to a file under agent-e2's `knowledge/`; every link to isvara.io names an article.

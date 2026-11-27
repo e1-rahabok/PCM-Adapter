@@ -2,12 +2,12 @@
 
 What [PCM-Adapter](https://github.com/e1-rahabok/PCM-Adapter) must do in release 1.0, written from the author's answers in [interview round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) and the decisions in [DECISIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md). Short names and IDs are explained in the [glossary](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md).
 
-**Draft for the author's review.** The pack keeps its identity: adapter kind `vCommunity`, display name "VCF vCommunity Adapter" and key prefix `vCommunity|` ([WD-032](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
+The pack keeps its identity: adapter kind `vCommunity`, display name "VCF vCommunity Adapter" and key prefix `vCommunity|` ([WD-032](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
 
 ## Scope and conventions
 
 - **Area:** the management pack in VCF Operations, its build and lab tools, and its side of two contracts: [C1, the KPI definitions](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md#c1), and [C2, the KPI metric keys](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md#c2), both described in [CONTRACTS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/CONTRACTS.md).
-- **Milestones** ([ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md)): R-ADP-005 to R-ADP-008, R-ADP-010, R-ADP-011 and R-ADP-025 belong to M2, and R-ADP-018 to R-ADP-023 to M8, the PCM live demo. R-ADP-019, R-ADP-020 and R-ADP-023 are needed before M8's first slice, the first live cluster in PCM. R-ADP-013 to R-ADP-017, the state codes, come after release 1.0 ([WD-033](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)). R-ADP-007 is needed before M8 goes past its first slice, when PCM also reads hosts, VMs and vCenter. R-ADP-024 depends on the new lab repository [lab-build](https://github.com/e1-rahabok/lab-build) and comes after release 1.0 ([WD-031](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
+- **Milestones** ([ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md)): R-ADP-005 to R-ADP-008, R-ADP-010, R-ADP-011 and R-ADP-025 belong to M2, and R-ADP-018 to R-ADP-023 and R-ADP-026 to M8, the PCM live demo. R-ADP-019, R-ADP-020 and R-ADP-023 are needed before M8's first slice, the first live cluster in PCM. R-ADP-013 to R-ADP-017, the state codes, come after release 1.0 ([WD-033](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)). R-ADP-007 is needed before M8 goes past its first slice, when PCM also reads hosts, VMs and vCenter. R-ADP-024 depends on the new lab repository [lab-build](https://github.com/e1-rahabok/lab-build) and comes after release 1.0 ([WD-031](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
 - **Keys** start with `vCommunity|` ([WD-032](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
 - **The adapter may change anything.** The author confirmed that no installed instance or upgrade path needs protecting: Q-WS-I4 and Q-WS-2 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md), recorded as decisions [WD-007 and WD-016](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md).
 - **How lab scenarios run.** From the author's laptop over VPN, with the repository's own tools ([tools/README.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/README.md)): [build.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/build/build.ps1), [install.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/install/install.ps1), [restart.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/restart/restart.ps1), then one collection cycle, then [validate.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.ps1). This sequence is called "install and validate" below. The live validation checks the build installed on the lab, so a lab scenario passes only after that build is installed ([validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L12)).
@@ -41,7 +41,7 @@ Dropped by WD-032: the shipped content keeps its keys and its names, "vCommunity
 
 ### R-ADP-005 No file names the old repository
 
-Milestone: M2. The pack's own names, such as "vCommunity MP" and "vCommunity_", stay (WD-032).
+Milestone: M2. The pack's identity names stay (WD-032): adapter kind `vCommunity`, display name "VCF vCommunity Adapter", manifest name `iSDK_vCommunity`, key prefix `vCommunity|`, its image and its pak name.
 
 Source: Q-WS-3 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) ("agree": one pull request per repository, archive files left as they are); Q-WS-80 in [round 2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-2.md) (the dated engineering reviews and the README's sentence about the vCommunity keep the old name).
 
@@ -51,7 +51,7 @@ Source: Q-WS-3 in [round 1](https://github.com/e1-rahabok/private-cloud-workspac
 - And the README badges, the link in [resources.properties](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/resources/resources.properties#L7), the release command in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L135) and the image path in [dark-site.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/dark-site.md#L48) and [system-requirements.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/system-requirements.md#L19) name VCF vCommunity Adapter
 
 Test scenarios:
-- T-ADP-005a (anywhere, automated by `Management Pack/tests/test_old_name.py` (new), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews.
+- T-ADP-005a (anywhere, automated by `Management Pack/tests/test_old_name.py` (new), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews and `spec/requirements/`, which names them to forbid them.
 
 ### R-ADP-025 One name for the management pack
 
@@ -67,7 +67,7 @@ Source: WD-030 (guessable names, one word per concept); WD-032 (the display name
 - And the copyright lines at the top of the code files stay as they are
 
 Test scenarios:
-- T-ADP-025a (anywhere, automated by `Management Pack/tests/test_old_name.py` (new), the test of T-ADP-005a): read each tracked text file outside the engineering reviews; skip each code file's copyright line and the author line under it; expect no "vCommunity MP", "vCommunity Management Pack" or "the pack".
+- T-ADP-025a (anywhere, automated by `Management Pack/tests/test_old_name.py` (new), the test of T-ADP-005a): read each tracked text file outside the engineering reviews and `spec/requirements/`, which names the phrases to forbid them; skip each code file's copyright line and the author line under it; expect no "vCommunity MP", no "vCommunity Management Pack" and no "the pack" as whole words in any case ("the package" does not match).
 
 ## Metric keys and names
 
@@ -120,7 +120,7 @@ Source: Q-WS-19 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 Test scenarios:
 - T-ADP-008a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended): for each matched row, expect the adapter's interval to equal the catalog interval that holds the matching limits.
-- T-ADP-008b (anywhere, automated by `Management Pack/tests/test_statistics.py` (new)): for every `20s` row, expect its stat key to contain `20_sec_peak`. Known cases, settled by Q-WS-81 in round 2 (agent-e2 adds "peak" to the memory wait names; the dropped TX row is checked on the lab, and becomes 5-minute without "peak" if no 20-second peak exists): VM Network Dropped Tx reads `net|droppedTxPct_max` ([vm_performance_metrics.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/vm_performance_metrics.py#L97)) against a catalog name with "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L60)). The memory wait rows read a 20-second peak ([memory_wait.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/memory_wait.py#L25)), but their catalog names have no "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L39)).
+- T-ADP-008b (anywhere, automated by `Management Pack/tests/test_statistics.py` (new)): for every `20s` row, expect its stat key to contain `20_sec_peak`. Known cases, settled by Q-WS-81 in round 2 (agent-e2 adds "peak" to the memory wait names; the dropped TX row keeps its catalog name and interval in M2, and the lab check T-ADP-026d in M8 settles whether a 20-second peak exists): VM Network Dropped Tx reads `net|droppedTxPct_max` ([vm_performance_metrics.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/vm_performance_metrics.py#L97)) against a catalog name with "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L60)). The memory wait rows read a 20-second peak ([memory_wait.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/memory_wait.py#L25)), but their catalog names have no "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L39)).
 
 ## Scoring tables compared with the Agent E2 catalog
 
@@ -172,7 +172,7 @@ Dropped by WD-036. The formula is domain knowledge in Agent E2, and the adapter'
 
 The adapter today publishes nothing for a row with no data. A Suite API "latest" read then returns the last old value as if it were current ([metrics/README.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/reference/metrics/README.md#L138)). The author asked for this to be fixed in the adapter (Q-WS-28), so that PCM shows what the adapter publishes and says "No data" when it is stale ([WD-015](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
 
-In release 1.0, only R-ADP-018 is built: a value from a partial read is not published. PCM shows "No data" for a stale value from the time of the value (R-LIVE-015 in [pcm-live.md](https://github.com/e1-rahabok/private-cloud-manager/blob/main/spec/requirements/live-demo.md)). The state codes below, which say why a row has no value, come after release 1.0 ([WD-033](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
+In release 1.0, only R-ADP-018 is built: a value from a partial read is not published. PCM shows "No data" for a stale value from the time of the value (R-LIVE-015 in [live-demo.md](https://github.com/e1-rahabok/private-cloud-manager/blob/main/spec/requirements/live-demo.md)). The state codes below, which say why a row has no value, come after release 1.0 ([WD-033](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md)).
 
 The states use one code each:
 
@@ -232,7 +232,7 @@ Source: Q-WS-28 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 Test scenarios:
 - T-ADP-015a (anywhere, automated by `Management Pack/tests/test_data_states.py` (new)): fake host stats with and without the two counters; expect state 3, then state 0 or 1.
-- T-ADP-015b (lab, automated by the new validate.ps1 state check): with the lab policy as it is; expect state 3 if the counters are off. Then the counters are turned on (question 14); after one cycle, expect state 0 or 1. **Verify on the lab** that a counter turned off is absent from `stats/latest`, so that "off" can be told from "late".
+- T-ADP-015b (lab, automated by the new validate.ps1 state check): with the lab policy as it is; expect state 3 if the counters are off. Then the counters are turned on (Q-WS-85); after one cycle, expect state 0 or 1. **Verify on the lab** that a counter turned off is absent from `stats/latest`, so that "off" can be told from "late".
 
 ### R-ADP-016 VM rows say when a cluster or host has no powered-on VM
 
@@ -342,11 +342,11 @@ Test scenarios:
 
 Source: Q-WS-40 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) ("agree": two DPAPI files in `$HOME\.secrets\`); [WD-011](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md), the decision on lab credentials.
 
-- Given the author's laptop, with the read-only VCF Operations login saved as a DPAPI file in `$HOME\.secrets\` (`Export-Clixml`, the format in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L24): `Url` and `Credential`)
+- Given the author's laptop, with the read-only VCF Operations login saved as the DPAPI file `$HOME\.secrets\vcf-ops-readonly.xml` (Q-WS-84; `Export-Clixml`, the format in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L24): `Url` and `Credential`)
 - When validate.ps1 or screenshot.ps1 runs with no `-SecretFile`
 - Then it reads that file
 - And no script reads `.secrets` inside the repository folder, as all four do today ([validate.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.ps1#L32))
-- And [tools/README.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/README.md#L51), [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L24) and [CLAUDE.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/CLAUDE.md#L53) describe the two files
+- And [tools/README.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/README.md#L51), [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L24) and [CLAUDE-PROJECT.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/CLAUDE-PROJECT.md) describe the two files
 
 Test scenarios:
 - T-ADP-021a (anywhere, automated by `Management Pack/tests/test_tool_secrets.py` (new)): read the `param` blocks of the four scripts; expect each default `-SecretFile` under `$HOME\.secrets\`, and the read-only file for validate.ps1 and screenshot.ps1.
@@ -356,7 +356,7 @@ Test scenarios:
 
 Source: Q-WS-40 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md); [WD-011](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md).
 
-- Given the admin login saved as a second DPAPI file in `$HOME\.secrets\`
+- Given the admin login saved as the DPAPI file `$HOME\.secrets\vcf-ops-admin.xml` (Q-WS-84)
 - When install.ps1 or restart.ps1 runs with no `-SecretFile`
 - Then it reads the admin file
 - And when it is given the read-only file, it stops with a message naming the admin file, before it uploads or stops anything
@@ -395,6 +395,7 @@ Test scenarios:
 - T-ADP-026a (lab, automated by a new [screenshot.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/screenshot/screenshot.md) entry, reviewed by hand): install; open the metric tree of one lab cluster and one lab VM; expect the catalog names. **Verify on the lab:** the labels are declared on the adapter's own object type "Cluster Compute Resource" ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L310)), while the values land on the vCenter adapter's `ClusterComputeResource` ([collectClusterData.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/collectors/cluster/collectClusterData.py#L70)). Nothing yet shows that VCF Operations displays those labels on the vCenter objects.
 - T-ADP-026b (lab, automated by a new validate.ps1 check): for one object of each type, read the `vCommunity|` keys from `GET /suite-api/api/resources/stats/latest?resourceId=<id>` and from `GET /suite-api/api/resources/<id>/properties`; expect each to be in the declared set. **Verify on the lab** that the properties endpoint returns the adapter's properties for a vCenter object.
 - T-ADP-026c (lab, automated by validate.ps1 check 20): install and validate after a window has ended; expect the published Close for Business to follow the rule from the published Worst values on every sampled cluster.
+- T-ADP-026d (lab, automated by a new read-only validate.ps1 check): read the 20-second peak and the 5-minute maximum of dropped TX packets on one lab VM; when no 20-second peak exists, the catalog row and the adapter's row become 5-minute and drop "peak" from their name, in agent-e2 first (Q-WS-81).
 
 ### R-ADP-024 Memory tiering is tested on nested hosts built by lab-build
 
@@ -427,4 +428,4 @@ The value keys a cluster carries. After release 1.0, each row also gets a state 
 
 ## Questions for round two
 
-The questions on this file, with their decisions, are in the [interview, round 2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-2.md): Q-WS-72 to Q-WS-89. The few still open are in [OPEN-QUESTIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/OPEN-QUESTIONS.md).
+The questions on this file, with their decisions, are in the [interview, round 2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-2.md): Q-WS-72 to Q-WS-89. None is open.
