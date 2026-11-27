@@ -145,7 +145,7 @@ def cpu_thread_utilization_pct(stats: HostStats) -> Optional[float]:
 
 
 THREAD_UTILIZATION = RiskRow(
-    Metric("Highest ESXi CPU Thread Utilization",     "%",   0.0,  60.0,  80.0,   90.0,   95.0,   True),
+    Metric("Highest ESXi CPU Thread Utilization",     "%",   0.0,  60.0,  80.0,   90.0,   95.0,   True, interval="5m"),
     [CPU_THREAD_UTIL], lambda stats, host, monster: cpu_thread_utilization_pct(stats))
 
 # --- Row 2. Worst ESXi CPU Imbalance -----------------------------------------------------------------------------
@@ -167,7 +167,7 @@ def cpu_imbalance(stats: HostStats, host: HostInventory) -> Optional[float]:
 
 
 IMBALANCE = RiskRow(
-    Metric("Worst ESXi CPU Imbalance",                None,  1.0,  1.0,   1.3,    1.6,    2.0),
+    Metric("Worst ESXi CPU Imbalance",                None,  1.0,  1.0,   1.3,    1.6,    2.0, interval="5m"),
     [CPU_THREAD_UTIL, CPU_CORE_UTIL], lambda stats, host, monster: cpu_imbalance(stats, host))
 
 # ----- Saturation: the host is already reclaiming memory from its VMs ---------------------------------------------
@@ -184,7 +184,7 @@ def memory_ballooned_pct(stats: HostStats) -> Optional[float]:
 
 
 BALLOONED = RiskRow(
-    Metric("Worst ESXi Memory Ballooned",             "%",   0.0,  1.0,   2.0,    4.0,    8.0),
+    Metric("Worst ESXi Memory Ballooned",             "%",   0.0,  1.0,   2.0,    4.0,    8.0, interval="5m"),
     [MEM_BALLOONED], lambda stats, host, monster: memory_ballooned_pct(stats))
 
 # --- Row 4. Worst ESXi Memory Zip Swap ---------------------------------------------------------------------------
@@ -202,7 +202,7 @@ def memory_zip_swap_pct(stats: HostStats) -> Optional[float]:
 
 
 ZIP_SWAP = RiskRow(
-    Metric("Worst ESXi Memory Zip Swap",              "%",   0.0,  0.25,  0.5,    1.0,    2.0),
+    Metric("Worst ESXi Memory Zip Swap",              "%",   0.0,  0.25,  0.5,    1.0,    2.0, interval="5m"),
     [MEM_COMPRESSED, MEM_SWAPPED], lambda stats, host, monster: memory_zip_swap_pct(stats))
 
 # --- Row 5. Worst ESXi Active Memory, tiered hosts ---------------------------------------------------------------
@@ -221,7 +221,7 @@ def memory_active_pct(stats: HostStats) -> Optional[float]:
 
 
 ACTIVE_MEMORY = RiskRow(
-    Metric("Worst ESXi Active Memory",                "%",   0.0,  50.0,  62.5,   75.0,   100.0,  True),
+    Metric("Worst ESXi Active Memory",                "%",   0.0,  50.0,  62.5,   75.0,   100.0,  True, interval="5m"),
     [MEM_ACTIVE, NVME_TIER_SIZE], lambda stats, host, monster: memory_active_pct(stats))
 
 # --- Row 6. Worst ESXi Memory Tiering Latency --------------------------------------------------------------------
@@ -235,7 +235,7 @@ def memory_tiering_latency(stats: HostStats) -> Optional[float]:
 
 
 TIERING_LATENCY = RiskRow(
-    Metric("Worst ESXi Memory Tiering Latency",       "µs",  0.0,  100.0, 200.0,  400.0,  800.0),
+    Metric("Worst ESXi Memory Tiering Latency",       "µs",  0.0,  100.0, 200.0,  400.0,  800.0, interval="5m"),
     [MEM_TIERING_LATENCY], lambda stats, host, monster: memory_tiering_latency(stats))
 
 # ----- Reservation: capacity promised to VMs, even when they do not use it ----------------------------------------
@@ -255,7 +255,7 @@ def cpu_reservation_pct(stats: HostStats) -> Optional[float]:
 
 
 CPU_RESERVATION = RiskRow(
-    Metric("Highest ESXi CPU Reservation",            "%",   0.0,  10.0,  40.0,   60.0,   80.0,   True),
+    Metric("Highest ESXi CPU Reservation",            "%",   0.0,  10.0,  40.0,   60.0,   80.0,   True, interval="5m"),
     [CPU_RESERVED, CPU_CAPACITY], lambda stats, host, monster: cpu_reservation_pct(stats))
 
 # --- Row 8. Highest ESXi Memory Reservation ----------------------------------------------------------------------
@@ -271,7 +271,7 @@ def memory_reservation_pct(stats: HostStats) -> Optional[float]:
 
 
 MEMORY_RESERVATION = RiskRow(
-    Metric("Highest ESXi Memory Reservation",         "%",   0.0,  10.0,  40.0,   60.0,   80.0,   True),
+    Metric("Highest ESXi Memory Reservation",         "%",   0.0,  10.0,  40.0,   60.0,   80.0,   True, interval="5m"),
     [MEM_RESERVED], lambda stats, host, monster: memory_reservation_pct(stats))
 
 # ----- Allocation: vCPU and memory allocated to the powered-on VMs, against what the host has ---------------------
@@ -291,7 +291,7 @@ def cpu_overcommit(stats: HostStats, host: HostInventory) -> Optional[float]:
 
 
 CPU_OVERCOMMIT = RiskRow(
-    Metric("Highest ESXi CPU Overcommit Ratio",       None,  0.0,  1.0,   2.0,    3.0,    4.0,    True),
+    Metric("Highest ESXi CPU Overcommit Ratio",       None,  0.0,  1.0,   2.0,    3.0,    4.0,    True, interval="5m"),
     [VCPUS_ALLOCATED], lambda stats, host, monster: cpu_overcommit(stats, host))
 
 # --- Row 10. Highest ESXi Memory Overcommit Ratio ----------------------------------------------------------------
@@ -308,7 +308,7 @@ def memory_overcommit(stats: HostStats) -> Optional[float]:
 
 
 MEMORY_OVERCOMMIT = RiskRow(
-    Metric("Highest ESXi Memory Overcommit Ratio",    None,  0.0,  1.0,   1.4,    1.8,    2.2,    True),
+    Metric("Highest ESXi Memory Overcommit Ratio",    None,  0.0,  1.0,   1.4,    1.8,    2.2,    True, interval="5m"),
     [MEM_ALLOCATED], lambda stats, host, monster: memory_overcommit(stats))
 
 # ----- Monster VM: the largest VM against the size where a VM becomes a monster on its host (Part 1) ---------------
@@ -324,7 +324,7 @@ def cpu_monster_ratio(host: HostInventory, monster: MonsterVmSize = DEFAULT_MONS
 
 
 CPU_MONSTER = RiskRow(
-    Metric("Highest CPU Monster VM to Host Ratio",    None,  0.0,  1.0,   2.0,    3.0,    4.0),
+    Metric("Highest CPU Monster VM to Host Ratio",    None,  0.0,  1.0,   2.0,    3.0,    4.0, interval="5m"),
     [], lambda stats, host, monster: cpu_monster_ratio(host, monster))
 
 # --- Row 12. Highest Memory Monster VM to Host Ratio -------------------------------------------------------------
@@ -341,7 +341,7 @@ def memory_monster_ratio(
 
 
 MEMORY_MONSTER = RiskRow(
-    Metric("Highest Memory Monster VM to Host Ratio", None,  0.0,  1.0,   2.0,    3.0,    4.0),
+    Metric("Highest Memory Monster VM to Host Ratio", None,  0.0,  1.0,   2.0,    3.0,    4.0, interval="5m"),
     [], lambda stats, host, monster: memory_monster_ratio(stats, host, monster))
 
 

@@ -208,7 +208,7 @@ def _consumed(used: Optional[float], usable: Optional[float]) -> Optional[float]
 # The CPU threads in use on the running hosts, out of CPU Usable Capacity. A thread in use is the host's
 # cpu.utilization % of its threads, so a busy small host counts less than a busy big one.
 CPU = "Cluster-wide ESXi CPU Thread Utilization"
-CPU_ROW = Metric(CPU, "%", 0.0, 55.0, 70.0, 85.0, 100.0)
+CPU_ROW = Metric(CPU, "%", 0.0, 55.0, 70.0, 85.0, 100.0, interval="5m")
 
 
 def cpu_thread_utilization(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optional[float]:
@@ -221,7 +221,7 @@ def cpu_thread_utilization(usable: UsableCapacity, stats_by_host: StatsByHost) -
 # Memory Consumed is the raw vCenter metric and covers both tiers, so it is against both, as vSphere counts host
 # memory. On a tiered cluster it can read green while DRAM is full: that is Row 3.
 MEMORY = "Cluster-wide ESXi Memory Consumed"
-MEMORY_ROW = Metric(MEMORY, "%", 0.0, 70.0, 80.0, 90.0, 100.0)
+MEMORY_ROW = Metric(MEMORY, "%", 0.0, 70.0, 80.0, 90.0, 100.0, interval="5m")
 
 
 def memory_consumed(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optional[float]:
@@ -233,7 +233,7 @@ def memory_consumed(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optio
 # = Memory Consumed - NVMe tier in use, per host. Tiering starts at about 80 % of DRAM, so green runs to 80. A
 # cluster with no tier has no value.
 DRAM = "Cluster-wide ESXi DRAM Consumed"
-DRAM_ROW = Metric(DRAM, "%", 0.0, 80.0, 85.0, 90.0, 100.0)
+DRAM_ROW = Metric(DRAM, "%", 0.0, 80.0, 85.0, 90.0, 100.0, interval="5m")
 
 
 def dram_consumed(usable: UsableCapacity, stats_by_host: StatsByHost, tier_stats_by_host: StatsByHost
@@ -252,7 +252,7 @@ def dram_consumed(usable: UsableCapacity, stats_by_host: StatsByHost, tier_stats
 # value does not change with the DRAM:NVMe ratio. A cluster with no tier has no value. VCF Operations reports the
 # usage in MB. Linear limits: about 5 % spilled at Gold (1:1), 20 % at Silver (1.2:1), 40 % at Bronze (1.4:1).
 TIERING = "Cluster Memory Tiering Consumption"
-TIERING_ROW = Metric(TIERING, "%", 0.0, 15.0, 30.0, 45.0, 60.0)
+TIERING_ROW = Metric(TIERING, "%", 0.0, 15.0, 30.0, 45.0, 60.0, interval="5m")
 
 
 def memory_tiering_consumption(usable: UsableCapacity, tier_stats_by_host: StatsByHost) -> Optional[float]:
@@ -263,7 +263,7 @@ def memory_tiering_consumption(usable: UsableCapacity, tier_stats_by_host: Stats
 # --- Row 5. Memory Ballooned (Saturation) ------------------------------------------------------------------------
 # The ballooned memory of the running hosts, out of Memory Usable Capacity in DRAM.
 BALLOONED = "Cluster-wide ESXi Memory Ballooned"
-BALLOONED_ROW = Metric(BALLOONED, "%", 0.0, 1.0, 2.0, 4.0, 8.0)
+BALLOONED_ROW = Metric(BALLOONED, "%", 0.0, 1.0, 2.0, 4.0, 8.0, interval="5m")
 
 
 def memory_ballooned(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optional[float]:
@@ -273,7 +273,7 @@ def memory_ballooned(usable: UsableCapacity, stats_by_host: StatsByHost) -> Opti
 # --- Row 6. Memory Zip Swap (Saturation) -------------------------------------------------------------------------
 # The compressed plus swapped memory of the running hosts, out of Memory Usable Capacity in DRAM.
 ZIP_SWAP = "Cluster-wide ESXi Memory Zip Swap"
-ZIP_SWAP_ROW = Metric(ZIP_SWAP, "%", 0.0, 0.25, 0.5, 1.0, 2.0)
+ZIP_SWAP_ROW = Metric(ZIP_SWAP, "%", 0.0, 0.25, 0.5, 1.0, 2.0, interval="5m")
 
 
 def memory_zip_swap(usable: UsableCapacity, stats_by_host: StatsByHost) -> Optional[float]:

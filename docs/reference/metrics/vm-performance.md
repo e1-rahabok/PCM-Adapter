@@ -30,7 +30,7 @@ Names are the Agent E2 catalog names (one name per sub-metric across the catalog
 | VM contention | Peak CPU Co-stop among any vCPU | `cpu\|20_sec_peak_costopPct` |
 | VM contention | Peak CPU Ready among any vCPU | `cpu\|20_sec_peak_readyPct` |
 | VM contention | Peak CPU Overlap | `cpu\|20_sec_peak_overlap` (%) |
-| VM contention | Memory wait | Calculated: `mem\|20_sec_peak_host_contentionPct` + NVMe wait. Published as `vCommunity\|VM Performance\|Memory Wait`. See [Memory Wait](memory-wait.md). |
+| VM contention | Peak memory wait | Calculated: `mem\|20_sec_peak_host_contentionPct` + NVMe wait. Published as `vCommunity\|VM Performance\|Memory Wait`. See [Memory Wait](memory-wait.md). |
 | VM contention | Peak read/write latency among vDisks | `virtualDisk\|20_sec_peak_totalLatency_average` |
 | VM contention | Peak network TX dropped packets | `net\|droppedTxPct_max` |
 | VM utilization | CPU Net Run | `cpu\|net_run` |
@@ -56,7 +56,7 @@ Every sub-metric is lower-is-better, and 0 is best.
 | Peak CPU Co-stop among any vCPU | % | 1 | 2 | 4 | 8 |
 | Peak CPU Ready among any vCPU | % | 2 | 4 | 8 | 16 |
 | Peak CPU Overlap | % | Excluded (below 0.5) | 1 | 2 | 4 |
-| Memory wait | % | 0.5 | 1 | 2 | 4 |
+| Peak memory wait | % | 0.5 | 1 | 2 | 4 |
 | Peak read/write latency among vDisks | ms | 10 | 20 | 40 | 80 |
 | Peak network TX dropped packets | % | Excluded (exactly 0) | 0.5 | 1 | 2 |
 | CPU Net Run | % | Excluded (below 95) | 97 | 99 | 100 |

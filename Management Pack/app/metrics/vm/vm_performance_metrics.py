@@ -53,18 +53,18 @@ class Row(NamedTuple):
 
 # --- Row 1. CPU Co-Stop (VM contention) --------------------------------------------------------------------------
 # Time the VM was held back so that its vCPUs stay in step. Only multi-vCPU VMs have it.
-CO_STOP = Row(Metric("CPU Co-Stop",           "%",    0.0,    1.0,    2.0,    4.0,    8.0),
+CO_STOP = Row(Metric("CPU Co-Stop",           "%",    0.0,    1.0,    2.0,    4.0,    8.0, interval="20s"),
               stat="cpu|20_sec_peak_costopPct")
 
 # --- Row 2. CPU Ready (VM contention) ----------------------------------------------------------------------------
 # Time the VM was ready to run but had to wait for a physical CPU.
-READY = Row(Metric("CPU Ready",               "%",    0.0,    2.0,    4.0,    8.0,    16.0),
+READY = Row(Metric("CPU Ready",               "%",    0.0,    2.0,    4.0,    8.0,    16.0, interval="20s"),
             stat="cpu|20_sec_peak_readyPct")
 
 # --- Row 3. CPU Overlap (VM contention) --------------------------------------------------------------------------
 # Time the VM was interrupted so that ESXi could do work for something else.
 # Green (below 0.5 %) is "Excluded": some overlap is normal and says nothing about performance.
-OVERLAP = Row(Metric("CPU Overlap",           "%",    0.0,    0.5,    1.0,    2.0,    4.0,     True),
+OVERLAP = Row(Metric("CPU Overlap",           "%",    0.0,    0.5,    1.0,    2.0,    4.0,     True, interval="20s"),
               stat="cpu|20_sec_peak_overlap")
 
 # --- Row 4. Memory Wait (VM contention) --------------------------------------------------------------------------
@@ -82,29 +82,29 @@ def memory_wait_pct(vm_stats: VmStats) -> Optional[float]:
     return memory_wait.memory_wait_pct(vm_stats, vm_stats.get(VM_VCPUS), vm_stats.get(HOST_NVME_LATENCY))
 
 
-MEMORY_WAIT = Row(Metric("Memory Wait", "%", 0.0,  0.5,    1.0,    2.0,    4.0),
+MEMORY_WAIT = Row(Metric("Memory Wait", "%", 0.0,  0.5,    1.0,    2.0,    4.0, interval="20s"),
                   formula=memory_wait_pct)
 
 # --- Row 5. Disk Latency (VM contention) -------------------------------------------------------------------------
 # Read and write latency of the VM's virtual disks.
-DISK_LATENCY = Row(Metric("Disk Latency",     "ms",   0.0,    10.0,   20.0,   40.0,   80.0),
+DISK_LATENCY = Row(Metric("Disk Latency",     "ms",   0.0,    10.0,   20.0,   40.0,   80.0, interval="20s"),
                    stat="virtualDisk|20_sec_peak_totalLatency_average")
 
 # --- Row 6. Network Dropped Tx (VM contention) -------------------------------------------------------------------
 # Packets the VM sent that were dropped, as a % of the packets it sent.
 # Green (exactly 0) is "Excluded": dropped packets are rare. Any dropped packet is yellow.
-DROPPED_TX = Row(Metric("Network Dropped Tx", "%",    0.0,    0.0,    0.5,    1.0,    2.0,     True),
+DROPPED_TX = Row(Metric("Network Dropped Tx", "%",    0.0,    0.0,    0.5,    1.0,    2.0,     True, interval="20s"),
                  stat="net|droppedTxPct_max")
 
 # --- Row 7. CPU Run (VM utilization) -----------------------------------------------------------------------------
 # Time the VM really ran on a physical CPU. Near 100 % the VM itself is too small.
 # Green (below 95 %) is "Excluded": a VM that is not busy says nothing about its performance.
-CPU_RUN = Row(Metric("CPU Run",               "%",    0.0,    95.0,   97.0,   99.0,   100.0,   True),
+CPU_RUN = Row(Metric("CPU Run",               "%",    0.0,    95.0,   97.0,   99.0,   100.0,   True, interval="5m"),
               stat="cpu|net_run")
 
 # --- Row 8. Memory Ballooned (IaaS high utilization: the host is taking memory back from the VM) ----------------
 # VM memory that the host took back through the balloon driver.
-BALLOONED = Row(Metric("Memory Ballooned",    "%",    0.0,    2.0,    4.0,    8.0,    16.0),
+BALLOONED = Row(Metric("Memory Ballooned",    "%",    0.0,    2.0,    4.0,    8.0,    16.0, interval="5m"),
                 stat="mem|balloonPct")
 
 # --- Row 9. Memory Zip Swap (IaaS high utilization: the host is taking memory back from the VM) -----------------
@@ -127,7 +127,7 @@ def memory_zip_swap_pct(vm_stats: VmStats) -> Optional[float]:
     return percent(vm_stats[MEM_COMPRESSED] + vm_stats[MEM_SWAPPED], vm_stats[GUEST_USED_MEMORY])
 
 
-ZIP_SWAP = Row(Metric("Memory Zip Swap",      "%",    0.0,    0.25,   0.5,    1.0,    2.0),
+ZIP_SWAP = Row(Metric("Memory Zip Swap",      "%",    0.0,    0.25,   0.5,    1.0,    2.0, interval="5m"),
                formula=memory_zip_swap_pct)
 
 
@@ -137,9 +137,20 @@ METRICS = [row.metric for row in ROWS]
 # Only the rows the VM does not already have as a stat: the calculated ones, Memory Wait and Memory Zip Swap.
 PUBLISHED_METRICS = [row.metric for row in ROWS if row.formula]
 
-# The labels VCF Operations shows for the two published rows: the Agent E2 catalog names (thresholds-performance.yaml,
-# VirtualMachine lines), without the unit. The keys stay the row names. The other rows are stats the VM already has.
-LABELS = {MEMORY_WAIT.metric.name: "Memory wait", ZIP_SWAP.metric.name: "VM swapped + zipped memory"}
+# The label of every row: the Agent E2 catalog name (thresholds-performance.yaml, VirtualMachine lines), without the unit.
+# VCF Operations shows the labels of the two published rows; the KPI definitions check compares all of them. The keys
+# stay the row names. The other rows are stats the VM already has.
+LABELS = {
+    CO_STOP.metric.name: "Peak CPU Co-stop among any vCPU",
+    READY.metric.name: "Peak CPU Ready among any vCPU",
+    OVERLAP.metric.name: "Peak CPU Overlap",
+    MEMORY_WAIT.metric.name: "Peak memory wait",
+    DISK_LATENCY.metric.name: "Peak read/write latency among vDisks",
+    DROPPED_TX.metric.name: "Peak network TX dropped packets",
+    CPU_RUN.metric.name: "CPU Net Run",
+    BALLOONED.metric.name: "VM Memory Ballooned",
+    ZIP_SWAP.metric.name: "VM swapped + zipped memory",
+}
 # Row -> the VM stat it is read from, as it is.
 SOURCE_STATS = {row.metric.name: row.stat for row in ROWS if row.stat}
 

@@ -23,7 +23,7 @@ HOST_PACKET_STATS = ["net|packetsRx_summation_sum", "net|packetsTx_summation_sum
 def bad_network_packets_metric(name: str) -> Metric:
     """The bad network packets row, under the name the KPI gives it. The limits are the same in every KPI."""
     #             name  unit  best  green  yellow  orange  zero-at  skip-when-green
-    return Metric(name, "%",  0.0,  0.0,   0.2,    0.4,    0.8,     True)
+    return Metric(name, "%",  0.0,  0.0,   0.2,    0.4,    0.8,     True, interval="5m")
 
 
 def bad_packet_pct(packets: Dict[str, float]) -> Optional[float]:
