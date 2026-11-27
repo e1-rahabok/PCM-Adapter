@@ -33,7 +33,7 @@ Source: WD-025; the author's message of 2026-11-26 naming the adapter's concept 
 
 Test scenarios:
 - T-REPO-002a (anywhere, manual review by a fresh session): read every page of the adapter's docs; expect no explanation of a metric's meaning beyond one sentence, and a knowledge link on each metric page.
-- T-REPO-002b (anywhere, automated by the adapter's existing link check, [check_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/check-docs/check_links.py)): expect no broken link after the pages are removed.
+- T-REPO-002b (anywhere, automated by the adapter's existing link check, [check_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/check-docs/check_links.py)): expect no broken link after the pages are trimmed.
 
 ### R-REPO-009 The adapter's documentation links to isvara.io's articles
 
