@@ -1,6 +1,6 @@
 # TLS and Security Settings
 
-The pack connects to vCenter with a service account. With Windows monitoring on, it also runs a PowerShell script inside Windows VMs. This page covers how the pack checks certificates on those connections, what it runs in the VMs, and the settings for stricter checks.
+The VCF vCommunity Adapter connects to vCenter with a service account. With Windows monitoring on, it also runs a PowerShell script inside Windows VMs. This page covers how the adapter checks certificates on those connections, what it runs in the VMs, and the settings for stricter checks.
 
 **On this page:**
 
@@ -20,8 +20,8 @@ The pack connects to vCenter with a service account. With Windows monitoring on,
 
 With the default settings, a certificate problem never stops collection. Many vCenter and ESXi certificates are signed by the VMCA or are self-signed, and the Cloud Proxy does not trust them. Managing those certificates is the customer's job, so the defaults record and compare certificates instead of refusing them:
 
-- **vCenter:** the pack records the vCenter certificate on the first connection, and reports on the vCenter object when it changes. Collection continues.
-- **ESXi, for Windows monitoring:** the pack checks each host's certificate against the thumbprint that vCenter records for that host. If vCenter has no thumbprint for the host, the transfer goes ahead and the adapter log says so.
+- **vCenter:** the adapter records the vCenter certificate on the first connection, and reports on the vCenter object when it changes. Collection continues.
+- **ESXi, for Windows monitoring:** the adapter checks each host's certificate against the thumbprint that vCenter records for that host. If vCenter has no thumbprint for the host, the transfer goes ahead and the adapter log says so.
 
 For a check that refuses the connection when it fails, choose a stricter mode on the Adapter Instance.
 
@@ -51,7 +51,7 @@ An Adapter Instance created before these settings existed has them empty, which 
 
 ### Trust on First Use
 
-The VCF Operations vCenter account works the same way: you accept the certificate when you add the vCenter. The pack does the same, and then compares the certificate in every collection.
+The VCF Operations vCenter account works the same way: you accept the certificate when you add the vCenter. The adapter does the same, and then compares the certificate in every collection.
 
 > **Warning.** The user name and password are sent before the certificate is checked. On the first connection, a server that impersonates vCenter receives them. Use `Pinned` or `Enabled` on any network you don't fully trust. The default suits labs and trusted internal networks. The adapter log notes the mode at each connection.
 
@@ -79,7 +79,7 @@ Use `Enabled` when the vCenter certificate comes from a CA that the Cloud Proxy 
 
 A wrong setting stops the connection instead of turning the check off. `Pinned` without a thumbprint, a thumbprint that is not SHA-256 or SHA-512, and an unknown mode are all refused. **Validate Connection** and the adapter log say what to change.
 
-With `Pinned`, a thumbprint mismatch stops the connection before the user name and password are sent. The same pin protects the connection to the vSphere Automation REST API, which the pack uses to read content libraries: on a mismatch its login is refused and nothing is sent. The REST connection accepts only a SHA-256 thumbprint, so use SHA-256 with `Pinned`. With `Trust on First Use`, the REST connection is not checked, the same as the main connection.
+With `Pinned`, a thumbprint mismatch stops the connection before the user name and password are sent. The same pin protects the connection to the vSphere Automation REST API, which the adapter uses to read content libraries: on a mismatch its login is refused and nothing is sent. The REST connection accepts only a SHA-256 thumbprint, so use SHA-256 with `Pinned`. With `Trust on First Use`, the REST connection is not checked, the same as the main connection.
 
 The error message shows the thumbprint vCenter presented. Compare it with the certificate in vCenter before you change the setting: a thumbprint copied from a failing connection proves nothing about who answered.
 
@@ -87,7 +87,7 @@ The error message shows the thumbprint vCenter presented. Compare it with the ce
 
 ### Get the thumbprint
 
-Once the pack has collected with `Trust on First Use`, the **SHA-256 Thumbprint** property of the vCenter object has it. You can also read it with OpenSSL from a machine you trust:
+Once the adapter has collected with `Trust on First Use`, the **SHA-256 Thumbprint** property of the vCenter object has it. You can also read it with OpenSSL from a machine you trust:
 
 ```bash
 openssl s_client -connect vcenter.example.com:443 -servername vcenter.example.com </dev/null 2>/dev/null \
@@ -100,9 +100,9 @@ The output is `sha256 Fingerprint=AB:CD:...`. Paste the part after `=`. Uppercas
 
 ## Guest File Transfer TLS Validation
 
-To read Windows services, OS information and event logs, the pack copies a script to the VM and reads its output back. These files don't pass through vCenter: vCenter returns a URL on the ESXi host that runs the VM, and the pack transfers the file to that host over HTTPS.
+To read Windows services, OS information and event logs, the adapter copies a script to the VM and reads its output back. These files don't pass through vCenter: vCenter returns a URL on the ESXi host that runs the VM, and the adapter transfers the file to that host over HTTPS.
 
-vCenter records each host's certificate thumbprint when the host is added or reconnected (`host.summary.config.sslThumbprint` in the vSphere API). The pack pins the transfer to that thumbprint, with no setup.
+vCenter records each host's certificate thumbprint when the host is added or reconnected (`host.summary.config.sslThumbprint` in the vSphere API). The adapter pins the transfer to that thumbprint, with no setup.
 
 | Mode | Host certificate matches vCenter's thumbprint | Host certificate differs | vCenter has no thumbprint, or the host is not found |
 | :--- | :--- | :--- | :--- |
@@ -110,7 +110,7 @@ vCenter records each host's certificate thumbprint when the host is added or rec
 | `Strict` | Transferred | Refused, the VM is skipped | Refused, the VM is skipped |
 | `Disabled` | Transferred | Transferred | Transferred |
 
-The certificate is compared during the TLS handshake, so a refused host receives nothing: neither the script nor its output. The reason is in the adapter log. The pack reads the thumbprints from vCenter once per collection, so a replaced ESXi certificate is picked up at the next collection after vCenter has it.
+The certificate is compared during the TLS handshake, so a refused host receives nothing: neither the script nor its output. The reason is in the adapter log. The adapter reads the thumbprints from vCenter once per collection, so a replaced ESXi certificate is picked up at the next collection after vCenter has it.
 
 ---
 
@@ -118,10 +118,10 @@ The certificate is compared during the TLS handshake, so a refused host receives
 
 This happens only when **Guest OS Service Monitoring Status** or **Windows Event Log Monitoring Status** is `Enabled`. Both are `Disabled` by default.
 
-For every Windows VM with VMware Tools running, the pack uses the vSphere Guest Operations API and the Windows account in the credential to:
+For every Windows VM with VMware Tools running, the adapter uses the vSphere Guest Operations API and the Windows account in the credential to:
 
 1. Create a temporary folder under `C:\Windows\Temp`.
-2. Copy a PowerShell script that ships inside the pack into it. For event logs, it also copies an XML file with your event IDs.
+2. Copy a PowerShell script that ships inside the pak file into it. For event logs, it also copies an XML file with your event IDs.
 3. Run the script with `powershell.exe`. The script reads service status and OS information, or the event IDs you listed.
 4. Read the output file back.
 5. Delete the folder. If that fails, the folder stays in the VM.
@@ -130,8 +130,8 @@ Each PowerShell step in a guest is stopped after 5 minutes, and that VM is skipp
 
 Points for a security review:
 
-- This is a remote execution path. One credential, stored in VCF Operations, can run PowerShell in every VM the pack monitors. The scripts are fixed in the pack. They are not read from a configuration file.
-- The Windows service names from the configuration file are put on the PowerShell command line. A name is accepted only if it contains letters, digits, spaces and `_ . $ # @ ( ) + -`, and starts with a letter, digit or `_`. Names with quotes, `;`, `|`, `&`, wildcards or line breaks are dropped, and one warning in the adapter log names them. A user who can edit the configuration file therefore cannot make the pack run other commands in the VMs. This check has no setting.
+- This is a remote execution path. One credential, stored in VCF Operations, can run PowerShell in every VM the adapter monitors. The scripts are fixed in the pak file. They are not read from a configuration file.
+- The Windows service names from the configuration file are put on the PowerShell command line. A name is accepted only if it contains letters, digits, spaces and `_ . $ # @ ( ) + -`, and starts with a letter, digit or `_`. Names with quotes, `;`, `|`, `&`, wildcards or line breaks are dropped, and one warning in the adapter log names them. A user who can edit the configuration file therefore cannot make the adapter run other commands in the VMs. This check has no setting.
 - Event IDs are sent as an XML file and read as data. They are not part of a command line.
 - The Windows account needs no administrator rights, see [User Account Requirements](../installation-guide/system-requirements.md#user-account-requirements). Don't use a local Administrator account. The vCenter account needs the guest operations privileges listed on the same page.
 
@@ -147,7 +147,7 @@ The Cloud Proxy pulls the adapter image from `ghcr.io`. In a regulated environme
 
 ## Accounts
 
-- Give the pack its own vCenter service account with the read-only role and only the extra privileges it needs. Don't share it with other tools. See [User Account Requirements](../installation-guide/system-requirements.md#user-account-requirements).
+- Give the adapter its own vCenter service account with the read-only role and only the extra privileges it needs. Don't share it with other tools. See [User Account Requirements](../installation-guide/system-requirements.md#user-account-requirements).
 - Use a separate Windows account for guest monitoring, and only when you turn it on.
 - Leave the software package and Windows configuration files without active entries until you need them.
 
@@ -163,9 +163,9 @@ The Cloud Proxy pulls the adapter image from `ghcr.io`. In a regulated environme
 
 **Why a changed vCenter certificate is reported and not refused.** Certificates are replaced on a schedule. Refusing would stop collection at every planned replacement until someone updates the Adapter Instance. Reporting keeps the data coming and gives the customer what they need to act.
 
-**Why a different ESXi certificate is refused by default.** For ESXi the pack has a trusted reference with no setup: vCenter's own record of the host certificate. A host that presents a different certificate is a server vCenter does not know, and the pack is about to send it a script that runs with a Windows credential. Skipping that VM for one collection is the safe choice and does not affect anything else. When vCenter has no record, there is no reference, so `Pinned` goes ahead and logs a warning.
+**Why a different ESXi certificate is refused by default.** For ESXi the adapter has a trusted reference with no setup: vCenter's own record of the host certificate. A host that presents a different certificate is a server vCenter does not know, and the adapter is about to send it a script that runs with a Windows credential. Skipping that VM for one collection is the safe choice and does not affect anything else. When vCenter has no record, there is no reference, so `Pinned` goes ahead and logs a warning.
 
-**Why the service name check has no setting.** It does not depend on the environment. It closes a gap in the pack itself: without it, a name in the pack's own configuration file could run commands in every monitored VM.
+**Why the service name check has no setting.** It does not depend on the environment. It closes a gap in the adapter itself: without it, a name in the adapter's own configuration file could run commands in every monitored VM.
 
 ---
 

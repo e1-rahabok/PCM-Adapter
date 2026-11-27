@@ -653,7 +653,7 @@ def get_adapter_definition() -> AdapterDefinition:
             itemGroup.define_string_property(name, name)
         itemGroup.define_metric("Size (GB)", "Size (GB)")
 
-        # VM Template: a VM marked as a template. The pack writes no parent link for it (PER_OBJECT relationships).
+        # VM Template: a VM marked as a template. The VCF vCommunity Adapter writes no parent link for it (PER_OBJECT relationships).
         # See collectors/library/collectTemplateData.py.
         vmTemplate = definition.define_object_type(TEMPLATE_KIND, TEMPLATE_KIND)
         vmTemplate.define_string_identifier("VMEntityObjectID", "VMEntityObjectID")

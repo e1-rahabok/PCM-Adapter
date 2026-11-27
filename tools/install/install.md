@@ -2,11 +2,11 @@
 
 `install.ps1` uploads a built pak to a VCF Operations instance and installs it, with no browser and no file dialog. It is a development tool: it puts a new build on the test instance, so that the [live validation](../validate/validate.md) covers it.
 
-Administrators install the pack through the UI: see [Installation](../../docs/installation-guide/installation.md).
+Administrators install the VCF vCommunity Adapter through the UI: see [Installation](../../docs/installation-guide/installation.md).
 
 ## Safety
 
-The script **changes the instance**. It replaces the installed version of the pack, the same as installing it from the UI.
+The script **changes the instance**. It replaces the installed version of the adapter, the same as installing it from the UI.
 
 It installs an **unsigned** pak, with signature checking ignored, the same as ticking **Ignore the PAK file signature checking** in the UI. Use it only with paks you built yourself from this repo.
 
@@ -96,7 +96,7 @@ The script stops at `COMPLETED`, `FAILED` or `CANCELED`. For anything but `COMPL
 
 ## Design decisions
 
-**The UI requests are used for the upload and install.** The admin API (CaSA) has a documented upload and install, `POST /casa/upgrade/cluster/pak/reserved/operation/upload` and then `.../<pakId>/operation/install`, which needs no CSRF token. But it rejects an unsigned pak on upload with `pak_manager.pakfile.no_signature`, and has no option to skip the check. Only the UI's upload takes `ignoreSignatureChecking`. If the pack is ever signed, the admin API is the simpler route.
+**The UI requests are used for the upload and install.** The admin API (CaSA) has a documented upload and install, `POST /casa/upgrade/cluster/pak/reserved/operation/upload` and then `.../<pakId>/operation/install`, which needs no CSRF token. But it rejects an unsigned pak on upload with `pak_manager.pakfile.no_signature`, and has no option to skip the check. Only the UI's upload takes `ignoreSignatureChecking`. If the pak file is ever signed, the admin API is the simpler route.
 
 **The admin API is used for the status.** The UI has its own status calls, but the author of another open-source installer, [vcf-content-factory](https://github.com/sentania-labs/vcf-content-factory), found that `getLatestInstalledSolutionStatuses` never reaches a final state on 9.0.2. The admin API's status call gives each node's state and a clear final status.
 

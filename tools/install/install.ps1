@@ -4,7 +4,7 @@
   Upload and install the management pack (.pak) on a VCF Operations instance.
 
 .DESCRIPTION
-  This CHANGES the instance: it replaces the installed version of the pack.
+  This CHANGES the instance: it replaces the installed version of the VCF vCommunity Adapter.
 
   The pak is unsigned. The admin API (CaSA) refuses unsigned paks on upload
   (pak_manager.pakfile.no_signature) and has no option to skip the check, so the

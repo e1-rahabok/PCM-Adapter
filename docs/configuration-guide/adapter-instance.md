@@ -1,6 +1,6 @@
 # Adapter Instance
 
-An Adapter Instance connects the pack to one vCenter Server. Create one for each vCenter after you have installed the pack and set the [policy](policy.md). To create many at once, use the [Bulk Adapter Instance Importer](../../tools/importer/importer.md).
+An Adapter Instance connects the VCF vCommunity Adapter to one vCenter Server. Create one for each vCenter after you have installed the adapter and set the [policy](policy.md). To create many at once, use the [Bulk Adapter Instance Importer](../../tools/importer/importer.md).
 
 **On this page:**
 
@@ -18,7 +18,7 @@ An Adapter Instance connects the pack to one vCenter Server. Create one for each
 
 Before you start:
 
-- Activate the [policy](policy.md) first. The host network metrics the pack needs are off by default.
+- Activate the [policy](policy.md) first. The host network metrics the adapter needs are off by default.
 - The vCenter name must resolve on the Cloud Proxy. A name that resolves on your workstation can still fail on the Cloud Proxy, and the reverse is also true.
 - If automatic collector placement fails with `Could not find any compatible and up collector in the collector group`, select a Cloud Proxy that is up and can reach the vCenter.
 
@@ -30,15 +30,15 @@ The examples on this page use vCenter `vcenter.example.com`, account `svc-vcfops
 | :--- | :--- | :--- |
 | **Name** | A name for the Adapter Instance. | For example `VCF-Ops-vCenter-Prod`. |
 | **Description** | What this instance is for. | Optional. |
-| **vCenter Server** | The FQDN or IP address of the vCenter Server. | **Use exactly the same FQDN or IP as the vCenter's own (native) Adapter Instance.** The pack matches on this value to find the vCenter objects it publishes on. If it differs, nothing is published. |
+| **vCenter Server** | The FQDN or IP address of the vCenter Server. | **Use exactly the same FQDN or IP as the vCenter's own (native) Adapter Instance.** The adapter matches on this value to find the vCenter objects it publishes on. If it differs, nothing is published. |
 | **Credential** | A **vCenter Credential**: **vCenter User Name** and **vCenter Password**, plus the optional **Windows User Name** and **Windows Password**. | The Windows fields are needed only for Windows Service or Windows Event Log monitoring. See [User Account Requirements](../installation-guide/system-requirements.md#user-account-requirements). |
 | **Collector/Group** | The Cloud Proxy or collector group that runs the instance. | It must reach the vCenter Server. Collection starts within about 5 minutes. |
 
 ### 1.2. Configuration File Selection
 
-Configuration files list what the pack collects. The pack installs six of them, under **Infrastructure Operations** > **Configurations** > **Management Pack Configuration** > **System Defined**. Enter a file's name **without** `.xml`. The pack adds the extension.
+Configuration files list what the adapter collects. The adapter installs six of them, under **Infrastructure Operations** > **Configurations** > **Management Pack Configuration** > **System Defined**. Enter a file's name **without** `.xml`. The adapter adds the extension.
 
-The four files below are references: every entry in them is commented out, so with the defaults the pack collects none of these settings. Clone a file, uncomment the entries you want, and enter the clone's name here. See [Customization](customization.md).
+The four files below are references: every entry in them is commented out, so with the defaults the adapter collects none of these settings. Clone a file, uncomment the entries you want, and enter the clone's name here. See [Customization](customization.md).
 
 | Field | Default | What is collected |
 | :--- | :--- | :--- |
@@ -49,7 +49,7 @@ The four files below are references: every entry in them is commented out, so wi
 
 #### A note on ESXi software packages
 
-Reading software packages takes one call per host (`fetchSoftwarePackages()`), which is slower than the batched reads the pack uses for everything else. With hundreds of hosts this adds to the collection time. If you don't track VIBs or drivers, leave `esxi_packages` with no active entries.
+Reading software packages takes one call per host (`fetchSoftwarePackages()`), which is slower than the batched reads the adapter uses for everything else. With hundreds of hosts this adds to the collection time. If you don't track VIBs or drivers, leave `esxi_packages` with no active entries.
 
 ---
 

@@ -21,7 +21,7 @@ The documentation starts at [docs/README.md](docs/README.md).
 - **Other metrics**: Operational Availability, Network Speed Degradation, VM shares, and counts such as resource pools, port groups and VMware Tools status.
 - **Periodic Cluster Check**: a Close for Business value per cluster, once per period you choose, based on the worst part of that period. See [Periodic Cluster Check](docs/reference/metrics/periodic-cluster-check.md).
 - **vSphere World summaries** across all vCenters, such as the worst and the worst 10 percent of clusters.
-- **Content library objects**: Content Library, Library Item and VM Template, created by the pack with their own properties and metrics.
+- **Content library objects**: Content Library, Library Item and VM Template, created by the VCF vCommunity Adapter with their own properties and metrics.
 - **Windows checks**: services, OS information and event logs, read through VMware Tools. Optional, and off by default.
 - **Collection health**: a warning count and the first warning of each cycle on the vCenter object, with an alert.
 - **Dashboards, reports, views and alerts**, listed in [Included Content](docs/user-guide/included-content.md).
@@ -40,7 +40,7 @@ The VCF Optimization Assessment report set: 5 PDF reports and 11 CSV exports, wi
 
 The alerts and the two super metrics are off after install. [Included Content](docs/user-guide/included-content.md) says how to turn them on.
 
-A dashboard for Microsoft Windows services is available from [Dale Hassinger](https://www.vcrocs.info/vcommunity-mp-windows-servers-services/). The pack does not ship one.
+A dashboard for Microsoft Windows services is available from [Dale Hassinger](https://www.vcrocs.info/vcommunity-mp-windows-servers-services/). The adapter does not ship one.
 
 </details>
 
@@ -48,7 +48,7 @@ A dashboard for Microsoft Windows services is available from [Dale Hassinger](ht
 
 1. Check the [system requirements](docs/installation-guide/system-requirements.md). If the Cloud Proxy has no internet access, follow the [dark site](docs/installation-guide/dark-site.md) steps.
 2. Download the `.pak` file from [Releases](https://github.com/e1-rahabok/PCM-Adapter/releases) and [install](docs/installation-guide/installation.md) it.
-3. [Activate the policy](docs/configuration-guide/policy.md) metrics the pack needs. Some are off by default.
+3. [Activate the policy](docs/configuration-guide/policy.md) metrics the adapter needs. Some are off by default.
 4. Create an [Adapter Instance](docs/configuration-guide/adapter-instance.md) for each vCenter, or use the [bulk importer](tools/importer/importer.md) for many.
 5. Choose what to collect: [Customization](docs/configuration-guide/customization.md).
 
@@ -56,7 +56,7 @@ If something does not work, start with the [Troubleshooting Guide](docs/troubles
 
 ## Built with
 
-The pack is written in Python with the [VCF Operations Integration SDK](https://github.com/vmware/vmware-vcf-operations-integration-sdk/tree/main/docs). It reads vCenter with pyVmomi and the vSphere Automation API, and reads VCF Operations through its REST API. The [Development Guide](docs/development-guide/repository-layout.md) explains the code and how to change it.
+The adapter is written in Python with the [VCF Operations Integration SDK](https://github.com/vmware/vmware-vcf-operations-integration-sdk/tree/main/docs). It reads vCenter with pyVmomi and the vSphere Automation API, and reads VCF Operations through its REST API. The [Development Guide](docs/development-guide/repository-layout.md) explains the code and how to change it.
 
 ## Related repositories
 
@@ -64,12 +64,12 @@ Four repositories share one body of knowledge about managing a global private cl
 
 - [Agent E2](https://github.com/e1-rahabok/agent-e2) holds the knowledge. You can download it and deploy it privately.
 - [isvara.io](https://isvara.io) ([repository](https://github.com/e1-rahabok/isvara)) is the public website. Agent E2 is to replace its current agent, AskIO, so you can try Agent E2 without installing anything.
-- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, is a web app for operations roles. It reads the KPIs this pack publishes through the VCF Operations API.
+- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, is a web app for operations roles. It reads the KPIs that the VCF vCommunity Adapter publishes through the VCF Operations API.
 - The VCF vCommunity Adapter, this repository, implements that knowledge as a VCF Operations management pack: the metrics, KPIs, properties and dashboards run in your own VCF Operations.
 
 How the four fit, their contracts, decisions and roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
-The isvara.io content (metrics, dashboards, alerts, properties and more) and this pack are both documented in the **Private Cloud Management** book, 5th edition, which you can download from [isvara.io/download](https://isvara.io/download).
+The isvara.io content (metrics, dashboards, alerts, properties and more) and the VCF vCommunity Adapter are both documented in the **Private Cloud Management** book, 5th edition, which you can download from [isvara.io/download](https://isvara.io/download).
 
 isvara.io is built by:
 
@@ -89,8 +89,8 @@ This is a free community project from the vCommunity (VMUG, vExpert, VCP). It is
 
 Built on the work of [Onur Yuzseven](https://www.linkedin.com/in/oyuzseven/), with help from [Mark Arbogast](https://www.linkedin.com/in/mark-arbogast/) and [Robert Mesropyan](https://www.linkedin.com/in/robert-mesropyan/).
 
-[Brock Peterson](https://www.linkedin.com/in/brockpetersonbdcvmw/) wrote a blog series on the pack and its use cases: [part 1](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations), [part 2](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations-part-2) (Windows checks) and [part 3](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations-part-3).
+[Brock Peterson](https://www.linkedin.com/in/brockpetersonbdcvmw/) wrote a blog series on the adapter and its use cases: [part 1](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations), [part 2](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations-part-2) (Windows checks) and [part 3](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations-part-3).
 
-The dashboards, reports and the design of the pack are by [Iwan Rahabok](https://www.linkedin.com/in/e1ang/). His books are available [here](https://broadcom.box.com/v/OpsYourWorld).
+The dashboards, reports and the design of the adapter are by [Iwan Rahabok](https://www.linkedin.com/in/e1ang/). His books are available [here](https://broadcom.box.com/v/OpsYourWorld).
 
-To try the pack first, use the VMware Hands-on Lab that [Abhijit Timble](https://www.linkedin.com/in/abhijit-timble-75878514/) set up: [test drive this MP](https://labs.hol.vmware.com/HOL/catalog/lab/26848).
+To try the adapter first, use the VMware Hands-on Lab that [Abhijit Timble](https://www.linkedin.com/in/abhijit-timble-75878514/) set up: [test drive the VCF vCommunity Adapter](https://labs.hol.vmware.com/HOL/catalog/lab/26848).

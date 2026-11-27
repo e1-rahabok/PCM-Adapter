@@ -1,8 +1,8 @@
 #  Copyright 2026 VCF Operations vCommunity Management Pack
 """The collection result uses PER_OBJECT relationship updates.
 
-With the default (AUTO) the platform removes every Business Application link the pack does not return, as soon as the
-result has one library or template relationship. PER_OBJECT only replaces the links of objects the pack returns.
+With the default (AUTO) the platform removes every Business Application link the VCF vCommunity Adapter does not return, as soon as the
+result has one library or template relationship. PER_OBJECT only replaces the links of objects the adapter returns.
 
 Run from the "Management Pack" folder:  python -m pytest tests
 """

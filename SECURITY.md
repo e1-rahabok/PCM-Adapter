@@ -28,7 +28,7 @@ In scope:
 
 - The adapter code in `Management Pack/app`, and the content it installs.
 - The bulk importer in `tools/importer`.
-- How the pack handles credentials and certificates. [TLS and Security Settings](docs/configuration-guide/tls-and-security.md) describes what the pack checks and what it runs in Windows VMs.
+- How the VCF vCommunity Adapter handles credentials and certificates. [TLS and Security Settings](docs/configuration-guide/tls-and-security.md) describes what the adapter checks and what it runs in Windows VMs.
 
 Out of scope: vulnerabilities in VCF Operations, vCenter, ESXi or the Integration SDK. Report those to Broadcom.
 

@@ -1,6 +1,6 @@
 # Capacity Management Model
 
-The capacity model decides whether a vSphere cluster can take more VMs. The pack makes that decision for every cluster from live data, and publishes it as **Close for Business**. The decision combines three measures:
+The capacity model decides whether a vSphere cluster can take more VMs. The VCF vCommunity Adapter makes that decision for every cluster from live data, and publishes it as **Close for Business**. The decision combines three measures:
 
 - **Consumption**: how much of the cluster's capacity is used.
 - **Contention**: whether the VMs already wait for resources.
@@ -15,7 +15,7 @@ This page describes the model and how its parts relate. The calculation of each 
 | | Planning stage | Operating stage |
 | :--- | :--- | :--- |
 | What it is | Estimates made before there is a workload. | The live workload. |
-| Who does it | The architect, once per cluster design | The pack, every collection cycle |
+| Who does it | The architect, once per cluster design | The adapter, every collection cycle |
 | Output | Planning parameters: buffer, utilization, allocation, reservation | Live metrics, and an automatic decision to close or open the cluster |
 
 The two stages should agree. If the live cluster closes much earlier or much later than the plan predicted, revisit the plan or find out what changed in the workload.
@@ -49,7 +49,7 @@ The blue line in the diagram is the most common case: an overcommitted cluster w
 
 In operation, each planning parameter has a live counterpart. For example, the planned Utilization becomes the measured Consumption. Contention and Risk can only be measured, so they appear only in this stage.
 
-| Live measure | Question it answers | In the pack |
+| Live measure | Question it answers | In the adapter |
 | :--- | :--- | :--- |
 | **Buffer (%)** | Is the HA and DR capacity still free? Measured cluster-wide. | HA and the Capacity Buffer, subtracted from Total Capacity to give the Usable Capacity of [Cluster Consumption](../reference/metrics/cluster-consumption.md#usable-capacity) |
 | **Consumption (%)** | How much of the usable capacity is consumed? The average over the cluster. | [Cluster Consumption](../reference/metrics/cluster-consumption.md) |
@@ -90,9 +90,9 @@ The aim of the operating stage is to open and close clusters for new VMs automat
 
 Risk is a leading indicator, so it is checked only when Contention and Consumption are both orange. A critical cluster uses a lower Risk threshold: red for non-production, orange for production.
 
-### As built in the pack
+### As built in the adapter
 
-The pack implements the overcommit path in the [Periodic Cluster Check](../reference/metrics/periodic-cluster-check.md):
+The adapter implements the overcommit path in the [Periodic Cluster Check](../reference/metrics/periodic-cluster-check.md):
 
 - The three KPIs use the same 0-100 % scale and the same four bands, so one rule covers all three. Performance is higher-is-better. Risk and Consumption are higher-is-worse.
 - **Close for Business** is 1 when Consumption or Contention is red, or when both are orange and Risk is orange or red. Risk alone never closes a cluster.

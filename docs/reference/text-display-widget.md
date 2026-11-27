@@ -1,8 +1,8 @@
 # Text Display Widget
 
-A Text Display widget in a VCF Operations dashboard can show a page of HTML. This page lists what the widget renders and what it drops, as tested on the pack's test instance, to help plan dashboard content.
+A Text Display widget in a VCF Operations dashboard can show a page of HTML. This page lists what the widget renders and what it drops, as tested on the VCF vCommunity Adapter's test instance, to help plan dashboard content.
 
-The pack uses Text Display widgets with the HTML stored in the widget itself: the two Read Me widgets of the vSphere Cluster Performance 2.0 dashboard, and the Explanation widgets of the report input dashboards. It ships no Text Widget Content files.
+The adapter uses Text Display widgets with the HTML stored in the widget itself: the two Read Me widgets of the vSphere Cluster Performance 2.0 dashboard, and the Explanation widgets of the report input dashboards. It ships no Text Widget Content files.
 
 ## How to add a page
 
@@ -39,4 +39,4 @@ The file is stored in the VCF Operations database, not on disk. To export or imp
 
 ## Test page
 
-The results above come from a test page with one section per row of the table. The test page is not part of the pack.
+The results above come from a test page with one section per row of the table. The test page is not part of the adapter.

@@ -1,14 +1,14 @@
 # Included Content
 
-The pack installs dashboards, views, reports, alerts and super metrics together with the adapter. Some of them work right after the install. Others are off until you turn them on. This page lists what ships and what you have to do for each part.
+The pak file of the VCF vCommunity Adapter installs dashboards, views, reports, alerts and super metrics together with the adapter. Some of them work right after the install. Others are off until you turn them on. This page lists what ships and what you have to do for each part.
 
-The files are in [`Management Pack/content/`](../../Management%20Pack/content/). After the install, the pack's **Management Pack Details** list them under **Content** (see [Installation](../installation-guide/installation.md#install-the-management-pack)).
+The files are in [`Management Pack/content/`](../../Management%20Pack/content/). After the install, the adapter's **Management Pack Details** list them under **Content** (see [Installation](../installation-guide/installation.md#install-the-management-pack)).
 
 ## Summary
 
 | Content | How many | State after install | What to do |
 | :--- | :--- | :--- | :--- |
-| Dashboards | 12 | On | Nothing. Most need the pack's metrics, so they fill in after the first collection cycles. |
+| Dashboards | 12 | On | Nothing. Most need the adapter's metrics, so they fill in after the first collection cycles. |
 | Summary dashboards | 6 | Off, and not bound | Bind them to their object types, see [Summary Dashboards](../configuration-guide/summary-dashboards.md). |
 | VCF Optimization Assessment reports | 16 | Available | Run them against the vSphere World object. |
 | VCF Optimization Assessment input dashboards | 34 | Off | Nothing. The reports use them. |
@@ -37,7 +37,7 @@ The names are as they appear in VCF Operations. The part before `/` is the dashb
 
 The 2.0 dashboards and VM Capacity (new) are new versions of dashboards that VCF Operations already has. They are separate dashboards and don't overwrite the built-in ones.
 
-The six Summary dashboards (`. Object Summary Page for ...`) replace the Summary tab of the four folder types, Distributed Switch and Distributed Port Group. They are listed in [Summary Dashboards](../configuration-guide/summary-dashboards.md#the-summary-dashboards-in-the-pack).
+The six Summary dashboards (`. Object Summary Page for ...`) replace the Summary tab of the four folder types, Distributed Switch and Distributed Port Group. They are listed in [Summary Dashboards](../configuration-guide/summary-dashboards.md#summary-dashboards-of-the-adapter).
 
 ## VCF Optimization Assessment reports
 
@@ -48,11 +48,11 @@ The VCF Optimization Assessment (VOA) is a set of reports for a VCF consultant t
 | PDF | VOA - Executive Summary, VOA - Inventory, VOA - Configuration, VOA - Capacity, VOA - Performance |
 | CSV export | vCenter, vSphere Data Centers, vSphere Clusters, ESXi Hosts, Virtual Machine, Datastores, Distributed Switch, Distributed Port Groups, vSphere Supervisor, vSphere Namespace, vSphere Pod |
 
-The PDF reports are built from the 34 dashboards in the `VCF Optimization Assessment` folder, named `Report: ...`. Those dashboards are switched off so that they don't clutter the dashboard list. Two charts in them still use the super metric **vSphere Clusters not Green**, which the pack no longer ships, so those charts have no data.
+The PDF reports are built from the 34 dashboards in the `VCF Optimization Assessment` folder, named `Report: ...`. Those dashboards are switched off so that they don't clutter the dashboard list. Two charts in them still use the super metric **vSphere Clusters not Green**, which the adapter no longer ships, so those charts have no data.
 
 ## Views
 
-The pack installs 189 views, most of them used by the dashboards and reports. These are useful on their own:
+The adapter installs 189 views, most of them used by the dashboards and reports. These are useful on their own:
 
 | View | Object type | Shows |
 | :--- | :--- | :--- |
@@ -113,7 +113,7 @@ Values appear from the next collection cycle.
 
 ## Not included
 
-The pack has no dashboard for Windows services. [Dale Hassinger](https://www.vcrocs.info/vcommunity-mp-windows-servers-services/) has published one.
+The adapter has no dashboard for Windows services. [Dale Hassinger](https://www.vcrocs.info/vcommunity-mp-windows-servers-services/) has published one.
 
 ---
 

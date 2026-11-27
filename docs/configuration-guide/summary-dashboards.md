@@ -1,14 +1,14 @@
 # Summary Dashboards
 
-Every object in VCF Operations has a **Summary** tab, which shows the built-in summary page for its object type. You can replace that page with a dashboard for a whole object type, for example a dashboard that shows the settings this pack collects.
+Every object in VCF Operations has a **Summary** tab, which shows the built-in summary page for its object type. You can replace that page with a dashboard for a whole object type, for example a dashboard that shows the settings the VCF vCommunity Adapter collects.
 
 For one object type, use **Manage Summary Dashboards** in the UI. For several, use the script described on this page. It makes the same calls as the UI, so the result is the same.
 
-## The Summary dashboards in the pack
+## Summary dashboards of the adapter
 
-The pack ships six Summary dashboards. They are installed switched off, and the install does not bind them to their object types, so the Summary tabs keep the built-in page until you bind them.
+The adapter ships six Summary dashboards. They are installed switched off, and the install does not bind them to their object types, so the Summary tabs keep the built-in page until you bind them.
 
-| Object type in the UI | Resource kind key | Dashboard name | UUID in the pack |
+| Object type in the UI | Resource kind key | Dashboard name | UUID in the pak file |
 | :--- | :--- | :--- | :--- |
 | Virtual Machine Folder | `VMFolder` | `. Object Summary Page for VM Folder` | `d22b04d0-1eb2-496e-8944-a143e94187d5` |
 | Host Folder | `HostFolder` | `. Object Summary Page for Compute Folder` | `7e3e9266-b325-4225-b2ad-9198b801ff43` |
@@ -116,7 +116,7 @@ If you bind a dashboard right after an install or import, the copy can keep an u
 ## See also
 
 - [Summary Dashboard Script](../../tools/summary_dashboard/summary_dashboard.md): the script, its functions and its limits.
-- [Included Content](../user-guide/included-content.md): the other dashboards in the pack.
+- [Included Content](../user-guide/included-content.md): the other dashboards in the adapter.
 - [Customization](customization.md): choose what each Adapter Instance collects, so the dashboard has the data it needs.
 
 ---

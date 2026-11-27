@@ -28,21 +28,21 @@ The installation wizard then shows the **Ignore the PAK file signature checking*
 1. Go to **Administration** > **Integrations** > **Repository** and click **Add**.
 2. Browse to the `vCommunity_<version>.pak` file and select:
    - **Install the PAK file even if it is already installed**, to upgrade or reinstall over an existing version.
-   - **Ignore the PAK file signature checking**. This is required because the pack is unsigned.
+   - **Ignore the PAK file signature checking**. This is required because the pak file is unsigned.
 
    Upload the file and click **Next**.
 3. Accept the End User License Agreement and click **Next**.
 4. When the installation completes, click **Finish**.
 
-The pack appears on the **Repository** tab as **VCF vCommunity Adapter**. Click it to open its **Management Pack Details**:
+It then appears on the **Repository** tab as **VCF vCommunity Adapter**. Click it to open its **Management Pack Details**:
 
 ![Management Pack Details of VCF vCommunity Adapter: Overview](images/management-pack-details-overview.png)
 
-- **Metrics** lists the metrics and properties the pack adds to each object type, under **vCommunity**:
+- **Metrics** lists the metrics and properties the adapter adds to each object type, under **vCommunity**:
 
   ![Management Pack Details: Metrics of Cluster Compute Resource](images/management-pack-details-metrics.png)
 
-- **Content** lists what the pack installs: dashboards, views, reports, alerts, super metrics and configuration files:
+- **Content** lists what the adapter installs: dashboards, views, reports, alerts, super metrics and configuration files:
 
   ![Management Pack Details: Content, Configuration Files](images/management-pack-details-content.png)
 
@@ -50,13 +50,13 @@ Some of this content is off after the install. [Included Content](../user-guide/
 
 ## Create the Adapter Instance
 
-Installing the pack does not start collection. Create an Adapter Instance for each vCenter, as described in [Adapter Instance](../configuration-guide/adapter-instance.md).
+Installing the adapter does not start collection. Create an Adapter Instance for each vCenter, as described in [Adapter Instance](../configuration-guide/adapter-instance.md).
 
 ## After an Upgrade: Restart Collection
 
-After you install a new version over an existing one, the existing Adapter Instances can stop collecting. The install reports success, but under **Administration** > **Integrations** > **Accounts** the instance under **VCF vCommunity Adapter** shows **Warning**, its state is `Failed`, and it does not recover by itself. This has happened on several upgrades of the pack. The cause is not known, and it is not listed as a known issue in Broadcom's documentation.
+After you install a new version over an existing one, the existing Adapter Instances can stop collecting. The install reports success, but under **Administration** > **Integrations** > **Accounts** the instance under **VCF vCommunity Adapter** shows **Warning**, its state is `Failed`, and it does not recover by itself. This has happened on several upgrades of the adapter. The cause is not known, and it is not listed as a known issue in Broadcom's documentation.
 
-To fix it, do this for each Adapter Instance of the pack:
+To fix it, do this for each Adapter Instance of the adapter:
 
 1. Under **Administration** > **Integrations** > **Accounts**, expand **VCF vCommunity Adapter**.
 2. Open the **⋮** menu next to the Adapter Instance and choose **Stop Collecting**.
@@ -65,7 +65,7 @@ To fix it, do this for each Adapter Instance of the pack:
 
 Data collected before the upgrade is kept. The time between the install and the restart is a gap in the metrics.
 
-Contributors can restart every Adapter Instance of the pack with one script: see [Restart Script](../../tools/restart/restart.md).
+Contributors can restart every Adapter Instance of the adapter with one script: see [Restart Script](../../tools/restart/restart.md).
 
 ---
 

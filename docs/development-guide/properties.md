@@ -1,6 +1,6 @@
 # Properties
 
-A property is a setting or an identifier of an object, such as the HA settings of a cluster or the license expiry of a host. The pack publishes its properties under `vCommunity|`. This page describes how the code reads and publishes them. Every property is listed in [Metrics and Properties](../reference/metrics-and-properties.md).
+A property is a setting or an identifier of an object, such as the HA settings of a cluster or the license expiry of a host. The VCF vCommunity Adapter publishes its properties under `vCommunity|`. This page describes how the code reads and publishes them. Every property is listed in [Metrics and Properties](../reference/metrics-and-properties.md).
 
 Code: [`Management Pack/app/properties/`](../../Management%20Pack/app/properties/)
 

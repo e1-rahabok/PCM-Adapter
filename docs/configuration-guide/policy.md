@@ -1,6 +1,6 @@
 # Policy: Activate the Required Metrics
 
-Some host network metrics and properties that the pack reads are **deactivated by default** in VCF Operations. Until you activate them, the features below have no data. Activate them in the policy that applies to your ESXi hosts. The steps below use the Default Policy.
+Some host network metrics and properties that the VCF vCommunity Adapter reads are **deactivated by default** in VCF Operations. Until you activate them, the features below have no data. Activate them in the policy that applies to your ESXi hosts. The steps below use the Default Policy.
 
 | Feature without data | Activate under Host System > **Network** | State | Instanced State |
 | :--- | :--- | :--- | :--- |
@@ -30,7 +30,7 @@ To check the result, open an ESXi host: `net:vmnic0|configuredSpeed` appears as 
 
 ## Alerts and super metrics
 
-The pack's alerts and super metrics are also off after the install. They are optional, and you turn them on in the same policy. [Included Content](../user-guide/included-content.md#turn-on-the-alerts) lists them and the object types to enable them on.
+The adapter's alerts and super metrics are also off after the install. They are optional, and you turn them on in the same policy. [Included Content](../user-guide/included-content.md#turn-on-the-alerts) lists them and the object types to enable them on.
 
 ---
 

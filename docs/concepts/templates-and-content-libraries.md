@@ -2,7 +2,7 @@
 
 vSphere has two kinds of template. One is a VM in the vCenter inventory, the other is a package in a **content library**. They are different objects stored in different places.
 
-The VMware vCenter adapter of VCF Operations shows only the first kind, as an ordinary VirtualMachine. The pack adds three object types of its own, so both kinds can be seen and reported on: **Content Library**, **Library Item** and **VM Template**. How they are built is described in [Template and Content Library Design](../development-guide/template-and-library-design.md), and their keys are listed in [Metrics and Properties](../reference/metrics-and-properties.md).
+The VMware vCenter adapter of VCF Operations shows only the first kind, as an ordinary VirtualMachine. The VCF vCommunity Adapter adds three object types of its own, so both kinds can be seen and reported on: **Content Library**, **Library Item** and **VM Template**. How they are built is described in [Template and Content Library Design](../development-guide/template-and-library-design.md), and their keys are listed in [Metrics and Properties](../reference/metrics-and-properties.md).
 
 ## The two kinds of template
 
@@ -14,7 +14,7 @@ The VMware vCenter adapter of VCF Operations shows only the first kind, as an or
 | Icon in the vSphere Client | A stacked VM icon | A package icon in the library's item list |
 | Versioning | Only when the template is also in a content library | Always, through the item's content version |
 | In the vCenter adapter of VCF Operations | A VirtualMachine object with `summary|config|isTemplate` = true | Not present |
-| Added by the pack | A **VM Template** object | A **Library Item** object, in its **Content Library** |
+| Added by the adapter | A **VM Template** object | A **Library Item** object, in its **Content Library** |
 
 An OVF & OVA template is not a VM. Its name, size, sync state and version belong to the library, not to a host or a datastore.
 
@@ -40,7 +40,7 @@ vCenter
        └── VM template stored in the library (library item of type vm-template)
 ```
 
-One VM template can be the source of many VMs, and a VM comes from at most one template. vSphere does not record this link on the VM, and VCF Operations does not store it either, so the pack can't show it yet. See [Still open](../development-guide/template-and-library-design.md#still-open).
+One VM template can be the source of many VMs, and a VM comes from at most one template. vSphere does not record this link on the VM, and VCF Operations does not store it either, so the adapter can't show it yet. See [Still open](../development-guide/template-and-library-design.md#still-open).
 
 ## Source
 

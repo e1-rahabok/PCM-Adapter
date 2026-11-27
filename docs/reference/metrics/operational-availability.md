@@ -18,7 +18,7 @@ Code: one file per object type: [host](../../../Management%20Pack/app/metrics/ho
 - **A cluster where HA tolerates the failure of every host has no value.** For example, a 2-host cluster with a failover level of 2: N − k is 0.
 - **Worst Cluster leaves out a cluster with no value.** With no number to compare, such a cluster is not shown as the worst, even if it is unavailable.
 - **The vSphere World values can be one collection cycle old (5 minutes).** They are built from the values already stored in VCF Operations, like the other [vSphere World metrics](vsphere-world-metrics.md#known-limitations). Every Adapter Instance publishes the same values.
-- **vSphere World leaves out hosts and clusters without a stored value**, such as those of a vCenter that has no Adapter Instance of this pack.
+- **vSphere World leaves out hosts and clusters without a stored value**, such as those of a vCenter that has no Adapter Instance of the VCF vCommunity Adapter.
 - **When VCF Operations returns no data for any host, nothing is published for that cycle.** The request has failed, and publishing every host and cluster at 0 % would be a false alarm across the estate.
 
 ## The metrics

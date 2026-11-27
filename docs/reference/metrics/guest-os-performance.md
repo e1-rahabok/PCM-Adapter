@@ -14,7 +14,7 @@ Source of the sub-metrics and limits: [`formula/guest-os-performance.png`](formu
 
 All four come from VMware Tools. They are stats the VM already has, or a unit conversion of one, so only the KPI is published.
 
-Names are the Agent E2 catalog names (one name per sub-metric across the catalog, PCM and this pack). The pack publishes no Guest OS row: every row is a stat the VM already has.
+Names are the Agent E2 catalog names (one name per sub-metric across the catalog, PCM and the VCF vCommunity Adapter). The adapter publishes no Guest OS row: every row is a stat the VM already has.
 
 | Group | Sub-metric | Source | Unit | Score is 100 at | Green ends at | Yellow ends at | Orange ends at | Score hits 0 at |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -28,7 +28,7 @@ Names are the Agent E2 catalog names (one name per sub-metric across the catalog
 
 ## How the score is calculated
 
-Like every KPI, see [How the pack scores a KPI](../../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi).
+Like every KPI, see [KPI scoring rules](../../concepts/kpi-scoring-models.md#kpi-scoring-rules).
 
 ## Worked examples
 

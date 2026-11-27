@@ -1,6 +1,6 @@
 # Log Messages
 
-The messages the pack writes to `adapter.log`, what each one means, and what to do about it. The text is copied from the code. `<…>` stands for a name, a number or a reason from your environment. Look a message up by its first words. [First Steps](first-steps.md#5-read-the-adapter-log) shows how to get the log.
+The messages the VCF vCommunity Adapter writes to `adapter.log`, what each one means, and what to do about it. The text is copied from the code. `<…>` stands for a name, a number or a reason from your environment. Look a message up by its first words. [First Steps](first-steps.md#5-read-the-adapter-log) shows how to get the log.
 
 Every warning and error in a cycle is also counted in `vCommunity|Collection Health|Warnings in Last Cycle` on the vCenter object, and the first one is kept in `vCommunity|Collection Health|First Warning`. Debug messages, which are meant for developers, are not listed.
 
@@ -99,7 +99,7 @@ These messages are about one object. The rest of the cycle is published.
 | `Configuration file '<name>.xml' could not be read from VCF Operations (HTTP <code>). Nothing is collected from it. ...` | Warning | VCF Operations has no file with that name. The same text is the event on the vCenter object. | See [Configuration Files](configuration-files.md). |
 | `Configuration file '<name>.xml' could not be read from VCF Operations (<reason>). Nothing is collected from it this cycle.` | Error | The read of the file failed, for example because the connection dropped. The other files are still read. | Usually temporary. The next cycle reads it again. |
 | `Configuration file '<name>.xml' is not valid XML (<reason>). Nothing is collected from it until it is corrected.` | Error | The file has an XML error. The reason is the parser's. The same text is the event on the vCenter object. | See [Configuration Files](configuration-files.md). |
-| `Windows Service names left out because they contain characters that are not allowed (letters, digits, space and _ . $ # @ ( ) + - only): <names>. ...` | Warning | Some service names have characters the pack does not accept. The others are checked. | See [Symptoms](symptoms.md#windows-service-names-are-left-out). |
+| `Windows Service names left out because they contain characters that are not allowed (letters, digits, space and _ . $ # @ ( ) + - only): <names>. ...` | Warning | Some service names have characters the adapter does not accept. The others are checked. | See [Symptoms](symptoms.md#windows-service-names-are-left-out). |
 | `Cluster Check Time '<text>' is not HH:MM. Using 00:00 UTC.` | Warning | The time on the account is not valid, so the default is used. | Correct the setting. See [Adapter Instance](../configuration-guide/adapter-instance.md#2-advanced-settings-optional). |
 | `Cluster Check Period '<text>' is not one of 01, 02, 04, 06, 08, 12, 24. Using 24 hours.` | Warning | The period on the account is not valid. | Correct the setting. |
 | `Cluster Check Worst Percent '<text>' is not a whole number from 0 to 50. Using 5.` | Warning | The worst percent on the account is not valid. | Correct the setting. |
@@ -123,7 +123,7 @@ These appear only when Windows Service or Windows Event Log monitoring is enable
 | `Can not download powershell output from <vm>. Expected file is: <path>` | Error | The script ran, but its output file was not found. | Check that the guest can write to its temporary folder. |
 | `No Windows Service details were read from <vm>.` / `No Windows Operating System information was read from <vm>.` / `No Windows Event details were read from <vm>.` | Error | Follows the line above: the step published nothing. | As above. |
 | `CSV parsing error on <vm>: <reason>` | Error | The script's output could not be read. | Send the log with the reason. |
-| `The Windows Service CSV on <vm> has no Name, DisplayName, Status, StartType column.` / `The Windows Operating System CSV on <vm> has no ... column.` / `The Windows Event CSV on <vm> has no Level or Event column.` | Error | The script's output does not have the expected columns. | Check that the script is the one from this version of the pack. |
+| `The Windows Service CSV on <vm> has no Name, DisplayName, Status, StartType column.` / `The Windows Operating System CSV on <vm> has no ... column.` / `The Windows Event CSV on <vm> has no Level or Event column.` | Error | The script's output does not have the expected columns. | Check that the script is the one from this version of the adapter. |
 | `Skipping a Windows Service row with <n> fields, expected <m>.` | Warning | One row of the service output was malformed and left out. | Nothing, unless it repeats. |
 | `Can not find Windows Service details on <vm>` / `Can not find Windows Operating System informations on <vm>` / `Can not find Windows Event details on <vm>` | Info | The script ran and found nothing to report. | Nothing. |
 | `<vm> has <n> Windows events. Only the first 100 are sent this cycle.` | Warning | More events matched than one cycle sends for a VM. | Narrow the Event IDs in the configuration file. |

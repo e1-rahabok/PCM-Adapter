@@ -1,6 +1,6 @@
 # Screenshot Script
 
-`screenshot.ps1` takes the documentation's screenshots of the VCF Operations UI on the instance in `.secrets/vcf-ops.xml`, and saves them into `docs/`. Each screenshot is defined once in `screenshots.json`: the page, the clicks that lead to what is shown, and the part of the window to keep. Running the script again updates them all, so the screenshots keep up with the UI and the pack's settings.
+`screenshot.ps1` takes the documentation's screenshots of the VCF Operations UI on the instance in `.secrets/vcf-ops.xml`, and saves them into `docs/`. Each screenshot is defined once in `screenshots.json`: the page, the clicks that lead to what is shown, and the part of the window to keep. Running the script again updates them all, so the screenshots keep up with the UI and the settings of the VCF vCommunity Adapter.
 
 ## Safety
 

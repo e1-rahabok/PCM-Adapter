@@ -129,7 +129,7 @@ The inputs all come from VCF Operations: the 5-minute history of the three KPI s
 - **The worst end of the window is used.** An average would hide a problem: a cluster that is in trouble for an hour every day should not take new VMs. The Worst Percent ignores short spikes, but not a sustained problem.
 - **The percentile is calculated in code.** VCF Operations roll-ups offer AVG, MAX, MIN and SUM, but no percentile. An estimate from Max and Avg is driven by the Max, so one spike in a quiet day would decide, and with a 0 or 1 result that is a wrong answer rather than a small error.
 - **Windows end at fixed times.** The end does not depend on when the calculation runs, so every cluster has the same window, even when it is calculated a few cycles later.
-- **No state is stored.** The timestamps of the published metrics show whether a cluster was calculated for the latest window. Nothing is kept in the adapter, so a restart of the pack loses nothing.
+- **No state is stored.** The timestamps of the published metrics show whether a cluster was calculated for the latest window. Nothing is kept in the adapter, so a restart of the VCF vCommunity Adapter loses nothing.
 - **Spread over cycles.** At most 500 clusters per vCenter per cycle, so the history is not read all at once. Each Adapter Instance reads only the clusters of its own vCenter.
 - **A changed setting applies from the next window.** A window already calculated is not recalculated.
 - **Load.** 24 hours of 5-minute samples is 288 values per stat. With 3 stats per cluster that is about 860 values per cluster, or 1.7 million for 2,000 clusters, once a day. A shorter period reads the same total per day in smaller pieces. A dashboard or report over 2,000 objects for 24 hours reads a similar amount.

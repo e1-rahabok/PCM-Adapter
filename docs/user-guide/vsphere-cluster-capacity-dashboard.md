@@ -6,10 +6,10 @@ The dashboard is in the `vCommunity` dashboard folder. Its file is [`Management 
 
 ## Known limitations
 
-- **Most widgets need the pack's metrics.** A widget stays blank until the pack has collected them. The Periodic Cluster Check columns stay blank until the first check period ends. See [Periodic Cluster Check](../reference/metrics/periodic-cluster-check.md).
+- **Most widgets need the VCF vCommunity Adapter's metrics.** A widget stays blank until the adapter has collected them. The Periodic Cluster Check columns stay blank until the first check period ends. See [Periodic Cluster Check](../reference/metrics/periodic-cluster-check.md).
 - **Old values are left blank.** A metric whose latest value is more than 10 minutes old is not shown. The Periodic Cluster Check columns are published once per period, so they show the last completed window. See [No stale values](../reference/metrics/README.md#no-stale-values).
 - **Some tiles have no color bands.** In the Risk and Contention scoreboards, many tiles have all three bounds set to 0, so their color does not mean anything. Read the value. The three KPI gauges have bands.
-- **Capacity Remaining and Time Remaining come from VCF Operations**, from its capacity engine (`OnlineCapacityAnalytics`), not from this pack.
+- **Capacity Remaining and Time Remaining come from VCF Operations**, from its capacity engine (`OnlineCapacityAnalytics`), not from the adapter.
 - **The gauges point in different directions.** The Risk and Consumption gauges are red from 75. The Contention gauge, which shows the Cluster Performance score, is red below 25. See [Cluster Risk](../reference/metrics/cluster-risk.md#bands-red-is-high).
 
 ## How to use it
@@ -80,4 +80,4 @@ The VM list shows the VMs of the selected cluster, or of the selected host.
 
 ---
 
-See [Included Content](included-content.md) for the other dashboards in the pack.
+See [Included Content](included-content.md) for the other dashboards in the adapter.

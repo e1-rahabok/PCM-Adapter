@@ -1,6 +1,6 @@
 # Build Script
 
-`build.ps1` builds the management pack's `.pak` file without prompts. It runs `mp-build` from the [VCF Operations Integration SDK](https://github.com/vmware/vmware-aria-operations-integration-sdk) in a way that works from a script, from CI, or from an AI coding assistant, none of which has a Windows console.
+`build.ps1` builds the `.pak` file of the VCF vCommunity Adapter without prompts. It runs `mp-build` from the [VCF Operations Integration SDK](https://github.com/vmware/vmware-aria-operations-integration-sdk) in a way that works from a script, from CI, or from an AI coding assistant, none of which has a Windows console.
 
 To install the result on the test instance, see [Install Script](../install/install.md).
 
@@ -18,7 +18,7 @@ The version comes from `Management Pack/manifest.txt`.
 ## Requirements
 
 - PowerShell 7 (`pwsh`).
-- Python 3.9 to 3.12, with the Integration SDK 1.3 or later. `pip install -r "Management Pack/requirements.txt"` installs the pinned version. SDK 1.3 does not support Python 3.13: there the requirements file fails to install, and an unpinned `pip install vmware-aria-operations-integration-sdk` picks an old release whose `mp-build` cannot build this pack.
+- Python 3.9 to 3.12, with the Integration SDK 1.3 or later. `pip install -r "Management Pack/requirements.txt"` installs the pinned version. SDK 1.3 does not support Python 3.13: there the requirements file fails to install, and an unpinned `pip install vmware-aria-operations-integration-sdk` picks an old release whose `mp-build` cannot build the adapter.
 - Docker Desktop, running. The SDK builds the image locally from its own base image, `base-adapter:python-1.2.0` (see `Management Pack/Dockerfile`).
 - Push access to the registry: `docker login ghcr.io` with a GitHub account that can write the `vcf-operations-vcommunity` package.
 

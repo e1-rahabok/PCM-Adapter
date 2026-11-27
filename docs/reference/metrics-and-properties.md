@@ -1,6 +1,6 @@
 # Metrics and Properties
 
-Every metric and property the pack publishes, by object type. All keys start with `vCommunity|`.
+Every metric and property the VCF vCommunity Adapter publishes, by object type. All keys start with `vCommunity|`.
 
 A key with a `<placeholder>` segment is instanced: it repeats once per item on the object, such as once per virtual disk or once per VIB package. An object usually has more keys than the rows below.
 
@@ -310,7 +310,7 @@ These properties are read inside Windows VMs through the vSphere Guest API. They
 
 ## Content Library
 
-A content library of the vCenter, local or subscribed. The pack creates this object type. It is read from the vSphere Automation REST API in every collection cycle, with one call per library item. The pack does not link the library to the vCenter object. See [Templates and Content Libraries](../concepts/templates-and-content-libraries.md).
+A content library of the vCenter, local or subscribed. The adapter creates this object type. It is read from the vSphere Automation REST API in every collection cycle, with one call per library item. The adapter does not link the library to the vCenter object. See [Templates and Content Libraries](../concepts/templates-and-content-libraries.md).
 
 | Type | Key | Description |
 | :--- | :--- | :--- |
@@ -327,7 +327,7 @@ A content library of the vCenter, local or subscribed. The pack creates this obj
 
 ## Library Item
 
-One item of a content library, of any type: OVF, OVA, VM template, ISO and others. The pack creates this object type. Its parent is its Content Library.
+One item of a content library, of any type: OVF, OVA, VM template, ISO and others. The adapter creates this object type. Its parent is its Content Library.
 
 | Type | Key | Description |
 | :--- | :--- | :--- |
@@ -347,7 +347,7 @@ One item of a content library, of any type: OVF, OVA, VM template, ISO and other
 
 ## VM Template
 
-A virtual machine marked as a template in vCenter. The pack creates this object type. It has no parent link and no children: the pack does not link it to its folder, and the VMs cloned from it are not linked, because neither vCenter nor VCF Operations stores which template a VM came from. See [Template and Content Library Design](../development-guide/template-and-library-design.md).
+A virtual machine marked as a template in vCenter. The adapter creates this object type. It has no parent link and no children: the adapter does not link it to its folder, and the VMs cloned from it are not linked, because neither vCenter nor VCF Operations stores which template a VM came from. See [Template and Content Library Design](../development-guide/template-and-library-design.md).
 
 | Type | Key | Description |
 | :--- | :--- | :--- |
@@ -363,7 +363,7 @@ A virtual machine marked as a template in vCenter. The pack creates this object 
 
 ## Business Application objects
 
-These metrics are published on Container objects of the kinds Tier, Business Application (BusinessService) and Enterprise. The pack does not own these objects. The values are calculated from the VMs and Kubernetes namespaces of each object. See [Business Application Performance](metrics/business-application-performance.md).
+These metrics are published on Container objects of the kinds Tier, Business Application (BusinessService) and Enterprise. The adapter does not own these objects. The values are calculated from the VMs and Kubernetes namespaces of each object. See [Business Application Performance](metrics/business-application-performance.md).
 
 | Type | Key | Description |
 | :--- | :--- | :--- |
@@ -375,7 +375,7 @@ These metrics are published on Container objects of the kinds Tier, Business App
 
 ## Events
 
-The pack also sends events. They appear in the events of the object in VCF Operations, and cancel themselves.
+The adapter also sends events. They appear in the events of the object in VCF Operations, and cancel themselves.
 
 | Object | Event | When |
 | :--- | :--- | :--- |
@@ -386,7 +386,7 @@ The pack also sends events. They appear in the events of the object in VCF Opera
 
 ## Super metrics replaced by built-in metrics
 
-These super metrics were removed from `content/supermetrics`. The pack's dashboards, reports and views now use the built-in metric. If you built your own content on them, change it the same way.
+These super metrics were removed from `content/supermetrics`. The adapter's dashboards, reports and views now use the built-in metric. If you built your own content on them, change it the same way.
 
 | Removed super metric | Object | Replaced by |
 | :--- | :--- | :--- |

@@ -174,7 +174,7 @@ Ticking the EULA box and the "unsigned pack" confirmation dialog made no request
   | `currentComponentInfo` | `TODO` |
   | `secureToken` | `<secureToken>` |
 
-- **Response:** 200. One field, `licenseText`, holding the pack's EULA text (this pack's configuration steps, starting `=== CONFIGURATION STEPS ===`):
+- **Response:** 200. One field, `licenseText`, holding the EULA text of the adapter (its configuration steps, starting `=== CONFIGURATION STEPS ===`):
 
   ```json
   {"licenseText":"=== CONFIGURATION STEPS ===\r\n * Once installed, do the following: …"}

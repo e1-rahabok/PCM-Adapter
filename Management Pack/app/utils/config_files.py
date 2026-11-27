@@ -1,5 +1,5 @@
 #  Copyright 2026 VCF Operations vCommunity Management Pack
-"""Reads the configuration files of an Adapter Instance: the lists of settings that the pack collects.
+"""Reads the configuration files of an Adapter Instance: the lists of settings that the VCF vCommunity Adapter collects.
 
 A file is an XML document whose text is a comma-separated list, such as the names of the settings to collect.
 A file that is missing, or is not valid XML, gives an empty list for that file only. The problem is also

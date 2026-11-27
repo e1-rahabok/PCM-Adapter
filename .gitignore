@@ -4,6 +4,6 @@
 __pycache__/
 *.pyc
 
-# macOS folder metadata, and the local Python environments of the pack.
+# macOS folder metadata, and the local Python environments of the VCF vCommunity Adapter.
 .DS_Store
 .venv*/

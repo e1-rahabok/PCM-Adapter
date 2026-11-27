@@ -43,7 +43,7 @@ Notes:
 
 ## Step 2: Score each sub-metric
 
-Each sub-metric is scored from its limits in [Thresholds](#thresholds), with the rule every KPI shares: the score falls in a straight line between the limits, from 100 to 0. The rule and its tiers are in [How the pack scores a KPI](../../concepts/kpi-scoring-models.md#five-limits-per-sub-metric).
+Each sub-metric is scored from its limits in [Thresholds](#thresholds), with the rule every KPI shares: the score falls in a straight line between the limits, from 100 to 0. The rule and its tiers are in [KPI scoring rules](../../concepts/kpi-scoring-models.md#five-limits-per-sub-metric).
 
 ## Step 3: Combine
 

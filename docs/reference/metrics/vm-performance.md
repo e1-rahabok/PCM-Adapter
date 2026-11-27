@@ -21,9 +21,9 @@ It replaces the "vSphere VM Performance" super metric, and it feeds [Business Ap
 
 ## Step 1: Collect the 9 sub-metrics
 
-Seven sub-metrics are stats the VM already has. The pack reads them and does not publish them again. Memory Wait and Memory Zip Swap are calculated and published.
+Seven sub-metrics are stats the VM already has. The VCF vCommunity Adapter reads them and does not publish them again. Memory Wait and Memory Zip Swap are calculated and published.
 
-Names are the Agent E2 catalog names (one name per sub-metric across the catalog, PCM and this pack). Only Memory Wait and Memory Zip Swap are published by the pack, under those keys and with these names as labels; the other rows are stats the VM already has.
+Names are the Agent E2 catalog names (one name per sub-metric across the catalog, PCM and the adapter). Only Memory Wait and Memory Zip Swap are published by the adapter, under those keys and with these names as labels; the other rows are stats the VM already has.
 
 | Group | Sub-metric | Source |
 | :--- | :--- | :--- |
@@ -45,7 +45,7 @@ Memory Zip Swap is divided by the memory the guest OS uses, not by the VM's conf
 
 ## Step 2 and 3: Score each sub-metric, then combine
 
-The scoring is the same for every KPI. See [How the pack scores a KPI](../../concepts/kpi-scoring-models.md#how-the-pack-scores-a-kpi).
+The scoring is the same for every KPI. See [KPI scoring rules](../../concepts/kpi-scoring-models.md#kpi-scoring-rules).
 
 ## Thresholds
 

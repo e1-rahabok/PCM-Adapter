@@ -7,7 +7,7 @@
 Built from the values already stored in VCF Operations, like the cluster summary metrics, so they have the
 same known limitations: a value can be up to one collection cycle old, and every account publishes the same
 values. A host or cluster without a stored value is left out: it may belong to a vCenter that has no account
-of this pack. See docs/reference/metrics/operational-availability.md.
+of the VCF vCommunity Adapter. See docs/reference/metrics/operational-availability.md.
 
 The average is not rolled up to the cluster: a cluster has to consider vSphere HA. See metrics/cluster/cluster_availability.py.
 """

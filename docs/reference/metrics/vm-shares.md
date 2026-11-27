@@ -31,7 +31,7 @@ The inputs come from VCF Operations, as in the super metrics: `config|cpuAllocat
 ## Design considerations
 
 - **Properties by design.** Shares change only when the VM's configuration changes. They are a setting, not a measurement over time. VCF Operations stores a property only when it changes, so a property avoids a point every 5 minutes for a value that does not move. Until issue #49 is fixed they are metrics.
-- **Calculated in code**, so the values are there as soon as the pack is installed, without enabling anything in the policy.
+- **Calculated in code**, so the values are there as soon as the VCF vCommunity Adapter is installed, without enabling anything in the policy.
 - **Every VM, powered on or off.** Shares are configuration, and they apply as soon as the VM is powered on.
 - **Read once per cycle for all VMs.** The shares are read in one request, and the vCPU count and memory size are already read for the KPIs. The shares are read as properties, or as stats when VCF Operations stores them as stats.
 - All inputs come from VCF Operations. Nothing is read from vCenter.

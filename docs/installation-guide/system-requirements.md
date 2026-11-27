@@ -5,7 +5,7 @@
 - VCF Operations 8.18 or later.
 - vCenter Server 8 or later, including VCF 9.x.
 - A VCF Operations Cloud Proxy that can reach the vCenter Server.
-- HTTPS access from every Cloud Proxy that runs the pack to the container registry `ghcr.io`. Without it, use a private registry: see [Dark Site Installation](dark-site.md).
+- HTTPS access from every Cloud Proxy that runs the VCF vCommunity Adapter to the container registry `ghcr.io`. Without it, use a private registry: see [Dark Site Installation](dark-site.md).
 
 ### vSphere API version
 
@@ -29,7 +29,7 @@ In a regulated environment, consider a private registry even when internet acces
 
 - An account with the **Read-only** role, assigned with **Propagate to children** selected.
 - The `Host.Configuration.ImageConfiguration` privilege, to read ESXi software packages (VIBs) and the ESXi install date.
-- For Windows monitoring only: the **Virtual machine** > **Guest operations** privileges (guest operation modifications, program execution and queries). The pack creates a temporary folder in the guest, copies a script into it, runs it, reads the output back and deletes the folder, and vSphere checks these privileges on the vCenter account for each of those calls. The Read-only role does not include them.
+- For Windows monitoring only: the **Virtual machine** > **Guest operations** privileges (guest operation modifications, program execution and queries). The adapter creates a temporary folder in the guest, copies a script into it, runs it, reads the output back and deletes the folder, and vSphere checks these privileges on the vCenter account for each of those calls. The Read-only role does not include them.
 
 ### Guest OS (Windows), optional
 

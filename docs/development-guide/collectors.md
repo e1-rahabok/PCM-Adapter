@@ -1,6 +1,6 @@
 # Collectors
 
-A collector gathers the data for one object type and publishes it. Most collectors match one object type of the vCenter adapter. Two more build the pack's own object types for content libraries and templates. `_run_object_jobs()` in [`adapter.py`](../../Management%20Pack/app/adapter.py) runs them in parallel, together with the Business Application job. See [App Folder](app-folder.md#one-collection-cycle).
+A collector gathers the data for one object type and publishes it. Most collectors match one object type of the vCenter adapter. Two more build the VCF vCommunity Adapter's own object types for content libraries and templates. `_run_object_jobs()` in [`adapter.py`](../../Management%20Pack/app/adapter.py) runs them in parallel, together with the Business Application job. See [App Folder](app-folder.md#one-collection-cycle).
 
 Code: [`Management Pack/app/collectors/`](../../Management%20Pack/app/collectors/)
 
@@ -15,8 +15,8 @@ Code: [`Management Pack/app/collectors/`](../../Management%20Pack/app/collectors
 | `vcenter/collectvCenterData.py` | vCenter | Properties: vCenter settings, Patch Level, and the certificate check. Metrics: Worst Cluster Operational Availability and Number of Port Groups. Events: one `vCommunity configuration:` event per configuration file problem. |
 | `datacenter/collectDatacenterData.py` | Datacenter | Total Network Speed Degradation: the number of its hosts below 100 %. |
 | `world/collectWorldData.py` | vSphere World | Summaries over all vCenters: worst and Worst 10 Percent Cluster Performance and Cluster Risk, highest and Highest 10 Percent Cluster Utilization, availability summaries, Total Network Speed Degradation, Cluster Delta Close and Open Counts, Number of Port Groups, and the VMware Tools counts. |
-| `library/collectLibraryData.py` | Content Library, Library Item (pack objects) | Library and item properties and metrics, read from the vSphere Automation REST API. See [Template and Content Library Design](template-and-library-design.md). |
-| `library/collectTemplateData.py` | VM Template (pack object) | Template properties and Disk Used, from the VM collector's read. Called by the VM collector, not by `adapter.py`. |
+| `library/collectLibraryData.py` | Content Library, Library Item (objects of the adapter) | Library and item properties and metrics, read from the vSphere Automation REST API. See [Template and Content Library Design](template-and-library-design.md). |
+| `library/collectTemplateData.py` | VM Template (object of the adapter) | Template properties and Disk Used, from the VM collector's read. Called by the VM collector, not by `adapter.py`. |
 
 The Business Application job is not in this folder. It is [`metrics/container/business_app_performance.py`](../../Management%20Pack/app/metrics/container/business_app_performance.py), which reads the Container objects (Tier, BusinessService and Enterprise) and their relationships from VCF Operations. See [Business Application Performance](../reference/metrics/business-application-performance.md).
 
@@ -51,7 +51,7 @@ The other jobs differ:
 
 ## Limitations
 
-- **Most collectors publish only objects that VCF Operations already has.** The vCenter adapter creates those objects, so a new vSphere object gets the pack's values only after the vCenter adapter has collected it. The content library and template collectors are the exception: they create their own objects.
+- **Most collectors publish only objects that VCF Operations already has.** The vCenter adapter creates those objects, so a new vSphere object gets the adapter's values only after the vCenter adapter has collected it. The content library and template collectors are the exception: they create their own objects.
 - **Hosts that are not connected are skipped.** The host collector publishes nothing for a host that vCenter does not report as connected. That host keeps the last values it had.
 - **The vSphere World and Business Application jobs run in every Adapter Instance.** There is one vSphere World object for all vCenters, and the Business Application objects are read under every adapter instance, so every Adapter Instance publishes the same values for them. See [vSphere World](../reference/metrics/vsphere-world-metrics.md).
 - **Stats come from VCF Operations, not from vCenter.** A value is as old as the last collection of the vCenter adapter, and a stat older than the stale limit counts as no data.

@@ -1,6 +1,6 @@
 # Content Folder
 
-`Management Pack/content/` holds what VCF Operations imports from the pack: dashboards, reports and views, super metrics, alert and symptom definitions, and the configuration files that decide what the adapter collects. None of it is Python. The code reads only one folder, `files/solutionconfig/`, and only through VCF Operations.
+`Management Pack/content/` holds what VCF Operations imports from the pak file of the VCF vCommunity Adapter: dashboards, reports and views, super metrics, alert and symptom definitions, and the configuration files that decide what the adapter collects. None of it is Python. The code reads only one folder, `files/solutionconfig/`, and only through VCF Operations.
 
 Code: [`Management Pack/content/`](../../Management%20Pack/content/)
 
@@ -15,7 +15,7 @@ Code: [`Management Pack/content/`](../../Management%20Pack/content/)
 | `alertdefs/` | 4 XML and a schema | Collection Warnings, ESXi Host License Expiring, ESXi Host NIC Disconnected and Windows Service Down. Collection Warnings defines its symptom inline. | No, imported at install |
 | `symptomdefs/` | 2 XML | The symptoms used by the NIC Disconnected and Windows Service Down alerts. | No, imported at install |
 | `resources/` | 1 XML | Views of the VIBs in a cluster, such as "nfnic VIB Vendor Distribution". | No |
-| `traversalspecs/` | A schema | The schema for traversal specs, which define relations between objects. The pack ships no traversal spec. | No |
+| `traversalspecs/` | A schema | The schema for traversal specs, which define relations between objects. The adapter ships no traversal spec. | No |
 | `customgroups/`, `policies/`, `recommendations/` | none | Empty, kept for future content. | No |
 
 The schemas (`.xsd`) describe the VCF Operations format of the files next to them, so an edited file can be checked against its schema.
@@ -43,7 +43,7 @@ Five of the files are comma-separated lists inside one XML element. The event li
 
 An Adapter Instance can name any file that exists in VCF Operations, so each vCenter can collect its own standard. The usual way is to clone a default file and edit the clone. See [Customization](../configuration-guide/customization.md).
 
-Which settings to check is each company's decision. Keeping them in files lets one pack serve many standards, and gives each Adapter Instance its own list without a new release.
+Which settings to check is each company's decision. Keeping them in files lets the adapter serve many standards, and gives each Adapter Instance its own list without a new release.
 
 ## How it is packaged
 
@@ -57,8 +57,8 @@ These paths were seen on a VCF Operations appliance. Its version was not recorde
 
 | Path | What is there |
 | :--- | :--- |
-| `/usr/lib/vmware-vcops/tomcat-web-app/webapps/ui` | The VCF Operations UI web app. The pack's icons go under `images/adpknd/` and `images/resknd/custom/`, and its content pack under `ContentPack/`. |
-| `/usr/lib/vmware-vcops/user/plugins/inbound/vCommunity.conf` and `vCommunity/` | The pack's inbound plugin configuration and its adapter kind image. |
+| `/usr/lib/vmware-vcops/tomcat-web-app/webapps/ui` | The VCF Operations UI web app. The adapter's icons go under `images/adpknd/` and `images/resknd/custom/`, and its content pack under `ContentPack/`. |
+| `/usr/lib/vmware-vcops/user/plugins/inbound/vCommunity.conf` and `vCommunity/` | The adapter's inbound plugin configuration and its adapter kind image. |
 | `/usr/lib/vmware-vcops/tomcat-enterprise/webapps` | `ROOT`, `suite-api`, `telemetry` and `vrops-unicorn`. The UI is not here. |
 
 Older documents give `/usr/lib/vmware-vcops/tomcat-enterprise/webapps/vcops-web-ent` as a path, but it did not exist on that appliance. Text Widget Content entries are stored in the VCF Operations database, not in a folder. See [Text Display Widget](../reference/text-display-widget.md).

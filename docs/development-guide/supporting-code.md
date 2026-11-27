@@ -8,7 +8,7 @@ Code: [`Management Pack/app/utils/`](../../Management%20Pack/app/utils/), [`cons
 
 ### utils/ops_stats.py
 
-Reads what VCF Operations already holds: resources, stats, properties and relationships. The vCenter adapter of VCF Operations collects most of the inputs the KPIs need, so the pack reads them back through the Suite API instead of collecting them from vCenter a second time.
+Reads what VCF Operations already holds: resources, stats, properties and relationships. The vCenter adapter of VCF Operations collects most of the inputs the KPIs need, so the VCF vCommunity Adapter reads them back through the Suite API instead of collecting them from vCenter a second time.
 
 | Function | Returns |
 | :--- | :--- |
@@ -25,7 +25,7 @@ The latest-value queries take up to 1,000 resources per request, so a large vCen
 **Limitations:**
 
 - When one batch of `read_latest_stats()` or `read_latest_properties()` fails, the function logs a warning and returns the other batches. The resources of the failed batch are missing from the result, so a caller that sums or averages can publish a total built on part of the objects ([issue #60](https://github.com/e1-rahabok/PCM-Adapter/issues/60)).
-- The data is what VCF Operations holds. A stat that the vCenter adapter has not collected is not available, whatever the pack's settings.
+- The data is what VCF Operations holds. A stat that the vCenter adapter has not collected is not available, whatever the adapter's settings.
 
 ### utils/ops_inventory.py
 
@@ -49,7 +49,7 @@ The vCenter collector reads its settings with `OptionManager.QueryOptions`, one 
 
 ### utils/config_files.py
 
-Reads the configuration files of an Adapter Instance, the lists of settings the pack collects. A file is an XML document whose text is a comma-separated list. `parse_list()` turns the text into a list, and `check_xml()` checks the Windows event list, which is passed to the guest as it is.
+Reads the configuration files of an Adapter Instance, the lists of settings the adapter collects. A file is an XML document whose text is a comma-separated list. `parse_list()` turns the text into a list, and `check_xml()` checks the Windows event list, which is passed to the guest as it is.
 
 A file that is missing, unreadable or not valid XML gives an empty list for that file only. The rest of the cycle is collected, and the problem text (`missing_problem()`, `unreadable_problem()`, `invalid_problem()`) is published as an event on the vCenter object. See [Configuration files](../troubleshooting-guide/configuration-files.md).
 
@@ -97,17 +97,17 @@ Counts the warnings and errors of one cycle, and publishes the result on the vCe
 - `publish()` sets `vCommunity|Collection Health|Warnings in Last Cycle` (a metric) and `vCommunity|Collection Health|First Warning` (a property) on the vCenter object. A clean cycle publishes 0 and `None in the last cycle`.
 - `stop()` removes the handler.
 
-The alert **vCommunity Collection Warnings** ([`content/alertdefs/Collection Warnings.xml`](../../Management%20Pack/content/alertdefs/Collection%20Warnings.xml)) fires when the count is above zero. Like the pack's other alerts, it ships deactivated in the base policy. The pack catches most failures and publishes the rest of the cycle, so without this count a missing value would only show in the log. See [Symptoms](../troubleshooting-guide/symptoms.md#a-collection-warnings-alert-is-shown).
+The alert **vCommunity Collection Warnings** ([`content/alertdefs/Collection Warnings.xml`](../../Management%20Pack/content/alertdefs/Collection%20Warnings.xml)) fires when the count is above zero. Like the adapter's other alerts, it ships deactivated in the base policy. The adapter catches most failures and publishes the rest of the cycle, so without this count a missing value would only show in the log. See [Symptoms](../troubleshooting-guide/symptoms.md#a-collection-warnings-alert-is-shown).
 
 ## constants/
 
-`constants/main.py` holds the names used across the pack:
+`constants/main.py` holds the names used across the adapter:
 
 | Name | Value | Meaning |
 | :--- | :--- | :--- |
-| `ADAPTER_KIND` | `vCommunity` | The adapter kind of this pack in VCF Operations. |
+| `ADAPTER_KIND` | `vCommunity` | The adapter kind of the VCF vCommunity Adapter in VCF Operations. |
 | `ADAPTER_NAME` | `VCF vCommunity Adapter` | The name of the adapter kind as the UI shows it. |
-| `VCENTER_ADAPTER_KIND` | `VMWARE` | The adapter kind of the vCenter adapter, whose objects the pack reads and adds to. |
+| `VCENTER_ADAPTER_KIND` | `VMWARE` | The adapter kind of the vCenter adapter, whose objects the adapter reads and adds to. |
 | `HOST_IDENTIFIER`, `PORT_IDENTIFIER` | `host`, `port` | The Adapter Instance identifiers: the vCenter address and port. |
 | `USER_CREDENTIAL`, `PASSWORD_CREDENTIAL` | `user`, `password` | The credential fields of the Adapter Instance. |
 | `VCENTER_TLS_VALIDATION`, `VCENTER_THUMBPRINT`, `GUEST_TLS_VALIDATION` | | The TLS settings. See `utils/tls.py`. |

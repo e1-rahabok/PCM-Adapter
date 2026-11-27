@@ -8,7 +8,7 @@ Code: [`Management Pack/app/`](../../Management%20Pack/app/)
 
 The adapter reads the ESXi, VM and cluster data that the vCenter adapter of VCF Operations does not collect, calculates metrics and KPIs from it, and publishes the results under the `vCommunity|` key prefix. It publishes in three places:
 
-- **On the vCenter adapter's objects** (vCenter, Datacenter, Cluster, ESXi host, VM, Datastore and vSphere World). These objects already exist in VCF Operations. The pack adds properties and metrics to them.
+- **On the vCenter adapter's objects** (vCenter, Datacenter, Cluster, ESXi host, VM, Datastore and vSphere World). These objects already exist in VCF Operations. The VCF vCommunity Adapter adds properties and metrics to them.
 - **On the Container objects** that VCF Operations uses for Business Applications: Tier, BusinessService and Enterprise. See [Business Application Performance](../reference/metrics/business-application-performance.md).
 - **On its own object types**: Content Library, Library Item and VM Template. See [Template and Content Library Design](template-and-library-design.md).
 
@@ -35,10 +35,10 @@ VCF Operations runs the adapter as a new Python process for each call. [`command
 
 | Method | When VCF Operations calls it | What it does |
 | :--- | :--- | :--- |
-| `adapter_definition` | When the pack is installed | Returns the object types, metrics, properties and settings that the pack declares. |
+| `adapter_definition` | When the adapter is installed | Returns the object types, metrics, properties and settings that the adapter declares. |
 | `test` | When you click **Validate Connection** on an Adapter Instance | Connects to vCenter and reads its product name and version. |
 | `collect` | Every collection cycle, every 5 minutes | Reads from vCenter and VCF Operations, and publishes the objects. |
-| `endpoint_urls` | When VCF Operations asks which URLs the adapter uses | Returns an empty list. The pack declares no endpoints. |
+| `endpoint_urls` | When VCF Operations asks which URLs the adapter uses | Returns an empty list. The adapter declares no endpoints. |
 
 Each call reads its input, such as the Adapter Instance and its credentials, from a file that VCF Operations writes, with the SDK's `AdapterInstance.from_input()`. It writes its result back with `send_results()`. See [The SDK](sdk.md).
 
@@ -82,7 +82,7 @@ None of this outlives the process, so nothing is carried from one cycle to the n
 
 ## Design choices
 
-- **One process per call.** This is how the SDK runs an adapter. A call keeps no state between cycles, so a restart loses nothing. Where history is needed, the pack reads it back from VCF Operations: the Periodic Cluster Check reads the timestamps of its own metrics (see [its page](../reference/metrics/periodic-cluster-check.md)), and the Trust on First Use check reads the thumbprint it recorded on the vCenter object.
+- **One process per call.** This is how the SDK runs an adapter. A call keeps no state between cycles, so a restart loses nothing. Where history is needed, the adapter reads it back from VCF Operations: the Periodic Cluster Check reads the timestamps of its own metrics (see [its page](../reference/metrics/periodic-cluster-check.md)), and the Trust on First Use check reads the thumbprint it recorded on the vCenter object.
 - **One result per cycle.** All objects of a cycle are sent together, so VCF Operations gets one consistent set of values.
 - **One collector per object type.** To find what a host gets, look in one file.
 - **Shared inputs are read once.** Availability and network speed are read once per vCenter, not once per collector. Stats are read in batches of many objects. See [Supporting Code](supporting-code.md).

@@ -1,6 +1,6 @@
 # Live Validation Test Plan
 
-`validate.ps1` checks that the pack **installed on a VCF Operations instance** is collecting, and that its data lands on the vCenter objects under the `vCommunity|` prefix.
+`validate.ps1` checks that the VCF vCommunity Adapter **installed on a VCF Operations instance** is collecting, and that its data lands on the vCenter objects under the `vCommunity|` prefix.
 
 It is the second of two test layers. Run both after any change under `Management Pack/app`:
 
@@ -15,7 +15,7 @@ Live validation covers a code change only after a pak built from that code is in
 
 The script is read-only. It calls the Suite API with `GET` only, plus the login token request, and changes nothing on the instance.
 
-The one exception is `-Release`, which starts a content export job (a `POST`) to compare the pack's views and dashboards with the repo. The export changes no content, but only one content export or import can run at a time on the instance.
+The one exception is `-Release`, which starts a content export job (a `POST`) to compare the adapter's views and dashboards with the repo. The export changes no content, but only one content export or import can run at a time on the instance.
 
 ## Requirements
 
@@ -47,7 +47,7 @@ pwsh tools/validate/validate.ps1 -SampleSize 0
 
 | Parameter | Default | Meaning |
 | :--- | :--- | :--- |
-| `-ExpectedVersion` | version in `manifest.txt` | Version the installed pack must have. Passing it turns a mismatch from WARN into FAIL. |
+| `-ExpectedVersion` | version in `manifest.txt` | Version the installed adapter must have. Passing it turns a mismatch from WARN into FAIL. |
 | `-SampleSize` | `5` | Objects checked per object type. `0` checks all. |
 | `-MaxAgeMinutes` | `20` | How old the last collection, the newest metric and each cluster KPI may be. |
 | `-MaxGapMinutes` | `15` | A gap between two samples longer than this is reported by the continuity check. |
@@ -101,7 +101,7 @@ On every Container object of each kind, from the Business Applications set up in
 
 ### Cluster KPIs and the Periodic Cluster Check
 
-On the sampled clusters. These checks look at the values the pack calculates, as well as their arrival.
+On the sampled clusters. These checks look at the values the adapter calculates, as well as their arrival.
 
 | # | Check | PASS when | Otherwise |
 | :--- | :--- | :--- | :--- |
