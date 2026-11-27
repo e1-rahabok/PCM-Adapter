@@ -79,7 +79,7 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every pull request and on e
 | `test_docs_links.py` | Every link and image in the Markdown files resolves. It runs [`check_links.py`](../../tools/check-docs/check_links.py). |
 | `test_submodule_imports.py` | The app code imports `concurrent.futures` by its full name. See [Submodule imports](#submodule-imports). |
 
-When you add a KPI, add its test file and add it to `KPI_MODULES` in `test_kpi_score.py`. See [Metrics Code](metrics-code.md#how-to-add-a-kpi).
+- When you add a KPI, add its test file and add it to `KPI_MODULES` in `test_kpi_score.py`. See [Metrics Code](metrics-code.md#how-to-add-a-kpi).
 
 ## Submodule imports
 
@@ -101,7 +101,7 @@ It fails with `AttributeError`. The same applies to any package whose submodules
 
 Code: [`tools/equivalence/`](../../tools/equivalence/). See [its page](../../tools/equivalence/equivalence.md).
 
-When KPI code is restructured, its values must not change unless that is the intent. This test runs about 3,400 planned cases through two copies of the KPI code, before and after the change, and lists every difference in what they publish. It does not connect to anything.
+- When KPI code is restructured, its values must not change unless that is the intent. This test runs about 3,400 planned cases through two copies of the KPI code, before and after the change, and lists every difference in what they publish. It does not connect to anything.
 
 ## Live validation
 

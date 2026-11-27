@@ -1,7 +1,6 @@
 # 29 Oct 2026 Completed
 
-This page is the response to the [29 Oct 2026 Review](2026-10-29-review.md). It records, for each finding, the
-decision and the action taken.
+This page is the response to the [29 Oct 2026 Review](2026-10-29-review.md). It records, for each finding, the decision and the action taken.
 
 > **Status (2026-10-30):** version 0.7.0 is built, installed on the test instance, and passes the standard live
 > validation (16 pass, 4 warn, 0 fail). The fixes are on the `0.7.0-review-fixes` branch and are not released yet.
@@ -19,18 +18,12 @@ Each finding has one decision:
 
 ## Decisions with reasons
 
-- **SEC-01 (Partly).** The default TLS mode stays Trust on First Use. It is a documented decision for internal VMware
-  environments. The warning is added. The stronger pre-login thumbprint check is not in the 0.7.0 plan.
-- **SEC-03 (Rejected).** ESXi SHA-1 thumbprints are a limit of what vCenter provides. The trust model does not change
-  without a migration plan. The limit stays documented.
-- **SEC-05 (Implemented).** The XML parser is kept. The alternative, `defusedxml`, was considered and not adopted. The
-  input is written only by VCF Operations administrators. A new runtime dependency would need its own audit and an
-  install on the test instance. Revisit this if anyone other than an administrator can write these files.
-- **BUG-02 (Implemented).** The documentation was corrected first, as the reviewer asked. The code cache was then
-  removed. It never survived between cycles, so no cross-cycle cache was needed.
+- **SEC-01 (Partly).** The default TLS mode stays Trust on First Use. It is a documented decision for internal VMware environments. The warning is added. The stronger pre-login thumbprint check is not in the 0.7.0 plan.
+- **SEC-03 (Rejected).** ESXi SHA-1 thumbprints are a limit of what vCenter provides. The trust model does not change without a migration plan. The limit stays documented.
+- **SEC-05 (Implemented).** The XML parser is kept. The alternative, `defusedxml`, was considered and not adopted. The input is written only by VCF Operations administrators. A new runtime dependency would need its own audit and an install on the test instance. Revisit this if anyone other than an administrator can write these files.
+- **BUG-02 (Implemented).** The documentation was corrected first, as the reviewer asked. The code cache was then removed. It never survived between cycles, so no cross-cycle cache was needed.
 - **GOV-04 (Partly).** No changelog file is added. Release notes go on GitHub. The tag `v0.7.0` is made at release.
-- **Python version (open, issue #66).** The decision is open. CI uses 3.12 for now. The 0.7.0 unit tests pass on 3.12.10
-  (476 passed). The 0.7.0 build ran on 3.12.
+- **Python version (open, issue #66).** The decision is open. CI uses 3.12 for now. The 0.7.0 unit tests pass on 3.12.10 (476 passed). The 0.7.0 build ran on 3.12.
 
 ## Actions by finding
 
@@ -136,33 +129,20 @@ Each finding has one decision:
 - [ ] BUG-08 (issue #60): callers do not skip the resources of a failed batch.
 - [ ] MNT-06, TST-05: 12 ruff findings (B009, B905, B017). Each needs a decision.
 - [ ] GOV-04: tag `v0.7.0` when it is released.
-- [ ] SCL-01 (job count), SCL-02, CON-01 (live test), GOV-03 (secret scanning and CodeQL), GOV-05, GOV-06, MNT-01 (the
-  definition split): on the To Do project, one line each.
+- [ ] SCL-01 (job count), SCL-02, CON-01 (live test), GOV-03 (secret scanning and CodeQL), GOV-05, GOV-06, MNT-01 (the definition split): on the To Do project, one line each.
 - [ ] SEC-06, CON-02, MNT-08: deferred, with no To Do line yet. Add one line each.
 - [ ] Python version (issue #66): the decision is open. CI uses 3.12 for now.
-- [ ] Live checks of 0.7.0 on the test instance (issue #2, `verify-live`). The log checks are still to do: the TLS
-  message, the Windows guest properties and event counts, the content libraries, and the failure paths.
+- [ ] Live checks of 0.7.0 on the test instance (issue #2, `verify-live`). The log checks are still to do: the TLS message, the Windows guest properties and event counts, the content libraries, and the failure paths.
 
 ## Verification
 
-- **Unit tests:** 476 passed on Python 3.12.10 (Build Laptop, 2026-10-30), with no skips. They include the docs link
-  check. The same count was reported on Python 3.13.16 in `Management Pack/.venv-test` earlier.
-- **Adapter definition:** dumped before and after the change. The same 3,439 paths. The only difference is the
-  description of vCenter TLS Validation, which now carries the warning.
-- **Build:** `tools/build/build.ps1` succeeded on Python 3.12.10 and produced `vCommunity_0.7.0.pak`. The build log has
-  no SDK validation messages.
-- **Static analysis:** `pip-audit` reports no known vulnerabilities. `bandit` reports one finding, the B105
-  `"password"` field name, which is a false positive. The XML findings are suppressed with the SEC-05 reason. `ruff`
-  reports 12 findings, listed under the open items.
-- **Install and restart:** the pack installed on the test instance in 2 min 49 s. The adapter instance returned to
-  `DATA_RECEIVING` after the restart.
-- **Live validation** (`tools/validate/validate.ps1`): 16 pass, 4 warn, 0 fail. The warnings are the three Business
-  Application checks, where no object carries the metric yet, and one 45-minute collection gap on 29 October, which is
-  before this install. The log checks in the release steps are not done.
+- **Unit tests:** 476 passed on Python 3.12.10 (Build Laptop, 2026-10-30), with no skips. They include the docs link check. The same count was reported on Python 3.13.16 in `Management Pack/.venv-test` earlier.
+- **Adapter definition:** dumped before and after the change. The same 3,439 paths. The only difference is the description of vCenter TLS Validation, which now carries the warning.
+- **Build:** `tools/build/build.ps1` succeeded on Python 3.12.10 and produced `vCommunity_0.7.0.pak`. The build log has no SDK validation messages.
+- **Static analysis:** `pip-audit` reports no known vulnerabilities. `bandit` reports one finding, the B105 `"password"` field name, which is a false positive. The XML findings are suppressed with the SEC-05 reason. `ruff` reports 12 findings, listed under the open items.
+- **Install and restart:** the pack installed on the test instance in 2 min 49 s. The adapter instance returned to `DATA_RECEIVING` after the restart.
+- **Live validation** (`tools/validate/validate.ps1`): 16 pass, 4 warn, 0 fail. The warnings are the three Business Application checks, where no object carries the metric yet, and one 45-minute collection gap on 29 October, which is before this install. The log checks in the release steps are not done.
 
 ## Project rule for these items
 
-[CONTRIBUTING.md](../../../CONTRIBUTING.md) says a broken behaviour is a GitHub issue with the label `bug`, and a plan or
-an enhancement is a draft item on the To Do project. The bugs are issues #53 to #65, with their IDs in the titles. The
-enhancements and plans are on the [To Do project](https://github.com/users/e1-rahabok/projects/1). Issues close when the
-change is in a release and validated on the test instance. BUG-08 stays open until its callers are done.
+[CONTRIBUTING.md](../../../CONTRIBUTING.md) says a broken behaviour is a GitHub issue with the label `bug`, and a plan or an enhancement is a draft item on the To Do project. The bugs are issues #53 to #65, with their IDs in the titles. The enhancements and plans are on the [To Do project](https://github.com/users/e1-rahabok/projects/1). Issues close when the change is in a release and validated on the test instance. BUG-08 stays open until its callers are done.

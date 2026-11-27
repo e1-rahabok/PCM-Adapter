@@ -83,7 +83,7 @@ With `Pinned`, a thumbprint mismatch stops the connection before the user name a
 
 The error message shows the thumbprint vCenter presented. Compare it with the certificate in vCenter before you change the setting: a thumbprint copied from a failing connection proves nothing about who answered.
 
-When the vCenter certificate is replaced, `Pinned` needs the new thumbprint. `Enabled` and `Trust on First Use` don't.
+- When the vCenter certificate is replaced, `Pinned` needs the new thumbprint. `Enabled` and `Trust on First Use` don't.
 
 ### Get the thumbprint
 

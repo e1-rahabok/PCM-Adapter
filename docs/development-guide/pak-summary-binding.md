@@ -6,7 +6,7 @@ What was tested about binding a pack dashboard to an object type's Summary tab a
 
 ## What mp-build does with content/dashboards/
 
-When it assembles the pak, `mp-build` runs the SDK's `build_subdirectories` function (in `mp_build.py`) on `content/dashboards/`. It:
+- When it assembles the pak, `mp-build` runs the SDK's `build_subdirectories` function (in `mp_build.py`) on `content/dashboards/`. It:
 
 - moves each loose file into a subfolder of its own, named after the file in lower case, so `Overall Daily Check.json` becomes `overall daily check/Overall Daily Check.json`;
 - stops the build with exit code 1 if a `.properties` file is loose in `content/dashboards/`.

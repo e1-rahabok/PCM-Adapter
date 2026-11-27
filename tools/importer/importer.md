@@ -143,9 +143,9 @@ The column takes a name rather than an ID because the two kinds of ID differ: a 
 
 ## Credential reuse
 
-When several rows have the same `credential_name`, the credential is created once and used for all of them. This suits vCenters that share one service account.
+- When several rows have the same `credential_name`, the credential is created once and used for all of them. This suits vCenters that share one service account.
 
-When a credential with that name already exists in VCF Operations, for example from an earlier run, the script reuses it and logs a notice:
+- When a credential with that name already exists in VCF Operations, for example from an earlier run, the script reuses it and logs a notice:
 
 ```
 [vCommunity - VC01] A credential named 'vCommunity - Credential' already exists - reusing it
