@@ -39,7 +39,7 @@ The stale limit applies only to metrics. See [Metrics Code](metrics-code.md).
 | `vm/` | `vm_disk.py` | The disks and SCSI controllers of the VM. |
 | `vm/` | `vmOSInformation.py` | The guest OS, read inside a Windows guest with `getWindowsOSInformation.ps1`. Runs only when Guest OS Service Monitoring is enabled. |
 | `vm/` | `vmService.py` | The Windows services listed in the configuration file, read inside the guest with `getWindowsServices.ps1`. |
-| `vm/` | `vm_shares.py` | The share per vCPU and per MB of memory, normalised by the size of the VM. Published as metrics for now, although they should be properties ([issue #49](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues/49)). |
+| `vm/` | `vm_shares.py` | The share per vCPU and per MB of memory, normalised by the size of the VM. Published as metrics for now, although they should be properties ([issue #49](https://github.com/e1-rahabok/PCM-Adapter/issues/49)). |
 
 Some properties are published outside this folder:
 

@@ -24,7 +24,7 @@ The latest-value queries take up to 1,000 resources per request, so a large vCen
 
 **Limitations:**
 
-- When one batch of `read_latest_stats()` or `read_latest_properties()` fails, the function logs a warning and returns the other batches. The resources of the failed batch are missing from the result, so a caller that sums or averages can publish a total built on part of the objects ([issue #60](https://github.com/e1-rahabok/VCF-vCommunity-Adapter/issues/60)).
+- When one batch of `read_latest_stats()` or `read_latest_properties()` fails, the function logs a warning and returns the other batches. The resources of the failed batch are missing from the result, so a caller that sums or averages can publish a total built on part of the objects ([issue #60](https://github.com/e1-rahabok/PCM-Adapter/issues/60)).
 - The data is what VCF Operations holds. A stat that the vCenter adapter has not collected is not available, whatever the pack's settings.
 
 ### utils/ops_inventory.py
