@@ -87,7 +87,7 @@ Source: Q-WS-1 in [round 1](https://github.com/e1-rahabok/private-cloud-workspac
 
 Test scenarios:
 - T-ADP-006a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py) through `uv run checks/run_all.py`): with `NAME_GAPS` emptied; expect 0 differences for all six KPIs.
-- T-ADP-006b (lab, automated by a new [screenshot.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/screenshot/screenshot.md) entry, reviewed by hand): install; open the metric tree of one lab cluster and one lab VM; expect the catalog names. **Verify on the lab:** the labels are declared on the adapter's own object type "Cluster Compute Resource" ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L310)), while the values land on the vCenter adapter's `ClusterComputeResource` ([collectClusterData.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/collectors/cluster/collectClusterData.py#L70)). Nothing yet shows that VCF Operations displays those labels on the vCenter objects.
+- Its lab check is T-ADP-026a, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
 ### R-ADP-007 The declared keys equal the published keys
 
@@ -103,7 +103,7 @@ Source: Q-WS-29 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 Test scenarios:
 - T-ADP-007a (anywhere, automated by `Management Pack/tests/test_declared_keys.py` (new)): build the definition; run every collector against the fakes; expect the two key sets to be equal, for each object type.
-- T-ADP-007b (lab, automated by a new validate.ps1 check): for one object of each type, read the `vCommunity|` keys from `GET /suite-api/api/resources/stats/latest?resourceId=<id>` and from `GET /suite-api/api/resources/<id>/properties`; expect each to be in the declared set. **Verify on the lab** that the properties endpoint returns the adapter's properties for a vCenter object.
+- Its lab check is T-ADP-026b, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
 ### R-ADP-008 Each sub-metric reads the statistic its catalog name states
 
@@ -160,7 +160,7 @@ Source: Q-WS-15 and Q-WS-16 in [round 1](https://github.com/e1-rahabok/private-c
 Test scenarios:
 - T-ADP-011a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended to the `decisions` section): expect every closure level, and the default period and percent, to equal the catalog.
 - T-ADP-011b (anywhere, automated by the existing tests from `test_closure_levels_sit_inside_the_display_bands` to `test_open_when_healthy` in [test_periodic_cluster_check.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_periodic_cluster_check.py#L98)): expect them to pass.
-- T-ADP-011c (lab, automated by validate.ps1 check 20): install and validate after a window has ended; expect the published Close for Business to follow the rule from the published Worst values on every sampled cluster.
+- Its lab check is T-ADP-026c, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
 ### R-ADP-012 Dropped: usable capacity is Total − HA − Buffer
 
@@ -380,6 +380,21 @@ Source: Q-WS-38 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 Test scenarios:
 - T-ADP-023a (lab, automated by a new read-only option of validate.ps1, with one manual step): the author puts one host into maintenance mode; the script reads both properties on every host; expect values that the adapter's comparison, with case and spaces ignored, classifies as the code expects.
+
+### R-ADP-026 The installed pack matches the catalog on the lab
+
+Source: [WD-042](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md) (every test scenario that needs the lab runs in M8); the sources of [R-ADP-006](#r-adp-006-a-metrics-label-equals-the-agent-e2-catalog-name), [R-ADP-007](#r-adp-007-the-declared-keys-equal-the-published-keys) and [R-ADP-011](#r-adp-011-the-closure-levels-equal-the-catalogs), and of [R-KPI-003](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/requirements/kpi-definitions.md#r-kpi-003-each-parts-key-and-name-agree-between-catalog-and-adapter).
+
+Milestone: M8.
+
+- Given the pack built from main after M2, installed and validated on the lab
+- When its metric names, keys and Periodic Cluster Check results are read on the lab VCF Operations
+- Then they equal what R-ADP-006, R-ADP-007 and R-ADP-011 require, as their tests that run anywhere already show on the code
+
+Test scenarios:
+- T-ADP-026a (lab, automated by a new [screenshot.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/screenshot/screenshot.md) entry, reviewed by hand): install; open the metric tree of one lab cluster and one lab VM; expect the catalog names. **Verify on the lab:** the labels are declared on the adapter's own object type "Cluster Compute Resource" ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L310)), while the values land on the vCenter adapter's `ClusterComputeResource` ([collectClusterData.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/collectors/cluster/collectClusterData.py#L70)). Nothing yet shows that VCF Operations displays those labels on the vCenter objects.
+- T-ADP-026b (lab, automated by a new validate.ps1 check): for one object of each type, read the `vCommunity|` keys from `GET /suite-api/api/resources/stats/latest?resourceId=<id>` and from `GET /suite-api/api/resources/<id>/properties`; expect each to be in the declared set. **Verify on the lab** that the properties endpoint returns the adapter's properties for a vCenter object.
+- T-ADP-026c (lab, automated by validate.ps1 check 20): install and validate after a window has ended; expect the published Close for Business to follow the rule from the published Worst values on every sampled cluster.
 
 ### R-ADP-024 Memory tiering is tested on nested hosts built by lab-build
 
