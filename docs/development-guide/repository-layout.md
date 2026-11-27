@@ -8,6 +8,7 @@ What each folder and file in the repository is, and why it is there. The pack it
 | :--- | :--- | :--- |
 | `Management Pack/` | The management pack: code, content, tests and packaging files. | `mp-build` builds the `.pak` file from this folder. |
 | `docs/` | The documentation. See the [documentation index](../README.md). | For users and contributors. Not packed. |
+| `spec/` | The requirements of this repository, each with its test scenarios, in `spec/requirements/`. The milestone of each is in the workspace's [ROADMAP](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md). | For contributors and the AI coding assistant. Not packed. |
 | `tools/` | Scripts that run on a workstation: build, install, restart, validate, screenshots, Summary dashboard binding, the bulk importer, the KPI equivalence test and the docs link check. See [Tools](../../tools/README.md). | Not packed, and never run in VCF Operations. |
 | `README.md` | The front page of the repository. | The first page a visitor reads. |
 | `CONTRIBUTING.md` | How to contribute, and the documentation rules. | Keeps contributions and docs consistent. |
