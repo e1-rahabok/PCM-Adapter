@@ -22,7 +22,7 @@ The UUIDs are the `id` fields in `Management Pack/content/dashboards/<resource k
 ## Before you start
 
 - You need the dashboard on the instance. For your own dashboard, create it in the UI or import its JSON file from the **...** menu on **Dashboards**. The script does not create or import dashboards. It binds an existing dashboard by name and UUID.
-- To list the dashboards and their UUIDs, run this from `tools/summary_dashboard`:
+- To list the dashboards and their UUIDs, run this from `tools/set-summary-tab`:
 
   ```python
   from ui_client import VCFOpsUIClient
@@ -32,7 +32,7 @@ The UUIDs are the `id` fields in `Management Pack/content/dashboards/<resource k
   ```
 
 - You need Python 3 with the `requests` library, and a local account that can manage dashboards, such as `admin`. The script logs in with local accounts only.
-- The script is in [`tools/summary_dashboard/`](../../tools/summary_dashboard/). Its reference page is [Summary Dashboard Script](../../tools/summary_dashboard/summary_dashboard.md).
+- The script is in [`tools/set-summary-tab/`](../../tools/set-summary-tab/). Its reference page is [Summary Dashboard Script](../../tools/set-summary-tab/summary_dashboard.md).
 
 ## Step 1: find the object type
 
@@ -40,7 +40,7 @@ Open an object and read **Object Type** on its Summary panel. Use that object ty
 
 Most object types map to one resource kind. Folders are the exception, see the next section.
 
-To list the resource kinds of an adapter, with their current Summary assignment, run this from `tools/summary_dashboard`:
+To list the resource kinds of an adapter, with their current Summary assignment, run this from `tools/set-summary-tab`:
 
 ```python
 from ui_client import VCFOpsUIClient
@@ -67,7 +67,7 @@ The plain `Folder` kind is not the Virtual Machine Folder. Check the object type
 
 ## Step 2: bind the dashboard
 
-From `tools/summary_dashboard`, set the connection in the environment and run the script with the exact dashboard name and its UUID:
+From `tools/set-summary-tab`, set the connection in the environment and run the script with the exact dashboard name and its UUID:
 
 ```powershell
 $env:VCFOPS_HOST = 'vcfops.example.com'
@@ -90,7 +90,7 @@ Don't store the password in a file or in your shell history. Set it for the sess
 
 Open an object of that type and open its **Summary** tab. It shows the dashboard instead of **Recommended Actions** and the built-in charts.
 
-To read the template back with the script's functions, see [Summary Dashboard Script](../../tools/summary_dashboard/summary_dashboard.md).
+To read the template back with the script's functions, see [Summary Dashboard Script](../../tools/set-summary-tab/summary_dashboard.md).
 
 ## Restore the built-in page
 
@@ -115,7 +115,7 @@ If you bind a dashboard right after an install or import, the copy can keep an u
 
 ## See also
 
-- [Summary Dashboard Script](../../tools/summary_dashboard/summary_dashboard.md): the script, its functions and its limits.
+- [Summary Dashboard Script](../../tools/set-summary-tab/summary_dashboard.md): the script, its functions and its limits.
 - [Included Content](../user-guide/included-content.md): the other dashboards in the adapter.
 - [Customization](customization.md): choose what each Adapter Instance collects, so the dashboard has the data it needs.
 

@@ -2,7 +2,7 @@
 
 What was tested about binding a dashboard of the VCF vCommunity Adapter to an object type's Summary tab at install time, and the packaging this needs. This page is for contributors who change the build. The steps for administrators are in [Summary Dashboards](../configuration-guide/summary-dashboards.md).
 
-**Status:** binding at install works when the binding file is added to the pak after `mp-build` runs. That step has been tested but is **not in the build script yet**, so the pak built from this repository does not bind anything. The six Summary dashboards in `content/dashboards/` are installed disabled and unbound. Administrators bind them with the [Summary Dashboard Script](../../tools/summary_dashboard/summary_dashboard.md).
+**Status:** binding at install works when the binding file is added to the pak after `mp-build` runs. That step has been tested but is **not in the build script yet**, so the pak built from this repository does not bind anything. The six Summary dashboards in `content/dashboards/` are installed disabled and unbound. Administrators bind them with the [Summary Dashboard Script](../../tools/set-summary-tab/summary_dashboard.md).
 
 ## What mp-build does with content/dashboards/
 

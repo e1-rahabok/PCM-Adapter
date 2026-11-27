@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-IMPORTER = Path(__file__).resolve().parents[2] / "tools" / "importer" / "importer.py"
+IMPORTER = Path(__file__).resolve().parents[2] / "tools" / "bulk-adapter-instances" / "importer.py"
 SHA256 = ":".join(["AB"] * 32)
 
 spec = importlib.util.spec_from_file_location("importer", IMPORTER)

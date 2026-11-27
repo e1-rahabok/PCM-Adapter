@@ -40,7 +40,7 @@ The files are in `Management Pack/content/dashboards/<resource kind key>/dashboa
 
 ## Running it
 
-Set the connection in the environment, then run the script from `tools/summary_dashboard`:
+Set the connection in the environment, then run the script from `tools/set-summary-tab`:
 
 ```powershell
 $env:VCFOPS_HOST = 'vcfops.example.com'

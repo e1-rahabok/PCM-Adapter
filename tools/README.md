@@ -9,15 +9,15 @@ Scripts that are not part of the management pack. None of them is in the `.pak` 
 
 | Tool | For | What it does | Changes VCF Operations? | Details |
 | :--- | :--- | :--- | :--- | :--- |
-| `importer/importer.py` | Administrators | Creates an Adapter Instance, with its credential, for each vCenter in a CSV file | Yes: adds Adapter Instances and credentials | [Bulk Adapter Instance Importer](importer/importer.md) |
-| `summary_dashboard/set_summary_dashboard.py` | Administrators | Replaces the Summary tab of one object type with a dashboard, or restores the built-in page | Yes: changes the Summary tab of the object type | [Summary Dashboard Script](summary_dashboard/summary_dashboard.md) |
+| `bulk-adapter-instances/importer.py` | Administrators | Creates an Adapter Instance, with its credential, for each vCenter in a CSV file | Yes: adds Adapter Instances and credentials | [Bulk Adapter Instance Importer](bulk-adapter-instances/importer.md) |
+| `set-summary-tab/set_summary_dashboard.py` | Administrators | Replaces the Summary tab of one object type with a dashboard, or restores the built-in page | Yes: changes the Summary tab of the object type | [Summary Dashboard Script](set-summary-tab/summary_dashboard.md) |
 | `build/build.ps1` | Contributors | Builds the `.pak` file and pushes the adapter's container image | No | [Build Script](build/build.md) |
 | `install/install.ps1` | Contributors | Uploads a `.pak` file to VCF Operations and installs it | Yes: replaces the installed version of the adapter | [Install Script](install/install.md) |
 | `restart/restart.ps1` | Contributors | Stops and starts collection on every Adapter Instance of the adapter, and waits until each one collects again | Yes: the adapter's collection stops for a moment | [Restart Script](restart/restart.md) |
 | `validate/validate.ps1` | Contributors | Checks that the installed adapter collects, and that its data lands on the vCenter objects | No. With `-Release`, it starts a content export job, which changes no content. | [Live Validation Test Plan](validate/validate.md) |
 | `screenshot/screenshot.ps1` | Contributors | Takes the documentation's screenshots of the VCF Operations UI, as defined in `screenshots.json`, and saves them into `docs/` | No: it only opens pages and expands sections | [Screenshot Script](screenshot/screenshot.md) |
 | `check-docs/check_links.py` | Contributors | Checks every relative link and image in the repo's Markdown files | No, it connects to nothing | [Below](#check-docs) |
-| `review/review.py` | Contributors | Checks an engineering review's evidence: that each cited file and line exists, that each finding has a decision with its evidence, and which test counts and Python versions the pages state. It can also record a snapshot of the code's facts | No, it reads the repo and runs `git` read commands only | [Review Evidence Tool](review/review.md) |
+| `check-review-evidence/review.py` | Contributors | Checks an engineering review's evidence: that each cited file and line exists, that each finding has a decision with its evidence, and which test counts and Python versions the pages state. It can also record a snapshot of the code's facts | No, it reads the repo and runs `git` read commands only | [Review Evidence Tool](check-review-evidence/review.md) |
 | `equivalence/planned_cases.py`, `equivalence/compare.py` | Contributors | Runs about 3,400 planned cases through two copies of the KPI code, before and after a restructure, and lists every difference in what they publish | No, it connects to nothing | [KPI Equivalence Test](equivalence/equivalence.md) |
 
 ## From a code change to a tested build
@@ -53,11 +53,11 @@ Run `python tools/check-docs/check_links.py` before you commit a documentation c
 ## Other files
 
 - `install/pak-install-requests.md`: the requests the VCF Operations UI makes when it installs a pak, recorded from a browser. `install.ps1` is built on them.
-- `importer/vcenter-list-example.csv`: an example input file for the importer.
-- `summary_dashboard/ui_client.py`: the VCF Operations UI session client that `set_summary_dashboard.py` uses. It is adapted from the vcf-content-factory project. See [Summary Dashboard Script](summary_dashboard/summary_dashboard.md#files).
+- `bulk-adapter-instances/vcenter-list-example.csv`: an example input file for the importer.
+- `set-summary-tab/ui_client.py`: the VCF Operations UI session client that `set_summary_dashboard.py` uses. It is adapted from the vcf-content-factory project. See [Summary Dashboard Script](set-summary-tab/summary_dashboard.md#files).
 - `screenshot/screenshot.py` and `screenshot/screenshots.json`: the engine of `screenshot.ps1`, and the definition of each screenshot. See [Adding a screenshot](screenshot/screenshot.md#adding-a-screenshot).
 - `build/mp_build_headless.py`: used by `build.ps1`, not run directly. See [Build Script](build/build.md#why-a-wrapper).
-- `review/review.py`: the evidence checks for the [Engineering Review](../docs/development-guide/engineering-review/README.md). It is read-only and not run by CI. Run it with Python 3, from the repository root: `python tools/review/review.py check`.
+- `check-review-evidence/review.py`: the evidence checks for the [Engineering Review](../docs/development-guide/engineering-review/README.md). It is read-only and not run by CI. Run it with Python 3, from the repository root: `python tools/check-review-evidence/review.py check`.
 
 ## check-docs
 

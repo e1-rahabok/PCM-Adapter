@@ -59,7 +59,7 @@ A dashboard for Microsoft Windows services is available from [Dale Hassinger](ht
 1. Check the [system requirements](docs/installation-guide/system-requirements.md). If the Cloud Proxy has no internet access, follow the [dark site](docs/installation-guide/dark-site.md) steps.
 2. Download the `.pak` file from [Releases](https://github.com/e1-rahabok/PCM-Adapter/releases) and [install](docs/installation-guide/installation.md) it.
 3. [Activate the policy](docs/configuration-guide/policy.md) metrics the adapter needs. Some are off by default.
-4. Create an [Adapter Instance](docs/configuration-guide/adapter-instance.md) for each vCenter, or use the [bulk importer](tools/importer/importer.md) for many.
+4. Create an [Adapter Instance](docs/configuration-guide/adapter-instance.md) for each vCenter, or use the [bulk importer](tools/bulk-adapter-instances/importer.md) for many.
 5. Choose what to collect: [Customization](docs/configuration-guide/customization.md).
 
 If something does not work, start with the [Troubleshooting Guide](docs/troubleshooting-guide/first-steps.md).
