@@ -12,8 +12,8 @@ It does three things, and reports what it finds. It does not judge the code.
 
 Usage, from the repository root:
 
-    python tools/review/review.py snapshot [--out FILE] [--linters]
-    python tools/review/review.py check [--rev REV] [--snapshot FILE] [--out FILE] [--fail]
+    python tools/check-review-evidence/review.py snapshot [--out FILE] [--linters]
+    python tools/check-review-evidence/review.py check [--rev REV] [--snapshot FILE] [--out FILE] [--fail]
 
 Only the Python standard library is used. Nothing here is run by CI. See review.md.
 """

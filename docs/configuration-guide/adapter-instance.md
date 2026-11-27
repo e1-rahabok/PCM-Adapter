@@ -1,6 +1,6 @@
 # Adapter Instance
 
-An Adapter Instance connects the VCF vCommunity Adapter to one vCenter Server. Create one for each vCenter after you have installed the adapter and set the [policy](policy.md). To create many at once, use the [Bulk Adapter Instance Importer](../../tools/importer/importer.md).
+An Adapter Instance connects the VCF vCommunity Adapter to one vCenter Server. Create one for each vCenter after you have installed the adapter and set the [policy](policy.md). To create many at once, use the [Bulk Adapter Instance Importer](../../tools/bulk-adapter-instances/importer.md).
 
 **On this page:**
 

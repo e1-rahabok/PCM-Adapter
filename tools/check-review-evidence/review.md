@@ -21,16 +21,16 @@ From the repository root:
 
 ```bash
 # Check the review pages against the working tree
-python tools/review/review.py check
+python tools/check-review-evidence/review.py check
 
 # Check the cited code as it was at the commit the review was made on
-python tools/review/review.py check --rev 34e3684
+python tools/check-review-evidence/review.py check --rev 34e3684
 
 # Record the facts a review depends on, as JSON
-python tools/review/review.py snapshot --out review-snapshot.json
+python tools/check-review-evidence/review.py snapshot --out review-snapshot.json
 
 # Check the pages against a snapshot, and write the report to a file
-python tools/review/review.py check --snapshot review-snapshot.json --out review-report.md
+python tools/check-review-evidence/review.py check --snapshot review-snapshot.json --out review-report.md
 ```
 
 | Option | For | What it does |

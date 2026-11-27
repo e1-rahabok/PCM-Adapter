@@ -37,7 +37,7 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every pull request and on e
 **Known gaps:**
 
 - **`pip-audit` does not cover `requirements.txt`.** The build-time packages (the SDK build tool and its dependencies, such as `pillow` and `setuptools`) are not audited in CI. The engineering review found advisories on two of them (GOV-06, N-02).
-- **The lint does not cover `tools/`.** Running `ruff check .` from the repository root reports six findings in the tools: four `zip()` calls without `strict=` in `tools/equivalence/planned_cases.py` (B905), and in `tools/importer/importer.py` an unused `dataclasses.field` import (F401) and a `raise` inside an `except` without `from` (B904). They are not part of the `Management Pack` folder and don't affect the adapter. Fix them, then extend the CI lint to `tools`.
+- **The lint does not cover `tools/`.** Running `ruff check .` from the repository root reports six findings in the tools: four `zip()` calls without `strict=` in `tools/equivalence/planned_cases.py` (B905), and in `tools/bulk-adapter-instances/importer.py` an unused `dataclasses.field` import (F401) and a `raise` inside an `except` without `from` (B904). They are not part of the `Management Pack` folder and don't affect the adapter. Fix them, then extend the CI lint to `tools`.
 
 ### Test files
 
@@ -71,8 +71,8 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every pull request and on e
 | `test_tls.py` | The TLS modes of the vCenter connection, and the thumbprint checks. |
 | `test_vcenter_certificate.py` | The Trust on First Use check of the vCenter certificate, and the report when it changes. |
 | `test_config_files.py` | The lists read from the configuration files, the refusal of invalid XML, and problem texts that name the file. |
-| `test_importer.py` | The bulk Adapter Instance importer: the TLS columns, and that every advanced setting is sent with the adapter's default. See [Importer](../../tools/importer/importer.md). |
-| `test_review_tool.py` | The engineering review evidence tool: citations, the finding and decision traceability, and the report. See [Review Tool](../../tools/review/review.md). |
+| `test_importer.py` | The bulk Adapter Instance importer: the TLS columns, and that every advanced setting is sent with the adapter's default. See [Importer](../../tools/bulk-adapter-instances/importer.md). |
+| `test_review_tool.py` | The engineering review evidence tool: citations, the finding and decision traceability, and the report. See [Review Tool](../../tools/check-review-evidence/review.md). |
 | `test_relationship_update_mode.py` | The collection result uses the `PER_OBJECT` relationship mode, so Business Application memberships are kept. See [Business Application Performance](../reference/metrics/business-application-performance.md#membership-is-kept). |
 | `test_library_collection.py` | Content Library and Library Item: items are children of their library, the library has no parent link, the metrics and properties, a failed read publishes nothing and logs a warning, the TLS mode of the REST connection, and the pinned login against a local HTTPS server. |
 | `test_vm_template.py` | VM Template: built only for a VM marked as a template, with no parent link. |

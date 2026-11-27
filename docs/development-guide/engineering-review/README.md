@@ -61,15 +61,15 @@ The steps below are the process. The review itself is a judgment that a reviewer
 5. **Check the evidence.** Run the evidence tool. It reports broken citations and recorded facts, and it shows the stated test counts next to the measured ones.
 
    ```bash
-   python tools/review/review.py check
-   python tools/review/review.py check --rev <commit the review was made on>
+   python tools/check-review-evidence/review.py check
+   python tools/check-review-evidence/review.py check --rev <commit the review was made on>
    ```
 
-   The tool, its options and its limits are in [Review Evidence Tool](../../../tools/review/review.md).
+   The tool, its options and its limits are in [Review Evidence Tool](../../../tools/check-review-evidence/review.md).
 
 6. **Get the response.** The owner fills in the response page. Each finding needs one decision. For `Implemented`, the action names the issue, commit or test. Run the tool again to check the response.
 7. **Re-score later.** After the fixes are released or validated, write a re-score. Check each implemented fix. Give a verdict on each rejection and deferral. Record new findings. Update the scores.
-8. **Keep the snapshot.** Save the output of `python tools/review/review.py snapshot --out <file>` with the review, so a later reader knows what the numbers were measured against.
+8. **Keep the snapshot.** Save the output of `python tools/check-review-evidence/review.py snapshot --out <file>` with the review, so a later reader knows what the numbers were measured against.
 
 Keep one review page per date. Do not edit an earlier review to match a later decision. Write a new page instead, so the record shows what was known at each date.
 

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-TOOL = Path(__file__).resolve().parents[2] / "tools" / "review" / "review.py"
+TOOL = Path(__file__).resolve().parents[2] / "tools" / "check-review-evidence" / "review.py"
 
 spec = importlib.util.spec_from_file_location("review", TOOL)
 review = importlib.util.module_from_spec(spec)

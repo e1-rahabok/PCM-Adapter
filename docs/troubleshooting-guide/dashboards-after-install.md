@@ -20,12 +20,12 @@ A copy made before the settings are resolved keeps the unresolved state. A clone
 
 1. **Open the original dashboard in the browser** and wait. Refresh the page if it takes more than a few minutes. When the section names show, the settings are resolved.
 2. **Check the original, not a copy.** If the original looks right and a clone does not, the clone was made too early. Delete it and clone again.
-3. **Bind Summary tabs after the original has resolved**, so that the Summary copy is made from the resolved dashboard. The [Summary Dashboard Script](../../tools/summary_dashboard/summary_dashboard.md) binds or rebinds one.
+3. **Bind Summary tabs after the original has resolved**, so that the Summary copy is made from the resolved dashboard. The [Summary Dashboard Script](../../tools/set-summary-tab/summary_dashboard.md) binds or rebinds one.
 4. **Judge by the widget titles, not by the `config` field.** A widget can show its real title while its `config` field is still empty.
 
 ## Check the state from the API
 
-The dashboard's widgets can be read with the same request the page makes. This read-only check runs from `tools/summary_dashboard/`, with `VCFOpsUIClient`:
+The dashboard's widgets can be read with the same request the page makes. This read-only check runs from `tools/set-summary-tab/`, with `VCFOpsUIClient`:
 
 ```python
 cfg = ui.get_dashboard_config(tab_id)["dashboardConfig"]["tabConfigs"][0]

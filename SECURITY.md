@@ -27,7 +27,7 @@ This is a volunteer project, so there is no guaranteed response time. Fixes are 
 In scope:
 
 - The adapter code in `Management Pack/app`, and the content it installs.
-- The bulk importer in `tools/importer`.
+- The bulk importer in `tools/bulk-adapter-instances`.
 - How the VCF vCommunity Adapter handles credentials and certificates. [TLS and Security Settings](docs/configuration-guide/tls-and-security.md) describes what the adapter checks and what it runs in Windows VMs.
 
 Out of scope: vulnerabilities in VCF Operations, vCenter, ESXi or the Integration SDK. Report those to Broadcom.
