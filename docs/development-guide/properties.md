@@ -56,6 +56,7 @@ Most modules work on the vSphere properties that the collector has already read.
 1. The collector reads the vSphere properties of all objects of a type in one paged read. See [Collectors](collectors.md#the-pattern).
 2. Each property module takes the properties of one object and sets its values with `with_property()`.
 3. Where a configuration file decides what to read, such as the list of advanced settings, `adapter.py` reads the file once per cycle and passes the list to the modules. A change to the file takes effect from the next cycle. See [Customization](../configuration-guide/customization.md).
+4. `definition.py` declares each key with the same groups and spelling that the module publishes, and with its group instanced where the key names an instance, such as `vCommunity|Licensing:<license>|Name`. A group whose keys are the entries of a configuration file, such as Advanced System Settings, is declared with no attributes. [`test_declared_keys.py`](../../Management%20Pack/tests/test_declared_keys.py) checks the two against each other. See [Tests](tests.md#test-files).
 
 Property values are published as text, as VCF Operations stores most properties. A number that should be charted over time is published as a metric instead.
 

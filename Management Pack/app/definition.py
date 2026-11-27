@@ -333,10 +333,11 @@ def get_adapter_definition() -> AdapterDefinition:
 
         vSphereHA = clusterConfiguration.define_group("vSphere HA", "vSphere HA")
         vSphereHA.define_string_property("Host Monitoring", "Host Monitoring")
-        vSphereHA.define_string_property("Host Isolation", "Response \\ Host Isolation")
-        vSphereHA.define_string_property("Default VM Restart Priority", "Response \\ Default VM Restart Priority")
-        vSphereHA.define_string_property("Datastore APD", "Response \\ Datastore APD")
-        vSphereHA.define_string_property("Datastore PDL", "Response \\ Datastore PDL")
+        # The keys are the ones that properties/cluster/ha_properties.py publishes, with the "Response \" prefix.
+        vSphereHA.define_string_property("Response \\ Host Isolation", "Response \\ Host Isolation")
+        vSphereHA.define_string_property("Response \\ Default VM Restart Priority", "Response \\ Default VM Restart Priority")
+        vSphereHA.define_string_property("Response \\ Datastore APD", "Response \\ Datastore APD")
+        vSphereHA.define_string_property("Response \\ Datastore PDL", "Response \\ Datastore PDL")
         vSphereHA.define_string_property("VM Monitoring", "VM Monitoring")
         vSphereHA.define_string_property("Heartbeat Datastore", "Heartbeat Datastore")
         vSphereHA.define_string_property("Failure Interval", "Failure Interval")
@@ -375,15 +376,16 @@ def get_adapter_definition() -> AdapterDefinition:
         hostVAAI.define_string_property("ATS Locking", "ATS Locking")
 
         hostTimeZone = hostSystemConfiguration.define_group("Time Zone", "Time Zone")
-        hostTimeZone.define_string_property("Time Zone Name", "Time Zone Name")
+        hostTimeZone.define_string_property("Name", "Time Zone Name")
         hostTimeZone.define_string_property("Description", "Description")
         hostTimeZone.define_string_property("GMT Offset", "GMT Offset")
 
-        advancedSystemSettings = hostSystemConfiguration.define_group("AdvancedSystemSettings", "Advanced System Settings")
-        advancedSystemSettings.define_string_property("Key", "Key")
+        # One property per setting listed in the ESXi advanced settings configuration file, named after the setting.
+        hostSystemConfiguration.define_group("Advanced System Settings", "Advanced System Settings")
 
-        licensing = vCommunity.define_group("Licensing", "Licensing")
-        licensing.define_string_property("License Name", "License Name")
+        # One instance per license assigned to the host, named after the license.
+        licensing = vCommunity.define_instanced_group("Licensing", "Licensing", instance_required=True)
+        licensing.define_string_property("Name", "License Name")
         licensing.define_string_property("License Key", "License Key")
         licensing.define_string_property("License Expiration Date", "License Expiration Date")
         licensing.define_metric("Remaining Days", "Remaining Days")
@@ -406,40 +408,39 @@ def get_adapter_definition() -> AdapterDefinition:
         hostSystemNetwork.define_metric(host_network_speed.HOST_METRIC, host_network_speed.HOST_METRIC, unit=Units.RATIO.PERCENT)
         hostSystemNetwork.define_string_property("Search Domain", "Search Domain")
 
-        networkDevice = hostSystemNetwork.define_instanced_group("Host Network Device", "Host Network Device", instance_required=True)
-        networkDevice.define_string_property("Host Network Device Device Name", "Host Network Device Device Name")
-        networkDevice.define_string_property("Host Network Device Driver Version", "Host Network Device Driver Version")
-        networkDevice.define_string_property("Host Network Device Firmware Version", "Host Network Device Firmware Version")
-        networkDevice.define_string_property("Host Network Device Status", "Host Network Device Status")
+        networkDevice = hostSystemNetwork.define_instanced_group("Device", "Host Network Device", instance_required=True)
+        networkDevice.define_string_property("Device Name", "Host Network Device Device Name")
+        networkDevice.define_string_property("Driver Version", "Host Network Device Driver Version")
+        networkDevice.define_string_property("Firmware Version", "Host Network Device Firmware Version")
+        networkDevice.define_string_property("Status", "Host Network Device Status")
         networkDevice.define_string_property("PCI Vendor Name", "PCI Vendor Name")
         networkDevice.define_string_property("PCI Device Name", "PCI Device Name")
         networkDevice.define_string_property("PCI Vendor ID (VID)", "PCI Vendor ID (VID)")
         networkDevice.define_string_property("PCI Device ID (DID)", "PCI Device ID (DID)")
         networkDevice.define_string_property("PCI SubVendor ID (SVID)", "PCI SubVendor ID (SVID)")
-        networkDevice.define_string_property("Host Network Device MAC", "Host Network Device MAC")
+        networkDevice.define_string_property("MAC", "Host Network Device MAC")
         networkDevice.define_string_property("Wake On Lan Supported", "Wake On Lan Supported")
-        networkDevice.define_string_property("Host Network Device PCI", "Host Network Device PCI")
-        networkDevice.define_string_property("Host Network Device Duplex", "Host Network Device Duplex")
+        networkDevice.define_string_property("PCI", "Host Network Device PCI")
+        networkDevice.define_string_property("Duplex", "Host Network Device Duplex")
 
-        storageAdapter = vCommunity.define_group("Storage Adapter", "Storage Adapter")
+        # One instance per HBA, named after the HBA. Number of HBA has no instance.
+        storageAdapter = vCommunity.define_instanced_group("Storage Adapter", "Storage Adapter", instance_required=False)
         storageAdapter.define_string_property("Number of HBA", "Number of HBA")
-
-        hbaDevice = storageAdapter.define_instanced_group("hbaDevice", "hbaDevice", instance_required=True)
-        hbaDevice.define_string_property("HBA Device", "HBA Device")
-        hbaDevice.define_string_property("HBA Device Bus", "HBA Device Bus")
-        hbaDevice.define_string_property("HBA Device Model", "HBA Device Model")
-        hbaDevice.define_string_property("HBA Device PCI", "HBA Device PCI")
-        hbaDevice.define_string_property("HBA Device Status", "HBA Device Status")
-        hbaDevice.define_string_property("HBA Device Type", "HBA Device Type")
+        storageAdapter.define_string_property("Device", "HBA Device")
+        storageAdapter.define_string_property("Bus", "HBA Device Bus")
+        storageAdapter.define_string_property("Model", "HBA Device Model")
+        storageAdapter.define_string_property("PCI", "HBA Device PCI")
+        storageAdapter.define_string_property("Status", "HBA Device Status")
+        storageAdapter.define_string_property("Type", "HBA Device Type")
 
         hostRuntime = vCommunity.define_group("Runtime", "Runtime")
-        hostRuntime.define_string_property("Host Boot Time", "Host Boot Time")
+        hostRuntime.define_string_property("Boot Time", "Host Boot Time")
 
         hostCapability = vCommunity.define_group("Capability", "Capability")
         hostCapability.define_string_property("Storage vMotion Supported", "Storage vMotion Supported")
 
         hostHardware = vCommunity.define_group("Hardware", "Hardware")
-        hostHardware.define_string_property("Host BIOS Vendor", "Host BIOS Vendor")
+        hostHardware.define_string_property("BIOS Vendor", "Host BIOS Vendor")
 
 
         #TODO fix the object definition below
@@ -451,16 +452,16 @@ def get_adapter_definition() -> AdapterDefinition:
         datastoreIdentifiers.define_string_property("Number of Extents", "Number of Extents")
 
         datastoreExtents = datastoreIdentifiers.define_instanced_group("Extent", "Extent")
-        datastoreExtents.define_string_property("Datastore Extent ID", "ID")
+        datastoreExtents.define_string_property("ID", "ID")
 
         datastoreSummary = vCommunity.define_group("Summary", "Summary")
-        datastoreSummary.define_string_property("DS MOID", "MOID")
-        datastoreSummary.define_string_property("DS Block Size", "Block Size")
-        datastoreSummary.define_string_property("DS ax Blocks", "Max Blocks")
-        datastoreSummary.define_string_property("DS VMFS Upgradable", "VMFS Upgradable")
-        datastoreSummary.define_string_property("DS Status", "Status")
-        datastoreSummary.define_string_property("DS SIOC Enabled", "SIOC Enabled")
-        datastoreSummary.define_string_property("DS SIOC Threshold", "SIOC Threshold")
+        datastoreSummary.define_string_property("MOID", "MOID")
+        datastoreSummary.define_string_property("Block Size", "Block Size")
+        datastoreSummary.define_string_property("Max Blocks", "Max Blocks")
+        datastoreSummary.define_string_property("VMFS Upgradable", "VMFS Upgradable")
+        datastoreSummary.define_string_property("Status", "Status")
+        datastoreSummary.define_string_property("SIOC Enabled", "SIOC Enabled")
+        datastoreSummary.define_string_property("SIOC Threshold", "SIOC Threshold")
 
 
         # Virtual Machine
@@ -477,27 +478,27 @@ def get_adapter_definition() -> AdapterDefinition:
         # Normalized shares. Metrics for now, though they should be properties: see properties/vm/vm_shares.py and issue #49.
         configuration.define_metric(vm_shares.CPU_METRIC, vm_shares.CPU_METRIC)
         configuration.define_metric(vm_shares.MEMORY_METRIC, vm_shares.MEMORY_METRIC)
-        configuration.define_string_property("VM Change Version", "VM Change Version")
-        configuration.define_string_property("VM Firmware", "VM Firmware")
-        configuration.define_string_property("VM Latency Sensitivity Level", "VM Latency Sensitivity Level")
-        configuration.define_string_property("VM Reboot PowerOff", "VM Reboot PowerOff")
-        configuration.define_string_property("VM Op Notification Timeout", "VM Op Notification Timeout")
-        configuration.define_string_property("VM Memory Allocation Share Level", "VM Memory Allocation Share Level")
-        configuration.define_string_property("VM Config Status", "VM Config Status")
+        configuration.define_string_property("Change Version", "VM Change Version")
+        configuration.define_string_property("Firmware", "VM Firmware")
+        configuration.define_string_property("Latency Sensitivity Level", "VM Latency Sensitivity Level")
+        configuration.define_string_property("Reboot PowerOff", "VM Reboot PowerOff")
+        configuration.define_string_property("Op Notification Timeout", "VM Op Notification Timeout")
+        configuration.define_string_property("Memory Allocation Share Level", "VM Memory Allocation Share Level")
+        configuration.define_string_property("Config Status", "VM Config Status")
         
         vmNUMA = configuration.define_group("NUMA", "NUMA")
-        vmNUMA.define_string_property("VM Hot Add Exposed", "VM Hot Add Exposed")
+        vmNUMA.define_string_property("Hot Add Exposed", "VM Hot Add Exposed")
 
         vmBootOptions = configuration.define_group("Boot Options", "Boot Options")
-        vmBootOptions.define_string_property("VM Boot Delay", "VM Boot Delay")
-        vmBootOptions.define_string_property("VM Boot Retry Delay", "VM Boot Retry Delay")
-        vmBootOptions.define_string_property("VM Boot Retry Enabled", "VM Boot Retry Enabled")
-        vmBootOptions.define_string_property("VM Boot Enter BIOS Setup", "VM Boot Enter BIOS Setup")
+        vmBootOptions.define_string_property("Delay", "VM Boot Delay")
+        vmBootOptions.define_string_property("Retry Delay", "VM Boot Retry Delay")
+        vmBootOptions.define_string_property("Retry Enabled", "VM Boot Retry Enabled")
+        vmBootOptions.define_string_property("Enter BIOS Setup", "VM Boot Enter BIOS Setup")
 
-        vmHWUpgrade = configuration.define_group("Hardware", "Hardware")
-        vmHWUpgrade.define_string_property("VM HW Upgrade Status", "VM HW Upgrade Status")
-        vmHWUpgrade.define_string_property("VM HW Upgrade Policy", "VM HW Upgrade Policy")
-        vmHWUpgrade.define_string_property("VM HW Upgrade Target Version", "VM HW Upgrade Target Version")
+        vmHWUpgrade = configuration.define_group("Hardware Upgrade", "Hardware")
+        vmHWUpgrade.define_string_property("Status", "VM HW Upgrade Status")
+        vmHWUpgrade.define_string_property("Policy", "VM HW Upgrade Policy")
+        vmHWUpgrade.define_string_property("Target Version", "VM HW Upgrade Target Version")
 
         vmGuest = vCommunity.define_group("Guest", "Guest")
         vmGuest.define_string_property("State", "State")
@@ -528,22 +529,23 @@ def get_adapter_definition() -> AdapterDefinition:
         vmFlags = configuration.define_group("Flags", "Flags")
         vmFlags.define_string_property("Disk UUID Enabled", "Disk UUID Enabled")
 
-        advancedParameters = configuration.define_group("Advanced Parameters", "Advanced Parameters")
-        advancedParameters.define_string_property("Parameter Key", "Parameter Key")
+        # One property per parameter listed in the VM advanced parameters configuration file, named after the parameter.
+        configuration.define_group("Advanced Parameters", "Advanced Parameters")
 
-        scsiControllers = configuration.define_instanced_group("SCSI Controllers", "SCSI Controllers")
-        scsiControllers.define_string_property("SCSI Controller Type", "SCSI Controller Type")
-        scsiControllers.define_metric("SCSI Controllers Count", "Count")
+        # One instance per SCSI controller, named after its bus number. Count has no instance.
+        scsiControllers = configuration.define_instanced_group("SCSI Controllers", "SCSI Controllers", instance_required=False)
+        scsiControllers.define_string_property("Type", "SCSI Controller Type")
+        scsiControllers.define_metric("Count", "Count")
 
-        options = vCommunity.define_group("Options", "Options")
-        options.define_string_property("Option Key", "Option Key")
+        # One property per vSphere property path listed in the VM Options configuration file, named after the path.
+        vCommunity.define_group("Options", "Options")
 
         vmNetwork = vCommunity.define_group("Network", "Network")
         vmNetworkAdapters = vmNetwork.define_instanced_group("Network Adapters", "Network Adapters")
-        vmNetworkAdapters.define_string_property("Network Adapter Type", "Network Adapter Type")
+        vmNetworkAdapters.define_string_property("Type", "Network Adapter Type")
         vmNetworkAdapters.define_string_property("Starts Connected", "Starts Connected")
 
-        vmSummary = vCommunity.define_instanced_group("Summary", "Summary")
+        vmSummary = vCommunity.define_group("Summary", "Summary")
         vmSummary.define_string_property("VM Path Name", "VM Path Name")
 
         vmVirtualDisk = vCommunity.define_instanced_group("Virtual Disk", "Virtual Disk")
@@ -628,11 +630,11 @@ def get_adapter_definition() -> AdapterDefinition:
         vCenterDatabase.define_string_property("Event Cleanup Enabled", "Event Cleanup Enabled")
         vCenterDatabase.define_string_property("Task retention (days)", "Task retention (days)")
         vCenterDatabase.define_string_property("Task Cleanup Enabled", "Task Cleanup Enabled")
+        vCenterDatabase.define_string_property("Maximum Connections", "Maximum Connections")
 
         vCenterDatabaseRuntime = vCenterConfiguration.define_group("Runtime", "Runtime")
         vCenterDatabaseRuntime.define_string_property("vCenter Unique ID", "vCenter Unique ID")
         vCenterDatabaseRuntime.define_string_property("vCenter managed address", "vCenter managed address")
-        vCenterDatabaseRuntime.define_string_property("Maximum Connections", "Maximum Connections")
 
         # Content Library: one per library of a vCenter, local or subscribed. See collectors/library/collectLibraryData.py.
         contentLibrary = definition.define_object_type(LIBRARY_KIND, LIBRARY_KIND)

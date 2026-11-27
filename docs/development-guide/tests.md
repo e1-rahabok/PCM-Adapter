@@ -78,8 +78,11 @@ The CI workflow (`.github/workflows/ci.yml`) runs on every pull request and on e
 | `test_vm_template.py` | VM Template: built only for a VM marked as a template, with no parent link. |
 | `test_docs_links.py` | Every link and image in the Markdown files resolves. It runs [`check_links.py`](../../tools/check-docs/check_links.py). |
 | `test_submodule_imports.py` | The app code imports `concurrent.futures` by its full name. See [Submodule imports](#submodule-imports). |
+| `test_declared_keys.py` | The keys declared in `definition.py` equal the keys the collectors publish, for each object type: the same groups and spelling, metric or property, and an instance where a group is instanced. It runs two whole collection cycles of `adapter.collect()` against a fake vCenter and the fake VCF Operations in `fakes.py`, in which every stat and property has a value. |
+| `test_repository_names.py` | No tracked file names an old repository, or names the VCF vCommunity Adapter another way. The dated engineering reviews and `spec/requirements/` are left out, and so are the copyright and author lines of the code files. |
 
 - When you add a KPI, add its test file and add it to `KPI_MODULES` in `test_kpi_score.py`. See [Metrics Code](metrics-code.md#how-to-add-a-kpi).
+- When you add a metric or a property, declare it in `definition.py` with the key the code publishes. `test_declared_keys.py` fails on a key that is published but not declared, or declared but never published. If the new key reads a vSphere property path, give the fake vCenter in that test a value for it.
 
 ## Submodule imports
 
