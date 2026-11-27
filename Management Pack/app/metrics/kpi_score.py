@@ -73,6 +73,8 @@ class Metric(NamedTuple):
     orange: float           # the orange tier ends here
     zero_at: float          # the red tier ends here, and the score reaches 0
     skip_when_green: bool = False   # True: left out of the KPI while green, see "Skip when green" above
+    interval: str = ""             # the interval of the stat it reads, as the Agent E2 catalog gives its limits: "20s", a
+                                   # 20-second peak, or "5m", a 5-minute value (R-ADP-008; checked by test_statistics.py)
 
 
 TIERS = [

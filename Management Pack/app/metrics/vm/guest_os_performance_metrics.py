@@ -43,13 +43,13 @@ class Row(NamedTuple):
 # --- Row 1. Guest CPU Run Queue per vCPU (Guest OS contention) ---------------------------------------------------
 # Threads waiting for a vCPU, per vCPU. The stat is already per vCPU, so it is used as it is.
 GUEST_CPU_QUEUE = "guest|20_sec_peak_cpu_queue"
-CPU_QUEUE = Row(Metric("Guest CPU Run Queue per vCPU",  None,   0.0,    2.0,    4.0,    8.0,    16.0),
+CPU_QUEUE = Row(Metric("Guest CPU Run Queue per vCPU",  None,   0.0,    2.0,    4.0,    8.0,    16.0, interval="20s"),
                 lambda vm_stats: vm_stats.get(GUEST_CPU_QUEUE))
 
 # --- Row 2. Guest Disk Queue (Guest OS contention) ---------------------------------------------------------------
 # Disk IOs inside the guest OS that wait to be sent.
 GUEST_DISK_QUEUE = "guest|20_sec_peak_disk_queue"
-DISK_QUEUE = Row(Metric("Guest Disk Queue",             None,   0.0,    20.0,   40.0,   80.0,   160.0),
+DISK_QUEUE = Row(Metric("Guest Disk Queue",             None,   0.0,    20.0,   40.0,   80.0,   160.0, interval="20s"),
                  lambda vm_stats: vm_stats.get(GUEST_DISK_QUEUE))
 
 # --- Row 3. Guest Free Memory (Guest OS utilization) -------------------------------------------------------------
@@ -64,13 +64,13 @@ def guest_free_memory_mb(vm_stats: VmStats) -> Optional[float]:
     return vm_stats[GUEST_FREE_MEMORY_KB] / 1024.0
 
 
-FREE_MEMORY = Row(Metric("Guest Free Memory",           "MB",   1024.0, 512.0,  256.0,  128.0,  0.0),
+FREE_MEMORY = Row(Metric("Guest Free Memory",           "MB",   1024.0, 512.0,  256.0,  128.0,  0.0, interval="5m"),
                   guest_free_memory_mb)
 
 # --- Row 4. Guest Page-Out Rate (Guest OS utilization) -----------------------------------------------------------
 # How fast the guest OS moves memory pages out to its own page file, in pages per second.
 GUEST_PAGE_OUT_RATE = "guest|page.outRate_latest"
-PAGE_OUT_RATE = Row(Metric("Guest Page-Out Rate",       None,   0.0,    1000.0, 2000.0, 4000.0, 8000.0),
+PAGE_OUT_RATE = Row(Metric("Guest Page-Out Rate",       None,   0.0,    1000.0, 2000.0, 4000.0, 8000.0, interval="5m"),
                     lambda vm_stats: vm_stats.get(GUEST_PAGE_OUT_RATE))
 
 
@@ -79,6 +79,14 @@ ROWS = [CPU_QUEUE, DISK_QUEUE, FREE_MEMORY, PAGE_OUT_RATE]
 METRICS = [row.metric for row in ROWS]
 # Every row is a stat the VM already has, or a simple conversion of one. Only the KPI is published.
 PUBLISHED_METRICS = []
+# The label of every row: the Agent E2 catalog name (thresholds-performance.yaml, Guest OS lines), without the unit.
+# No row is published, so VCF Operations shows none of them; the KPI definitions check compares them.
+LABELS = {
+    CPU_QUEUE.metric.name: "Peak run queue length per vCPU",
+    DISK_QUEUE.metric.name: "Peak disk queue length",
+    FREE_MEMORY.metric.name: "Free memory",
+    PAGE_OUT_RATE.metric.name: "Memory page-out rate",
+}
 # Every stat that is asked from VCF Operations, for each VM. Read by vm_performance_metrics.
 VM_STATS = [GUEST_CPU_QUEUE, GUEST_DISK_QUEUE, GUEST_FREE_MEMORY_KB, GUEST_PAGE_OUT_RATE]
 

@@ -57,16 +57,16 @@ PUBLISHED_METRICS = METRICS
 
 # The labels VCF Operations shows, in the words of the Agent E2 catalog (knowledge/catalog/thresholds-performance.yaml).
 # The keys stay the row names: renaming a key would start a new metric and leave its history behind. The CPU and disk
-# rows read a 20-second peak, so their labels say peak. The memory rows are Memory Wait (Memory Contention plus NVMe wait,
-# metrics/vm/memory_wait.py): the key keeps the word latency, the label says wait.
+# and memory rows read a 20-second peak, so their labels say peak. The memory rows are Memory Wait (Memory Contention
+# plus NVMe wait, metrics/vm/memory_wait.py): the key keeps the word latency, the label says wait.
 LABELS = dict(zip([metric.name for metric in VM_CONTENTION_METRICS], [
     "Worst peak vCPU Ready among all VMs",
     "Worst peak vCPU Co-stop among all VMs",
-    "Worst memory wait among all VMs",
+    "Worst peak memory wait among all VMs",
     "Worst peak disk latency among all VM virtual disks",
     "90th percentile peak vCPU Ready among VMs",
     "90th percentile peak vCPU Co-stop among VMs",
-    "90th percentile memory wait among VMs",
+    "90th percentile peak memory wait among VMs",
     "90th percentile peak disk latency among VM virtual disks",
 ], strict=True))
 # Bad network packets: the catalog name. The key stays the row name, for the history.

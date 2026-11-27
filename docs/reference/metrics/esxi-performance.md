@@ -23,11 +23,11 @@ VCF Operations shows the eight VM rows under a label in the words of the Agent E
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Worst VM | Worst VM CPU Ready | Worst peak vCPU Ready among VMs on the host | % | 4 | 8 | 16 | 32 |
 | Worst VM | Worst VM CPU Co-Stop | Worst peak vCPU Co-stop among VMs on the host | % | 2 | 4 | 8 | 16 |
-| Worst VM | Worst VM Memory Latency | Worst memory wait among VMs on the host | % | 1 | 2 | 4 | 8 |
+| Worst VM | Worst VM Memory Latency | Worst peak memory wait among VMs on the host | % | 1 | 2 | 4 | 8 |
 | Worst VM | Worst VM Disk Latency (read and write, any virtual disk) | Worst peak disk latency among virtual disks of VMs on the host | ms | 40 | 80 | 160 | 320 |
 | 90th percentile | 90th Percentile VM CPU Ready | 90th percentile peak vCPU Ready among VMs on the host | % | 1 | 2 | 4 | 8 |
 | 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs on the host | % | 0.5 | 1 | 2 | 4 |
-| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile memory wait among VMs on the host | % | 0.5 | 1 | 2 | 4 |
+| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile peak memory wait among VMs on the host | % | 0.5 | 1 | 2 | 4 |
 | 90th percentile | 90th Percentile VM Disk Latency (read and write) | 90th percentile peak disk latency among virtual disks of VMs on the host | ms | 20 | 40 | 60 | 80 |
 | ESXi | ESXi Bad Network Packets (errored + dropped) | ESXi (error + dropped) network packets | % | Excluded (exactly 0) | 0.2 | 0.4 | 0.8 |
 

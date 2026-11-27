@@ -41,34 +41,34 @@ MEMORY_WAIT_STAT = "memory wait"
 # 100, 75, 50, 25 and 0. The worst-VM limits are higher than the 90th-percentile limits, because a single VM peaks
 # far above most of the others. The CPU and disk stats are the 20-second peaks, not the 5-minute averages, so the KPIs
 # are leading indicators: "peak" is in their labels. Memory Wait is a 20-second peak of Memory Contention plus the NVMe
-# wait of the latest values, so it has no "peak" in its label.
+# wait of the latest values; its catalog interval is 20s, so its label says peak too.
 #       name                                 unit   best  green  yellow  orange  zero-at
 
 VM_CONTENTION = [
     # --- CPU Ready: time the VM was ready to run, but had to wait for a physical CPU ------------------------------
     VmContentionRows(
         "cpu|20_sec_peak_readyPct",
-        Metric("Worst VM CPU Ready",                "%",   0.0,  4.0,   8.0,    16.0,   32.0),
-        Metric("90th Percentile VM CPU Ready",      "%",   0.0,  1.0,   2.0,    4.0,    8.0),
+        Metric("Worst VM CPU Ready",                "%",   0.0,  4.0,   8.0,    16.0,   32.0, interval="20s"),
+        Metric("90th Percentile VM CPU Ready",      "%",   0.0,  1.0,   2.0,    4.0,    8.0, interval="20s"),
     ),
     # --- CPU Co-Stop: time a multi-vCPU VM was held back, so that its vCPUs stay in step --------------------------
     VmContentionRows(
         "cpu|20_sec_peak_costopPct",
-        Metric("Worst VM CPU Co-Stop",              "%",   0.0,  2.0,   4.0,    8.0,    16.0),
-        Metric("90th Percentile VM CPU Co-Stop",    "%",   0.0,  0.5,   1.0,    2.0,    4.0),
+        Metric("Worst VM CPU Co-Stop",              "%",   0.0,  2.0,   4.0,    8.0,    16.0, interval="20s"),
+        Metric("90th Percentile VM CPU Co-Stop",    "%",   0.0,  0.5,   1.0,    2.0,    4.0, interval="20s"),
     ),
     # --- Memory Wait: Memory Contention plus NVMe wait, see metrics/vm/memory_wait.py. The key keeps the word
     # "Memory Latency" (it was the key before NVMe wait was scored); the label says Memory Wait. ----------------------
     VmContentionRows(
         MEMORY_WAIT_STAT,
-        Metric("Worst VM Memory Latency",           "%",   0.0,  1.0,   2.0,    4.0,    8.0),
-        Metric("90th Percentile VM Memory Latency", "%",   0.0,  0.5,   1.0,    2.0,    4.0),
+        Metric("Worst VM Memory Latency",           "%",   0.0,  1.0,   2.0,    4.0,    8.0, interval="20s"),
+        Metric("90th Percentile VM Memory Latency", "%",   0.0,  0.5,   1.0,    2.0,    4.0, interval="20s"),
     ),
     # --- Disk Latency: read and write latency of the VM's virtual disks -------------------------------------------
     VmContentionRows(
         "virtualDisk|20_sec_peak_totalLatency_average",
-        Metric("Worst VM Disk Latency",             "ms",  0.0,  40.0,  80.0,   160.0,  320.0),
-        Metric("90th Percentile VM Disk Latency",   "ms",  0.0,  20.0,  40.0,   60.0,   80.0),
+        Metric("Worst VM Disk Latency",             "ms",  0.0,  40.0,  80.0,   160.0,  320.0, interval="20s"),
+        Metric("90th Percentile VM Disk Latency",   "ms",  0.0,  20.0,  40.0,   60.0,   80.0, interval="20s"),
     ),
 ]
 # The 8 rows, in the order of the source tables: the 4 worst-VM rows, then the 4 90th-percentile rows.

@@ -25,11 +25,11 @@ VCF Operations shows the eight VM rows under a label in the words of the Agent E
 | :--- | :--- | :--- | :--- |
 | Worst VM | Worst VM CPU Ready | Worst peak vCPU Ready among all VMs | Highest `cpu\|20_sec_peak_readyPct` of any VM |
 | Worst VM | Worst VM CPU Co-Stop | Worst peak vCPU Co-stop among all VMs | Highest `cpu\|20_sec_peak_costopPct` of any VM |
-| Worst VM | Worst VM Memory Latency | Worst memory wait among all VMs | Highest [Memory Wait](memory-wait.md) of any VM |
+| Worst VM | Worst VM Memory Latency | Worst peak memory wait among all VMs | Highest [Memory Wait](memory-wait.md) of any VM |
 | Worst VM | Worst VM Disk Latency | Worst peak disk latency among all VM virtual disks | Highest `virtualDisk\|20_sec_peak_totalLatency_average` of any VM |
 | 90th percentile | 90th Percentile VM CPU Ready | 90th percentile peak vCPU Ready among VMs | 90th percentile of `cpu\|20_sec_peak_readyPct` across the VMs |
 | 90th percentile | 90th Percentile VM CPU Co-Stop | 90th percentile peak vCPU Co-stop among VMs | 90th percentile of `cpu\|20_sec_peak_costopPct` across the VMs |
-| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile memory wait among VMs | 90th percentile of [Memory Wait](memory-wait.md) across the VMs |
+| 90th percentile | 90th Percentile VM Memory Latency | 90th percentile peak memory wait among VMs | 90th percentile of [Memory Wait](memory-wait.md) across the VMs |
 | 90th percentile | 90th Percentile VM Disk Latency | 90th percentile peak disk latency among VM virtual disks | 90th percentile of `virtualDisk\|20_sec_peak_totalLatency_average` across the VMs |
 | ESXi | Highest ESXi Bad Network Packets | Highest ESXi (error + dropped) network packets | Per host: `(errorsRx + errorsTx + droppedRx + droppedTx) / (packetsRx + packetsTx) × 100` in the last collection cycle (5 minutes). The sub-metric is the highest host. |
 

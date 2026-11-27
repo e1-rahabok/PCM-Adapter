@@ -162,8 +162,8 @@ def test_vm_rows_keep_their_keys_and_show_the_catalog_label():
         for metric in vc.VM_CONTENTION_METRICS:
             assert metric.name in attributes, metric.name  # the key never changes: it would lose the history
             assert attributes[metric.name] == labels[metric.name]
-            # The CPU and disk rows read a 20-second peak. The memory rows are Memory Wait, not a peak.
-            assert ("memory wait" in labels[metric.name]) != ("peak" in labels[metric.name])
+            # Every row reads a 20-second peak, Memory Wait included, so every label says peak (Q-WS-81).
+            assert metric.interval == "20s" and "peak" in labels[metric.name]
         assert attributes["Worst VM CPU Ready"].startswith("Worst peak vCPU Ready") and where in attributes["Worst VM CPU Ready"]
     assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi (error + dropped) network packets"
 
@@ -193,12 +193,13 @@ def test_without_vm_context_memory_wait_is_memory_contention():
 
 
 def test_packets_and_vm_rows_show_the_catalog_name():
-    # Bad network packets and the two published VM Performance rows: catalog names as labels, keys kept (gap review 2026-11-23).
+    # Bad network packets and the VM Performance rows: catalog names as labels, keys kept (R-ADP-006).
     from metrics.host import esxi_performance_metrics as ep
     from metrics.vm import vm_performance_metrics as vp
     assert _group_attributes("Cluster Performance")["Highest ESXi Bad Network Packets"] == "Highest ESXi (error + dropped) network packets"
     assert _group_attributes("ESXi Performance")["ESXi Bad Network Packets"] == "ESXi (error + dropped) network packets"
     vm = _group_attributes("VM Performance")
-    assert vm["Memory Wait"] == "Memory wait" and vm["Memory Zip Swap"] == "VM swapped + zipped memory"
-    assert set(vp.LABELS) == {m.name for m in vp.PUBLISHED_METRICS}  # only what the pack publishes gets a label
+    assert vm["Memory Wait"] == "Peak memory wait" and vm["Memory Zip Swap"] == "VM swapped + zipped memory"
+    assert set(vm) >= {m.name for m in vp.PUBLISHED_METRICS}  # VCF Operations shows the published rows
+    assert set(vp.LABELS) == {m.name for m in vp.METRICS}  # every row has its catalog name, published or not
     assert ep.LABELS[ep.BAD_PACKETS.name] == "ESXi (error + dropped) network packets"
