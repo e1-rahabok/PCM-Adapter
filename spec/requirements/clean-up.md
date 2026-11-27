@@ -12,11 +12,12 @@ Source: WD-025 (the adapter's documentation points to the knowledge instead of r
 
 - Given VCF vCommunity Adapter's knowledge pages: [docs/concepts/capacity-management.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/concepts/capacity-management.md), [docs/concepts/kpi-scoring-models.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/concepts/kpi-scoring-models.md), and the explanatory sections of the pages in [docs/reference/metrics](https://github.com/e1-rahabok/PCM-Adapter/tree/main/docs/reference/metrics)
 - When their facts are compared with Agent E2's knowledge base
-- Then every fact is found in a knowledge file, or is kept in a source note in agent-e2's `project/sources/` with a Q-E2 question in its author-questions.md, so the author chooses what enters the knowledge (agent-e2's rule), before anything is removed from the adapter
-- And a fact that contradicts the knowledge base stays on its adapter page, marked, with a Q-E2 question for the author to settle, never silently dropped; the rest of the page follows R-REPO-002
+- Then every fact is found in a knowledge file, or is quoted word for word in a Q-E2 question in agent-e2's [author-questions.md](https://github.com/e1-rahabok/agent-e2/blob/main/project/author-questions.md), with the adapter page and the commit it came from, so the author chooses what enters the knowledge (agent-e2 adds source documents only from the author)
+- And a fact that contradicts the knowledge base is quoted the same way, beside the knowledge file it contradicts, for the author to settle
+- And only then is the page trimmed by R-REPO-002; git keeps the page, and the question keeps each fact that was not in the knowledge base, so none is dropped
 
 Test scenarios:
-- T-REPO-001a (anywhere, manual with an AI comparison): extract the claims of each adapter page; for each, name the knowledge file and line that holds it, or the source note that adds it. Expect a complete table with no claim unaccounted for, kept in the pull request that removes the pages.
+- T-REPO-001a (anywhere, manual with an AI comparison): extract the claims of each adapter page; for each, name the knowledge file and line that holds it, or the Q-E2 question that quotes it. Expect a complete table with no claim unaccounted for, kept in the pull request that removes the pages.
 
 ### R-REPO-002 VCF vCommunity Adapter's documentation keeps only what the adapter does
 

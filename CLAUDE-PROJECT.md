@@ -51,6 +51,8 @@ Takes the docs' screenshots of the VCF Operations UI from the instance, as defin
 
 Run both layers after any change under `Management Pack/app`, and report the results of each.
 
+Until the workspace's milestone M8, a cloud session cannot reach the lab: it runs the unit tests, reports the live validation as not run, and M8's lab session runs it for every change since (WD-042). This is the reported "not run" of CLAUDE.md, and the line of work goes on.
+
 1. **Unit tests** (fakes, no live system). From the `Management Pack` folder:
 
    ```

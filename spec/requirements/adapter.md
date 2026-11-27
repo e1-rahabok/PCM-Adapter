@@ -48,7 +48,7 @@ Source: Q-WS-3 in [round 1](https://github.com/e1-rahabok/private-cloud-workspac
 - Given the files git tracks in the PCM-Adapter repository, outside the dated engineering reviews and `spec/requirements/`, which names the old names and phrases to forbid them
 - When they are searched
 - Then none contains "VCF-vCommunity-Adapter" or "private-cloud-management", the old names of two repositories
-- And the README badges, the link in [resources.properties](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/resources/resources.properties#L7), the release command in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L135) and the image path in [dark-site.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/dark-site.md#L48) and [system-requirements.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/system-requirements.md#L19) name VCF vCommunity Adapter
+- And the README badges, the link in [resources.properties](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/resources/resources.properties#L7), the release command in [validate.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/validate/validate.md#L135) and the image path in [dark-site.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/dark-site.md#L48) and [system-requirements.md](https://github.com/e1-rahabok/PCM-Adapter/blob/main/docs/installation-guide/system-requirements.md#L19) carry no old repository name
 
 Test scenarios:
 - T-ADP-005a (anywhere, automated by `Management Pack/tests/test_repository_names.py` (new), run in CI like [test_docs_links.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_docs_links.py)): run `git ls-files`, read each text file outside the archive, and search for the two old repository names; expect no match outside the engineering reviews and `spec/requirements/`, which names them to forbid them.
@@ -113,7 +113,7 @@ Source: Q-WS-19 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 
 - Given a KPI row whose catalog limits are given for the `20s` interval, a 20-second peak
 - When the adapter reads its input from VCF Operations
-- Then it reads a 20-second peak stat, one whose key contains `20_sec_peak`
+- Then it reads a 20-second peak stat, one whose key contains `20_sec_peak`, except the dropped TX row until T-ADP-026d settles its key on the lab (Q-WS-137)
 - And a row whose catalog limits are given for `5m` reads a 5-minute value
 - And each `Metric` row in [kpi_score.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/kpi_score.py#L67) records its interval, `20s` or `5m`
 - And the KPI definitions check compares that interval with the catalog interval whose limits matched
