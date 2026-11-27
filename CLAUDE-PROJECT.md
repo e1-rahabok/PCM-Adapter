@@ -7,6 +7,7 @@ Rules, tools and paths of PCM-Adapter, the repository of the VCF vCommunity Adap
 - Roadmap, open questions and decisions that bind several repositories: the workspace's [ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md), [OPEN-QUESTIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/OPEN-QUESTIONS.md) and [DECISIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md).
 - No milestone hook runs here. Before acting, read the open milestone in the workspace's ROADMAP.md: the first heading that does not end with ": done".
 - Requirements of this repository: [`spec/requirements/`](spec/requirements) (WD-036). The KPI definitions' contract requirements are in the workspace's [kpi-definitions.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/requirements/kpi-definitions.md). Each requirement belongs to the workspace milestone that ROADMAP.md names.
+- Questions inside this repository: [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md), IDs Q-ADP-n (WD-019, WD-038).
 
 ## VCF vCommunity Adapter
 
