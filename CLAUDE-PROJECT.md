@@ -8,6 +8,7 @@ Rules, tools and paths of PCM-Adapter, the repository of the VCF vCommunity Adap
 - No milestone hook runs here. Before acting, read the open milestone in the workspace's ROADMAP.md: the first heading that does not end with ": done".
 - Requirements of this repository: [`spec/requirements/`](spec/requirements) (DESIGN-4). The KPI definitions' contract requirements are in the workspace's [kpi-definitions.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/requirements/kpi-definitions.md). Each requirement belongs to the workspace milestone that ROADMAP.md names.
 - Questions inside this repository: [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md), IDs Q-ADP-n (DESIGN-23).
+- Spending on Vercel AI Gateway: the workspace's [CLAUDE-PROJECT.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/CLAUDE-PROJECT.md), section Spending (CONSTRAINT-1). A paid step under US$10 starts without asking once its need is named; a paid step of US$10 or more waits for the author's go.
 
 ## VCF vCommunity Adapter
 
