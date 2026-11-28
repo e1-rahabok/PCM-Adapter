@@ -20,6 +20,8 @@ A Python adapter (`Management Pack/app`) that collects extra properties and metr
 
 Pages go in `docs/` by the rules in [CONTRIBUTING.md](CONTRIBUTING.md#documentation). Add every new page to the contents in `docs/README.md`.
 
+- When a pull request changes keys in [metrics-and-properties.md](docs/reference/metrics-and-properties.md): split the file into one table per object type, with at most four columns, and lower its count in `style-baseline.yaml` (Q-ADP-1 in [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md)).
+
 ## Building
 
 ```
