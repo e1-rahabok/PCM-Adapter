@@ -97,6 +97,6 @@ Built on the work of [Onur Yuzseven](https://www.linkedin.com/in/oyuzseven/), wi
 
 [Brock Peterson](https://www.linkedin.com/in/brockpetersonbdcvmw/) wrote a blog series on the adapter and its use cases: [part 1](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations), [part 2](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations-part-2) (Windows checks) and [part 3](https://www.brockpeterson.com/post/vcommunity-management-pack-for-vcf-operations-part-3).
 
-The dashboards, reports and the design of the adapter are by [Iwan Rahabok](https://www.linkedin.com/in/e1ang/). His books are available [here](https://broadcom.box.com/v/OpsYourWorld).
+The dashboards, reports and the design of the adapter are by [Iwan Rahabok](https://www.linkedin.com/in/e1ang/). His books are free to download from [isvara.io](https://isvara.io/download).
 
 To try the adapter first, use the VMware Hands-on Lab that [Abhijit Timble](https://www.linkedin.com/in/abhijit-timble-75878514/) set up: [test drive the VCF vCommunity Adapter](https://labs.hol.vmware.com/HOL/catalog/lab/26848).
