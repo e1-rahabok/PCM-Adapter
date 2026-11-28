@@ -153,7 +153,7 @@ class VCFOpsUIClient:
 
     Example::
 
-        with VCFOpsUIClient("10.115.1.81", "admin", "...", verify_ssl=False) as ui:
+        with VCFOpsUIClient("vcf-ops.example.com", "admin", "...", verify_ssl=False) as ui:
             dashboards = ui.list_dashboards()
             ui.delete_dashboards([("uuid-1", "My Dashboard")])
     """
