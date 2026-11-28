@@ -4,16 +4,16 @@ Rules, tools and paths of PCM-Adapter, the repository of the VCF vCommunity Adap
 
 ## Files of the method
 
-- Roadmap, open questions and decisions that bind several repositories: the workspace's [ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md), [OPEN-QUESTIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/OPEN-QUESTIONS.md) and [DECISIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md).
+- Roadmap, open questions and the specification that binds several repositories: the workspace's [ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md), [OPEN-QUESTIONS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/OPEN-QUESTIONS.md), [brief](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/brief.md) (goals, scope, constraints, risks) and [system design](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/design/system.md) (contracts and design choices).
 - No milestone hook runs here. Before acting, read the open milestone in the workspace's ROADMAP.md: the first heading that does not end with ": done".
-- Requirements of this repository: [`spec/requirements/`](spec/requirements) (WD-036). The KPI definitions' contract requirements are in the workspace's [kpi-definitions.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/requirements/kpi-definitions.md). Each requirement belongs to the workspace milestone that ROADMAP.md names.
-- Questions inside this repository: [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md), IDs Q-ADP-n (WD-019, WD-038).
+- Requirements of this repository: [`spec/requirements/`](spec/requirements) (DESIGN-4). The KPI definitions' contract requirements are in the workspace's [kpi-definitions.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/requirements/kpi-definitions.md). Each requirement belongs to the workspace milestone that ROADMAP.md names.
+- Questions inside this repository: [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md), IDs Q-ADP-n (DESIGN-23, DESIGN-23).
 
 ## VCF vCommunity Adapter
 
 A Python adapter (`Management Pack/app`) that collects extra properties and metrics from vCenter and publishes them onto the existing vCenter objects in VCF Operations under the `vCommunity|` key prefix.
 
-- Its repository is PCM-Adapter; the management pack's name is VCF vCommunity Adapter (WD-032).
+- Its repository is PCM-Adapter; the management pack's name is VCF vCommunity Adapter (CONSTRAINT-2).
 - Contracts with the other repositories, the decisions that bind several of them, releases and milestones: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 ## Documentation
@@ -54,7 +54,7 @@ Takes the docs' screenshots of the VCF Operations UI from the instance, as defin
 
 Run both layers after any change under `Management Pack/app`, and report the results of each.
 
-Until the workspace's milestone M8, a cloud session cannot reach the lab: it runs the unit tests, reports the live validation as not run, lists it in the pull request for M8's lab session, and goes on. WD-042 records the author's answer to CLAUDE.md's stop rule for the lab.
+Until the workspace's milestone M8, a cloud session cannot reach the lab: it runs the unit tests, reports the live validation as not run, lists it in the pull request for M8's lab session, and goes on. DESIGN-21 records the author's answer to CLAUDE.md's stop rule for the lab.
 
 1. **Unit tests** (fakes, no live system). From the `Management Pack` folder:
 
