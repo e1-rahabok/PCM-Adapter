@@ -24,7 +24,7 @@ The adapter computes the overcommit path of the model's closure logic, in the [P
 - The three scores use the same 0-100 % scale and the same four bands. Cluster Performance is higher-is-better. Cluster Risk and Cluster Consumption are higher-is-worse.
 - **Close for Business** is 1 when Consumption or Performance is at its red closure level, or when both are at their orange closure level and Risk is orange or red. Risk alone never closes a cluster.
 - The closure levels sit inside the bands: red above 80 and orange above 60 for Consumption and Risk, and red below 20 and orange below 40 for Performance. A Consumption of 78 shows red and leaves the cluster open. See [The rule](../reference/metrics/periodic-cluster-check.md#the-rule).
-- Every cluster closes at Risk orange, the model's setting for production clusters. The model's setting for non-production clusters, Risk red, is not computed.
+- Every cluster closes at Risk orange, the model's setting for production clusters. The model's setting for non-production clusters, Risk red, is not computed: the adapter has no data on a cluster's environment, and neither has Agent E2.
 - Cluster Consumption is measured against usable capacity: Total − HA − Buffer, as VCF Operations calculates it from the cluster's HA admission control and the Capacity Buffer (Demand) in its policy.
 - Cluster Risk is measured against each host's physical capacity. Besides the four leading indicators of the model (monster VM, imbalance, overcommit ratio and reservation), it scores the busiest host's utilization and memory saturation.
 - Each score is summarized by the worst end of the period. See [Worst](../reference/metrics/periodic-cluster-check.md#worst).

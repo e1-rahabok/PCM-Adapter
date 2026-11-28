@@ -94,7 +94,7 @@ Close for Business is **1** when either rule matches, and **0** otherwise. Red a
 | 1 | Consumption is red, **or** Performance is red. | The cluster is full, or its VMs already have contention. |
 | 2 | Consumption and Performance are **both orange**, **and** Risk is orange or red. | The cluster is busy and its VMs are slowing down, and the leading indicators are getting worse. |
 
-Risk never closes a cluster on its own: it decides only when Consumption and Performance are both orange. The threshold is orange for every cluster, the capacity model's setting for production clusters. See [Closing the cluster](../../concepts/capacity-management.md#closing-the-cluster).
+Risk never closes a cluster on its own: it decides only when Consumption and Performance are both orange. The threshold is orange for every cluster, the capacity model's setting for production clusters. The adapter has no data on a cluster's environment, so it cannot apply the setting for non-production clusters, Risk red: a non-production cluster closes at Risk orange too. See [Closing the cluster](../../concepts/capacity-management.md#closing-the-cluster).
 
 | Performance | Risk | Consumption | Close for Business |
 | :--- | :--- | :--- | :--- |

@@ -93,17 +93,17 @@ Test scenarios:
 
 Milestone: M2.
 
-Source: Q-WS-29 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) (its recommendation: fix issue [#85](https://github.com/e1-rahabok/PCM-Adapter/issues/85) before PCM reads host, VM and vCenter keys; the answer does not change that).
+Source: Q-WS-29 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) (its recommendation: fix issue [#85](https://github.com/e1-rahabok/PCM-Adapter/issues/85) before PCM reads host, VM and vCenter keys; the answer does not change that); the author on issue #85, 2026-11-28: "Verify against live instance."
 
 - Given every object type the adapter publishes on: cluster, host, VM, datastore, vCenter, vSphere World, datacenter, and its own types
 - When the adapter definition is compared with what the collectors publish
 - Then each published key is declared, with the same groups and spelling
 - And each declared key is published by some collector
-- And the case in issue #85 is closed, including the cluster property declared as `Host Isolation` ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L336)) and published as `Response \ Host Isolation` ([ha_properties.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/properties/cluster/ha_properties.py#L12))
+- And the case in issue #85 is fixed in the code, including the cluster property declared as `Host Isolation` ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L336)) and published as `Response \ Host Isolation` ([ha_properties.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/properties/cluster/ha_properties.py#L12))
 
 Test scenarios:
 - T-ADP-007a (anywhere, automated by [test_declared_keys.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_declared_keys.py)): build the definition; run every collector against the fakes; expect the two key sets to be equal, for each object type.
-- Its lab check is T-ADP-026b, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
+- Its lab check is T-ADP-026b, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)). Issue #85 stays open until that check passes.
 
 ### R-ADP-008 Each sub-metric reads the statistic its catalog name states
 
@@ -148,17 +148,17 @@ Test scenarios:
 
 Milestone: M2.
 
-Source: Q-WS-15 and Q-WS-16 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) (Q-WS-16: "agree", one Cluster Risk level for every cluster); [WD-016](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md).
+Source: Q-WS-15 and Q-WS-16 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-1.md) (Q-WS-16: "agree", one Cluster Risk level for every cluster); Q-WS-138 in [round 6](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/interview-round-6.md) (both levels kept as Agent E2's practice; release 1.0 applies the production level to every cluster); [WD-016 and WD-044](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/DECISIONS.md).
 
 - Given the catalog's Close for Business decisions in [thresholds-capacity.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-capacity.yaml#L55)
 - When the Periodic Cluster Check decides Close for Business
 - Then Consumption closes above 80 (red) and above 60 (orange), Performance below 20 (red) and below 40 (orange), as in `CLOSE_RED_BELOW` and `CLOSE_ORANGE_BELOW` ([periodic_cluster_check.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/cluster/periodic_cluster_check.py#L104))
 - And Risk decides above 60 for every cluster
-- And Agent E2's catalog holds one Risk level for every cluster; that change to the catalog is made in agent-e2 (WD-001)
+- And that level equals the catalog's production row, `closure-cluster-risk-prod`, which the catalog says release 1.0 applies to every cluster; the non-production row is Agent E2's practice and is not compared
 - And the default window, 24 hours with 5 % of the worst samples ignored, equals the catalog's "95th percentile of the last 24 hours" (5th percentile for Performance)
 
 Test scenarios:
-- T-ADP-011a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended to the `decisions` section): expect every closure level, and the default period and percent, to equal the catalog.
+- T-ADP-011a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended to the `decisions` section): expect every closure level, the Risk level against the production row, and the default period and percent, to equal the catalog.
 - T-ADP-011b (anywhere, automated by the existing tests from `test_closure_levels_sit_inside_the_display_bands` to `test_open_when_healthy` in [test_periodic_cluster_check.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_periodic_cluster_check.py#L98)): expect them to pass.
 - Its lab check is T-ADP-026c, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
@@ -393,7 +393,7 @@ Milestone: M8.
 
 Test scenarios:
 - T-ADP-026a (lab, automated by a new [screenshot.ps1](https://github.com/e1-rahabok/PCM-Adapter/blob/main/tools/screenshot/screenshot.md) entry, reviewed by hand): install; open the metric tree of one lab cluster and one lab VM; expect the catalog names. **Verify on the lab:** the labels are declared on the adapter's own object type "Cluster Compute Resource" ([definition.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/definition.py#L310)), while the values land on the vCenter adapter's `ClusterComputeResource` ([collectClusterData.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/collectors/cluster/collectClusterData.py#L70)). Nothing yet shows that VCF Operations displays those labels on the vCenter objects.
-- T-ADP-026b (lab, automated by a new validate.ps1 check): for one object of each type, read the `vCommunity|` keys from `GET /suite-api/api/resources/stats/latest?resourceId=<id>` and from `GET /suite-api/api/resources/<id>/properties`; expect each to be in the declared set. **Verify on the lab** that the properties endpoint returns the adapter's properties for a vCenter object.
+- T-ADP-026b (lab, automated by a new validate.ps1 check): for one object of each type, read the `vCommunity|` keys from `GET /suite-api/api/resources/stats/latest?resourceId=<id>` and from `GET /suite-api/api/resources/<id>/properties`; expect each to be in the declared set. **Verify on the lab** that the properties endpoint returns the adapter's properties for a vCenter object. When it passes, close issue [#85](https://github.com/e1-rahabok/PCM-Adapter/issues/85) with the result.
 - T-ADP-026c (lab, automated by validate.ps1 check 20): install and validate after a window has ended; expect the published Close for Business to follow the rule from the published Worst values on every sampled cluster.
 - T-ADP-026d (lab, automated by a new read-only validate.ps1 check): read the 20-second peak and the 5-minute maximum of dropped TX packets on one lab VM; when no 20-second peak exists, the catalog row and the adapter's row become 5-minute and drop "peak" from their name, in agent-e2 first (Q-WS-81).
 
