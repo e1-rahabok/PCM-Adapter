@@ -14,7 +14,7 @@ Rules, tools and paths of PCM-Adapter, the repository of the VCF vCommunity Adap
 A Python adapter (`Management Pack/app`) that collects extra properties and metrics from vCenter and publishes them onto the existing vCenter objects in VCF Operations under the `vCommunity|` key prefix.
 
 - Its repository is PCM-Adapter; the management pack's name is VCF vCommunity Adapter (CONSTRAINT-2).
-- Contracts with the other repositories, the decisions that bind several of them, releases and milestones: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
+- Contracts with the other repositories, the specification that binds several of them, releases and milestones: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 ## Documentation
 
@@ -36,7 +36,7 @@ Builds the `.pak` into `Management Pack/build` and pushes the adapter image to `
 pwsh tools/install/install.ps1
 ```
 
-Uploads and installs the newest pak for the `manifest.txt` version (unsigned, signature checking ignored). Run it directly, as part of one end-to-end process. Do not ask the user to type or run anything for the install. If the platform blocks the script, report the block and stop. Do not work around it. Then run `pwsh tools/restart/restart.ps1` (the Adapter Instances of the VCF vCommunity Adapter often stop collecting after an upgrade), wait one collection cycle, and run the live validation. Details: [tools/install/install.md](tools/install/install.md), [tools/restart/restart.md](tools/restart/restart.md).
+Uploads and installs the newest pak for the `manifest.txt` version (unsigned, signature checking ignored). Installing changes the lab: run it only in a lab session the author has opened (CONSTRAINT-6 in the workspace's [brief](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/brief.md)). In that session, run it directly, as part of one end-to-end process. Do not ask the user to type or run anything for the install. If the platform blocks the script, report the block and stop. Do not work around it. Then run `pwsh tools/restart/restart.ps1` (the Adapter Instances of the VCF vCommunity Adapter often stop collecting after an upgrade), wait one collection cycle, and run the live validation. Details: [tools/install/install.md](tools/install/install.md), [tools/restart/restart.md](tools/restart/restart.md).
 
 ## Releasing
 
@@ -54,7 +54,7 @@ Takes the docs' screenshots of the VCF Operations UI from the instance, as defin
 
 Run both layers after any change under `Management Pack/app`, and report the results of each.
 
-Until the workspace's milestone M8, a cloud session cannot reach the lab: it runs the unit tests, reports the live validation as not run, lists it in the pull request for M8's lab session, and goes on. DESIGN-21 records the author's answer to CLAUDE.md's stop rule for the lab.
+A cloud session cannot reach the lab, which only the author's laptop reaches (CONSTRAINT-6). Before the workspace's milestone M8, a session runs the unit tests, reports the live validation as not run, lists it in the pull request for M8's lab session, and goes on: the workspace's [test plan](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/test-plan.md), section Environments, and DESIGN-21 set this in place of CLAUDE.md's stop rule for the lab.
 
 1. **Unit tests** (fakes, no live system). From the `Management Pack` folder:
 

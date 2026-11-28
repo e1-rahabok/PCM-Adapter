@@ -70,10 +70,10 @@ The adapter is written in Python with the [VCF Operations Integration SDK](https
 
 ## Related repositories
 
-- [Agent E2](https://github.com/e1-rahabok/agent-e2) and [PCM](https://github.com/e1-rahabok/private-cloud-manager), the other two parts: see [Three parts that work together](#three-parts-that-work-together). You can download Agent E2 and deploy it privately.
+- [Agent E2](https://github.com/e1-rahabok/agent-e2) and [PCM](https://github.com/e1-rahabok/private-cloud-manager), the other two parts: see [Three parts that work together](#three-parts-that-work-together). To make them yours, mirror each repository into a private one: a fork of a public repository on GitHub is always public (SCOPE-3 in the workspace's [brief](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/brief.md)).
 - [isvara.io](https://isvara.io) ([repository](https://github.com/e1-rahabok/isvara)) is a public website built on the same knowledge. Agent E2 is to replace its current agent, AskIO, so you can try Agent E2 without installing anything.
 
-How the parts fit, their contracts, decisions and roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
+How the parts fit, their contracts, the specification that binds them and the roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
 
 The isvara.io content (metrics, dashboards, alerts, properties and more) and the VCF vCommunity Adapter are both documented in the **Private Cloud Management** book, 5th edition, which you can download from [isvara.io/download](https://isvara.io/download).
 
