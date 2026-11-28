@@ -36,7 +36,7 @@ Code contributions are welcome, and you can use an AI coding assistant to write 
 - It is small and focused, one topic per pull request. A new metric and its documentation can go together. Discuss a rename across the whole project first.
 - It has tests. Add worked examples for any formula, in the style of the existing tests. See [Tests](docs/development-guide/tests.md).
 - It has documentation. A new metric or setting needs a page, or a row on the right page. See [Documentation](#documentation).
-- It contains no secrets: no passwords, tokens, lab IP addresses or credential files in code, tests, docs or screenshots. The workspace's check `checks/lab_addresses.py` (R-WS-010) fails a pull request that adds a private address.
+- It contains no secrets: no passwords, tokens, lab IP addresses or credential files in code, tests, docs or screenshots. The workspace's check `tools/lab_addresses.py` (R-WS-010) fails a pull request that adds a private address.
 - It says how it was made. If an assistant wrote most of it, say so in the pull request, along with what you checked by hand or on an instance. This helps the reviewer and does not count against you.
 
 ### Read these first

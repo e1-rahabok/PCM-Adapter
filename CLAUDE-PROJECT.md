@@ -54,7 +54,7 @@ Takes the docs' screenshots of the VCF Operations UI from the instance, as defin
 
 Run both layers after any change under `Management Pack/app`, and report the results of each.
 
-A cloud session cannot reach the lab, which only the author's laptop reaches (CONSTRAINT-6). Before the workspace's milestone M8, a session runs the unit tests, reports the live validation as not run, lists it in the pull request for M8's lab session, and goes on: the workspace's [test plan](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/test-plan.md), section Environments, and DESIGN-21 set this in place of CLAUDE.md's stop rule for the lab.
+A cloud session cannot reach the lab, which only the author's laptop reaches (CONSTRAINT-6). Before the workspace's milestone M8, a session runs the unit tests, reports the live validation as not run, lists it in the pull request for M8's lab session, and goes on: the workspace's [test plan](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/test-plan.md), section Environments, and DESIGN-21 in its [system design](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/design/system.md) (work only in the open milestone) set this in place of CLAUDE.md's stop rule for the lab.
 
 1. **Unit tests** (fakes, no live system). From the `Management Pack` folder:
 
