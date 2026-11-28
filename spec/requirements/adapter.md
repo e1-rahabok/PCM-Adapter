@@ -6,7 +6,7 @@ The pack keeps its identity: adapter kind `vCommunity`, display name "VCF vCommu
 
 ## Scope and conventions
 
-- **Area:** the management pack in VCF Operations, its build and lab tools, and its side of two contracts: [C1, the KPI definitions](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md#c1), and [C2, the KPI metric keys](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md#c2), both described in [CONTRACTS.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/CONTRACTS.md).
+- **Area:** the management pack in VCF Operations, its build and lab tools, and its side of two contracts: [C1, the KPI definitions](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md#c1), and [C2, the KPI metric keys](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/glossary.md#c2), both described in [contracts](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/design/system.md#contracts).
 - **Milestones** ([ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md)): R-ADP-005 to R-ADP-008, R-ADP-010, R-ADP-011 and R-ADP-025 belong to M2, and R-ADP-018 to R-ADP-023 and R-ADP-026 to M8, the PCM live demo. R-ADP-019, R-ADP-020 and R-ADP-023 are needed before M8's first slice, the first live cluster in PCM. R-ADP-013 to R-ADP-017, the state codes, come after release 1.0 ([DESIGN-17](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/design/system.md)). R-ADP-007 is needed before M8 goes past its first slice, when PCM also reads hosts, VMs and vCenter. R-ADP-024 depends on the new lab repository [lab-build](https://github.com/e1-rahabok/lab-build) and comes after release 1.0 ([SCOPE-17](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/brief.md)).
 - **Keys** start with `vCommunity|` ([CONSTRAINT-2](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/brief.md)).
 - **The adapter may change anything.** The author confirmed that no installed instance or upgrade path needs protecting: Q-WS-I4 and Q-WS-2 in [round 1](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/author-input/interview-round-1.md), recorded as SCOPE-7 in the workspace's [brief](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/brief.md), with CONSTRAINT-2 for the identity the pack keeps.
@@ -411,7 +411,7 @@ Source: Q-WS-38 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 - Given the lab VCF Operations
 - When a read-only script reads the lab hosts and VMs
 - Then the values of `runtime|powerState` and `runtime|maintenanceState` that the adapter compares against are recorded for a powered-on host and a host in maintenance mode ([cluster_consumption_metrics.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/cluster/cluster_consumption_metrics.py#L73))
-- And the VCF Operations version is recorded in the workspace [SYSTEM.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/SYSTEM.md)
+- And the VCF Operations version is recorded in the workspace's [system design](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/spec/design/system.md#lab), section Lab
 - And issue #2 is brought up to date: it still names the old Daily Cluster Check
 
 Test scenarios:
