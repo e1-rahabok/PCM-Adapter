@@ -171,7 +171,7 @@ def server(tmp_path):
 
 def _connect(server, mode, thumbprint):
     from pyVim.connect import SmartConnect
-    return SmartConnect(host="127.0.0.1", port=server.port, user="svc", pwd="secret-password",
+    return SmartConnect(host="127.0.0.1", port=server.port, user="svc", pwd="test-password",
                         **tls.vcenter_connect_args(mode, thumbprint))
 
 
@@ -192,7 +192,7 @@ def test_pinned_with_the_wrong_thumbprint_sends_nothing_to_the_server(server):
     with pytest.raises(Exception) as caught:
         _connect(server, "Pinned", "aa" * 32)
     assert _posts(server) == []
-    assert all(b"secret-password" not in body for _, _, body in server.requests)
+    assert all(b"test-password" not in body for _, _, body in server.requests)
     assert "thumbprint" in (tls.explain_connect_error(caught.value, "127.0.0.1") or "").lower()
 
 
