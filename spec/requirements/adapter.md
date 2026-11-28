@@ -89,10 +89,10 @@ Source: Q-WS-1 in [round 1](https://github.com/e1-rahabok/private-cloud-workspac
 - And its label, the name VCF Operations shows, is the catalog's metric name without its unit
 - And this holds for the 11 VM Performance and Guest OS Performance rows that have no catalog label today, with the Guest OS run queue row named "Peak run queue length per vCPU" after agent-e2 renames it
 - And the KPI definitions check matches adapter rows to catalog rows by key, using the catalog's key column
-- And the known name gaps in [the KPI definitions check](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py) (`NAME_GAPS`) are empty
+- And the known name gaps in [the KPI definitions check](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/contract-checks/kpi_definitions.py) (`NAME_GAPS`) are empty
 
 Test scenarios:
-- T-ADP-006a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py) through `uv run checks/run_all.py`): with `NAME_GAPS` emptied; expect 0 differences for all six KPIs.
+- T-ADP-006a (anywhere, automated by [contract-checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/contract-checks/kpi_definitions.py) through `uv run contract-checks/run_all.py`): with `NAME_GAPS` emptied; expect 0 differences for all six KPIs.
 - Its lab check is T-ADP-026a, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
 ### R-ADP-007 The declared keys equal the published keys
@@ -129,7 +129,7 @@ Source: Q-WS-19 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 - And the KPI definitions check compares that interval with the catalog interval whose limits matched
 
 Test scenarios:
-- T-ADP-008a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended): for each matched row, expect the adapter's interval to equal the catalog interval that holds the matching limits.
+- T-ADP-008a (anywhere, automated by [contract-checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/contract-checks/kpi_definitions.py), extended): for each matched row, expect the adapter's interval to equal the catalog interval that holds the matching limits.
 - T-ADP-008b (anywhere, automated by [`Management Pack/tests/test_statistics.py`](../../Management%20Pack/tests/test_statistics.py)): for every `20s` row, expect it to read a 20-second peak stat: a key that contains `20_sec_peak`, or one of the listed peak keys without it, today only `net|droppedTxPct_max`; expect a `5m` row to read neither; expect each listed key to be read by a `20s` row. Known cases, settled by Q-WS-81 in round 2 (agent-e2 adds "peak" to the memory wait names) and Q-WS-137 in round 6: VM Network Dropped Tx reads `net|droppedTxPct_max` ([vm_performance_metrics.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/vm_performance_metrics.py#L97)), the 20-second peak its catalog name says ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L61)). The memory wait rows read a 20-second peak ([memory_wait.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/app/metrics/vm/memory_wait.py#L25)), but their catalog names have no "peak" ([thresholds-performance.yaml](https://github.com/e1-rahabok/agent-e2/blob/main/knowledge/catalog/thresholds-performance.yaml#L39)).
 
 ## Scoring tables compared with the Agent E2 catalog
@@ -153,7 +153,7 @@ Source: Q-WS-15 in [round 1](https://github.com/e1-rahabok/private-cloud-workspa
 - Then its band limits (25, 50 and 75 on the health scale today) equal the catalog's score limits for that KPI
 
 Test scenarios:
-- T-ADP-010a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended to the `score` sections): expect the adapter's `RED_BELOW`, `ORANGE_BELOW` and `YELLOW_BELOW` to equal each catalog score row, after the "higher is worse" flip. A KPI with no score row in the catalog fails.
+- T-ADP-010a (anywhere, automated by [contract-checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/contract-checks/kpi_definitions.py), extended to the `score` sections): expect the adapter's `RED_BELOW`, `ORANGE_BELOW` and `YELLOW_BELOW` to equal each catalog score row, after the "higher is worse" flip. A KPI with no score row in the catalog fails.
 - T-ADP-010b (anywhere, automated by the existing tests `test_bands` and `test_a_value_on_a_limit_belongs_to_the_better_band` in [test_periodic_cluster_check.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_periodic_cluster_check.py#L84)): expect them to pass.
 
 ### R-ADP-011 The closure levels equal the catalog's
@@ -172,7 +172,7 @@ Source: Q-WS-15 and Q-WS-16 in [round 1](https://github.com/e1-rahabok/private-c
 - And the default window, 24 hours with 5 % of the worst samples ignored, equals the catalog's "95th percentile of the last 24 hours" (5th percentile for Performance)
 
 Test scenarios:
-- T-ADP-011a (anywhere, automated by [checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/checks/kpi_definitions.py), extended to the `decisions` section): expect every closure level, the Risk level against the production row, and the default period and percent, to equal the catalog.
+- T-ADP-011a (anywhere, automated by [contract-checks/kpi_definitions.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/contract-checks/kpi_definitions.py), extended to the `decisions` section): expect every closure level, the Risk level against the production row, and the default period and percent, to equal the catalog.
 - T-ADP-011b (anywhere, automated by the existing tests from `test_closure_levels_sit_inside_the_display_bands` to `test_open_when_healthy` in [test_periodic_cluster_check.py](https://github.com/e1-rahabok/PCM-Adapter/blob/main/Management%20Pack/tests/test_periodic_cluster_check.py#L98)): expect them to pass.
 - Its lab check is T-ADP-026c, in M8 ([R-ADP-026](#r-adp-026-the-installed-pack-matches-the-catalog-on-the-lab)).
 
