@@ -28,10 +28,14 @@ KPI_MODULES = {
     "Cluster Consumption": cluster_consumption_metrics,
 }
 
-# Known gap (Q-WS-137): the catalog gives VM Network Dropped Tx 20-second limits, and the adapter reads
-# net|droppedTxPct_max, a 5-minute maximum. T-ADP-026d settles on the lab in M8 whether a 20-second key exists.
-# The list may only shrink: an entry that passes fails the test.
-KNOWN_GAPS = {("VM Performance", "Network Dropped Tx")}
+# 20-second peak keys whose key does not contain "20_sec_peak". net|droppedTxPct_max is VCF Operations' Peak
+# Transmitted Packet Dropped within collection cycle (Q-WS-137, ASSUMPTION-8 in the workspace's brief).
+# Each entry must be read by a 20s row: an entry no row reads fails the test.
+PEAK_KEYS_WITHOUT_20_SEC_PEAK = {"net|droppedTxPct_max"}
+
+
+def is_20_second_peak(key):
+    return "20_sec_peak" in key or key in PEAK_KEYS_WITHOUT_20_SEC_PEAK
 
 
 class RecordingStats(dict):
@@ -92,10 +96,14 @@ def test_every_row_that_reads_vm_stats_is_covered():
 
 @pytest.mark.parametrize("kpi,metric,read", rows_with_stats(), ids=lambda v: getattr(v, "name", None) or str(v))
 def test_a_row_reads_the_statistic_of_its_interval(kpi, metric, read):
-    peaks = sorted(s for s in read if "20_sec_peak" in s)
+    peaks = sorted(s for s in read if is_20_second_peak(s))
     if metric.interval == "5m":
         assert not peaks, f"{kpi}: {metric.name} is 5m and reads the 20-second peak {peaks}"
-    elif (kpi, metric.name) in KNOWN_GAPS:
-        assert not peaks, f"{kpi}: {metric.name} now reads {peaks}: delete it from KNOWN_GAPS"
     else:
         assert peaks, f"{kpi}: {metric.name} is 20s and reads {sorted(read)}, no 20-second peak"
+
+
+def test_every_listed_peak_key_is_read_by_a_20s_row():
+    read_by_20s = set().union(*(read for _, metric, read in rows_with_stats() if metric.interval == "20s"))
+    unused = PEAK_KEYS_WITHOUT_20_SEC_PEAK - read_by_20s
+    assert not unused, f"no 20s row reads {sorted(unused)}: delete it from PEAK_KEYS_WITHOUT_20_SEC_PEAK"
