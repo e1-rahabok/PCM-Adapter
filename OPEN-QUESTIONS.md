@@ -7,7 +7,7 @@ Questions about PCM-Adapter only, for the author (WD-019 in the workspace's [DEC
 The workspace's style check (R-WS-006, [tools/style.py](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/tools/style.py)) found 770 problems in 57 documents on its first run: 693 are tables too wide or too wordy for GitHub, 77 are long or sentence headings. 343 sit in one file, [metrics-and-properties.md](docs/reference/metrics-and-properties.md), a reference table of every key with five columns of text. They are listed, file by file with their counts, in [style-baseline.yaml](style-baseline.yaml), which may only shrink: the pull request that fixes a file lowers its count.
 
 - (a) Keep the baseline. A file is fixed when it is next edited.
-- (b) Fix them all in M2; metrics-and-properties.md becomes one block per key or one table per object type with fewer columns.
+- (b) Fix them all in M2, the milestone open now in the workspace's [ROADMAP.md](https://github.com/e1-rahabok/private-cloud-workspace/blob/main/ROADMAP.md); metrics-and-properties.md becomes one block per key or one table per object type with fewer columns.
 
 - **Recommendation:** (a). metrics-and-properties.md is split into one table per object type, with at most four columns, in the next pull request that changes its keys, so the split is checked against the code in the same review.
 
