@@ -29,7 +29,7 @@ Source: WD-025; the author's message of 2026-11-26 naming the adapter's concept 
 - When a reader opens a metric or concept page
 - Then it describes what the adapter computes and publishes (keys, inputs, settings, states) and how to install and run it
 - And for what a metric means and how to use it, it links to the Agent E2 knowledge file
-- And the README presents the adapter as one part of Private Cloud Manager, with links to Agent E2 and PCM, and names the simplest deployment: the pak file alone
+- And the README presents the adapter as one of three parts that work together, with links to Agent E2 and PCM (Private Cloud Manager, the web app), and names the simplest deployment: the pak file alone
 
 Test scenarios:
 - T-REPO-002a (anywhere, manual review by a fresh session): read every page of the adapter's docs; expect no explanation of a metric's meaning beyond one sentence, and a knowledge link on each metric page.

@@ -6,12 +6,12 @@ A free management pack for VCF Operations, and one part of Private Cloud Manager
 
 The documentation starts at [docs/README.md](docs/README.md). It describes what the adapter computes and publishes, and how to install and run it. What each metric means, and how to use it, is in [Agent E2](https://github.com/e1-rahabok/agent-e2)'s knowledge, linked from each metric page.
 
-## Part of Private Cloud Manager
+## Three parts that work together
 
-Private Cloud Manager is three parts that customers take together:
+The VCF vCommunity Adapter is one of three parts that customers take together:
 
 - [Agent E2](https://github.com/e1-rahabok/agent-e2) holds the knowledge. Its catalog defines each KPI: the name, the limits of each sub-metric, the score bands and the closure levels. Its knowledge files explain what each metric means.
-- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager's web app for operations roles. It reads the scores that this adapter publishes through the VCF Operations API, and asks Agent E2 to explain them.
+- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, the web app for operations roles. It reads the scores that this adapter publishes through the VCF Operations API, and asks Agent E2 to explain them.
 - The VCF vCommunity Adapter, this repository. It computes the KPIs inside VCF Operations, by the definitions in Agent E2's catalog, and publishes them under `vCommunity|`. The adapter does not call Agent E2 while it runs: its code holds the same definitions, and a check in the [workspace](https://github.com/e1-rahabok/private-cloud-workspace) compares the two.
 
 **The simplest deployment is the pak file alone.** Install `vCommunity_<version>.pak` in VCF Operations: the metrics, KPIs, properties, dashboards, reports and alerts then run in your own VCF Operations, with no Linux VM, no PCM and no Agent E2. See [Get started](#get-started).
@@ -70,7 +70,7 @@ The adapter is written in Python with the [VCF Operations Integration SDK](https
 
 ## Related repositories
 
-- [Agent E2](https://github.com/e1-rahabok/agent-e2) and [PCM](https://github.com/e1-rahabok/private-cloud-manager), the other two parts of Private Cloud Manager: see [Part of Private Cloud Manager](#part-of-private-cloud-manager). You can download Agent E2 and deploy it privately.
+- [Agent E2](https://github.com/e1-rahabok/agent-e2) and [PCM](https://github.com/e1-rahabok/private-cloud-manager), the other two parts: see [Three parts that work together](#three-parts-that-work-together). You can download Agent E2 and deploy it privately.
 - [isvara.io](https://isvara.io) ([repository](https://github.com/e1-rahabok/isvara)) is a public website built on the same knowledge. Agent E2 is to replace its current agent, AskIO, so you can try Agent E2 without installing anything.
 
 How the parts fit, their contracts, decisions and roadmap: [private-cloud-workspace](https://github.com/e1-rahabok/private-cloud-workspace).
