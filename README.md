@@ -11,7 +11,7 @@ The documentation starts at [docs/README.md](docs/README.md). It describes what 
 The VCF vCommunity Adapter is one of three parts that customers take together:
 
 - [Agent E2](https://github.com/e1-rahabok/agent-e2) holds the knowledge. Its catalog defines each KPI: the name, the limits of each sub-metric, the score bands and the closure levels. Its knowledge files explain what each metric means.
-- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, the web app for operations roles. It reads the scores that this adapter publishes through the VCF Operations API, and asks Agent E2 to explain them.
+- [PCM](https://github.com/e1-rahabok/private-cloud-manager), Private Cloud Manager, the web app for operations roles. It asks Agent E2 to explain the scores it shows. Its live demo, built in the workspace's milestone M8, reads the scores that this adapter publishes through the VCF Operations API.
 - The VCF vCommunity Adapter, this repository. It computes the KPIs inside VCF Operations, by the definitions in Agent E2's catalog, and publishes them under `vCommunity|`. The adapter does not call Agent E2 while it runs: its code holds the same definitions, and a check in the [workspace](https://github.com/e1-rahabok/private-cloud-workspace) compares the two.
 
 **The simplest deployment is the pak file alone.** Install `vCommunity_<version>.pak` in VCF Operations: the metrics, KPIs, properties, dashboards, reports and alerts then run in your own VCF Operations, with no Linux VM, no PCM and no Agent E2. See [Get started](#get-started).
